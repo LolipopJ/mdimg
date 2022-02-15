@@ -1,0 +1,55 @@
+{
+  "name": "mdimg",
+  "version": "0.0.0",
+  "description": "Covert Markdown or HTML to image",
+  "keywords": [
+    "markdown",
+    "html",
+    "image"
+  ],
+  "main": "lib/mdimg.cjs",
+  "module": "lib/mdimg.esm.js",
+  "browser": "lib/mdimg.umd.js",
+  "bin": {
+    "mdimg": "bin/mdimg.js"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "src/",
+    "mdimg.min.js"
+  ],
+  "scripts": {
+    "build": "npm run rollup && npm run minify",
+    "rollup": "rollup -c rollup.config.js",
+    "minify": "uglifyjs lib/mdimg.umd.js -cm --comments /Copyright/ -o mdimg.min.js",
+    "lint": "eslint --ext .js .",
+    "lint:fix": "yarn lint --fix",
+    "lint:prettier": "prettier --ignore-path .eslintignore --write **/* --ignore-unknown"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LolipopJ/mdimg.git"
+  },
+  "author": "LolipopJ",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LolipopJ/mdimg/issues"
+  },
+  "homepage": "https://github.com/LolipopJ/mdimg#readme",
+  "devDependencies": {
+    "@babel/core": "^7.17.2",
+    "@babel/eslint-parser": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "eslint": "^8.9.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "marked": "^4.0.12",
+    "prettier": "^2.5.1",
+    "rollup": "^2.67.2",
+    "rollup-plugin-license": "^2.6.1",
+    "uglify-js": "^3.15.1"
+  }
+}
