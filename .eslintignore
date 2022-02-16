@@ -1,4 +1,7 @@
 node_modules
 lib
 
+src/template/css
+src/template/html
+
 *.min.js

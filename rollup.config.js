@@ -1,28 +1,17 @@
-import commonjs from '@rollup/plugin-commonjs'
 import babel from '@rollup/plugin-babel'
+import commonjs from '@rollup/plugin-commonjs'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
 import license from 'rollup-plugin-license'
 
-module.exports = [
-  {
-    input: 'src/mdimg.js',
-    output: {
-      file: 'lib/mdimg.umd.js',
-      format: 'umd',
-    },
-    plugins: [
-      license({
-        banner: `
+import { getScssTasks } from './rollupTemplate'
+
+const licenseBanner = `
 mdimg - convert markdown to image
 Copyright (c) 2022-${new Date().getFullYear()}, LolipopJ. (MIT Licensed)
 https://github.com/LolipopJ/mdimg
-`,
-      }),
-      commonjs(),
-      babel({
-        presets: [['@babel/preset-env', { loose: true }]],
-      }),
-    ],
-  },
+`
+
+module.exports = [
   {
     input: 'src/mdimg.js',
     output: {
@@ -31,14 +20,12 @@ https://github.com/LolipopJ/mdimg
     },
     plugins: [
       license({
-        banner: `
-mdimg - convert markdown to image
-Copyright (c) 2022-${new Date().getFullYear()}, LolipopJ. (MIT Licensed)
-https://github.com/LolipopJ/mdimg
-`,
+        banner: licenseBanner,
       }),
+      nodeResolve(),
       commonjs(),
       babel({
+        babelHelpers: 'bundled',
         presets: [['@babel/preset-env', { loose: true }]],
       }),
     ],
@@ -51,13 +38,11 @@ https://github.com/LolipopJ/mdimg
     },
     plugins: [
       license({
-        banner: `
-mdimg - convert markdown to image
-Copyright (c) 2022-${new Date().getFullYear()}, LolipopJ. (MIT Licensed)
-https://github.com/LolipopJ/mdimg
-`,
+        banner: licenseBanner,
       }),
+      nodeResolve(),
       commonjs(),
     ],
   },
+  ...getScssTasks(),
 ]
