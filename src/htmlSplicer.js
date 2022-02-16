@@ -10,7 +10,7 @@ export function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
   const cssSource = readFileSync(cssPath)
 
   const $ = cheerio.load(htmlSource)
-  $('.markdown-body').html(`<div class="markdown-body">${mdHtml}</div>`)
+  $('.markdown-body').html(mdHtml)
 
   const html = `
   <!DOCTYPE html>
@@ -19,6 +19,7 @@ export function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>mdimg</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css">
     <style>
       ${cssSource}
     </style>
@@ -27,8 +28,6 @@ export function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
     ${$.html()}
   </body>
   </html>`
-
-  console.log(html)
 
   return html
 }

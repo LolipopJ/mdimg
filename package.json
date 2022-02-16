@@ -18,7 +18,7 @@
     "src/"
   ],
   "scripts": {
-    "test": "npm run build && babel-node ./test/index.js",
+    "test": "babel-node ./test/index.js",
     "build": "npm run rollup",
     "rollup": "rollup -c rollup.config.js",
     "lint": "prettier --write **/* --ignore-path .eslintignore --ignore-unknown"

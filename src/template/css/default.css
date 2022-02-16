@@ -1,8 +1,11 @@
 #mdimg-body {
   padding: 80px;
   border-left: solid 20px #121212;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 
-.markdown-body .main-text {
+.markdown-body {
   font-size: 28px;
 }
