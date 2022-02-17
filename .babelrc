@@ -1,5 +1,5 @@
 {
   "presets": [
-    ["@babel/preset-env"]
+    ["@babel/preset-env", { "bugfixes": true, "loose": true, "debug": true }]
   ]
- }
+}

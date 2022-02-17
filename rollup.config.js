@@ -38,7 +38,6 @@ module.exports = [
     output: {
       file: 'lib/mdimg.mjs',
       format: 'esm',
-      exports: 'auto',
     },
     external: externalModules,
     plugins: [
@@ -47,9 +46,6 @@ module.exports = [
       }),
       nodeResolve({ preferBuiltins: true }),
       commonjs(),
-      babel({
-        babelHelpers: 'bundled',
-      }),
     ],
   },
   ...getScssTasks(),
