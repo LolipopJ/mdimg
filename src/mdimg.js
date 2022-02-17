@@ -1,11 +1,17 @@
-const path = require('path')
-const fs = require('fs')
+const { resolve, dirname } = require('path')
+const {
+  existsSync,
+  statSync,
+  readFileSync,
+  mkdirSync,
+  writeFileSync,
+} = require('fs')
 const puppeteer = require('puppeteer')
 
-import { parseMarkdown } from './mdParser'
-import { spliceHtml } from './htmlSplicer'
+const { parseMarkdown } = require('./mdParser')
+const { spliceHtml } = require('./htmlSplicer')
 
-export async function convert2img({
+async function convert2img({
   mdText,
   mdFile,
   htmlTemplate = 'default',
@@ -17,19 +23,20 @@ export async function convert2img({
 } = {}) {
   let input = mdText
   let output
+  const result = {}
 
   if (mdFile) {
-    const inputFilePath = path.resolve(mdFile)
-    if (!fs.existsSync(inputFilePath)) {
+    const inputFilePath = resolve(mdFile)
+    if (!existsSync(inputFilePath)) {
       // Input is not exist
       throw new Error('Input file is not exists.')
     } else {
-      if (!fs.statSync(inputFilePath).isFile()) {
+      if (!statSync(inputFilePath).isFile()) {
         // Input is not a file
         throw new Error('Input is not a file.')
       } else {
         // Read text from input file
-        input = fs.readFileSync(inputFilePath, { encoding: 'utf-8' })
+        input = readFileSync(inputFilePath, { encoding: 'utf-8' })
       }
     }
   } else if (!mdText) {
@@ -52,15 +59,15 @@ export async function convert2img({
       const outputFileNameSuffix = `${now.getFullYear()}_${
         now.getMonth() + 1
       }_${now.getDate()}_${now.getHours()}_${now.getMinutes()}_${now.getSeconds()}_${now.getMilliseconds()}`
-      output = path.resolve('mdimg_output', `mdimg_${outputFileNameSuffix}.png`)
+      output = resolve('mdimg_output', `mdimg_${outputFileNameSuffix}.png`)
     } else {
-      output = path.resolve(outputFileName)
+      output = resolve(outputFileName)
     }
   }
 
   // Parse markdown text to HTML
   const html = spliceHtml(parseMarkdown(input), htmlTemplate, cssTemplate)
-  console.log('HTML Document:\n', html)
+  result.html = html
 
   // Launch headless browser to load HTML
   const browser = await puppeteer.launch({
@@ -88,18 +95,18 @@ export async function convert2img({
         path: output,
         encoding,
       })
-
-      console.log(`Convert to image successfully!\nFile: ${output}`)
+      result.data = output
 
       await browser.close()
-      return true
+      return result
     } else if (encoding === 'base64') {
       const outputBase64String = await body.screenshot({
         encoding,
       })
+      result.data = outputBase64String
 
       await browser.close()
-      return outputBase64String
+      return result
     }
   } else {
     await browser.close()
@@ -112,12 +119,12 @@ export async function convert2img({
 }
 
 function createEmptyFile(fileName) {
-  const filePath = path.dirname(fileName)
+  const filePath = dirname(fileName)
 
   try {
-    fs.mkdirSync(filePath, { recursive: true })
+    mkdirSync(filePath, { recursive: true })
 
-    fs.writeFileSync(fileName, '')
+    writeFileSync(fileName, '')
 
     return true
   } catch (error) {
@@ -125,3 +132,5 @@ function createEmptyFile(fileName) {
     return false
   }
 }
+
+module.exports = { convert2img }

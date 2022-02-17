@@ -1,5 +1,7 @@
-import { marked } from 'marked'
+const { marked } = require('marked')
 
-export function parseMarkdown(mdText) {
+function parseMarkdown(mdText) {
   return marked.parse(mdText)
 }
+
+module.exports = { parseMarkdown }

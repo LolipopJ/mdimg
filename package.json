@@ -1,14 +1,14 @@
 {
   "name": "mdimg",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Covert Markdown or HTML to image",
   "keywords": [
     "markdown",
     "html",
     "image"
   ],
-  "main": "lib/mdimg.cjs",
-  "module": "lib/mdimg.esm.js",
+  "main": "lib/mdimg.js",
+  "module": "lib/mdimg.mjs",
   "bin": {
     "mdimg": "bin/mdimg.js"
   },
@@ -18,6 +18,7 @@
     "src/"
   ],
   "scripts": {
+    "mdimg": "babel-node ./bin/mdimg.js",
     "test": "babel-node ./test/index.js",
     "build": "npm run rollup",
     "rollup": "rollup -c rollup.config.js",

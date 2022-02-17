@@ -8,17 +8,14 @@ export function getScssTasks() {
   const templates = fs
     .readdirSync(path.join(__dirname, scssPath))
     .filter((filename) => {
-      return filename.endsWith('.js')
+      return filename.endsWith('.scss') || filename.endsWith('.sass')
     })
 
   const tasks = []
   for (const template of templates) {
-    const templateName = template.slice(0, -3)
+    const templateName = template.slice(0, -5)
     const task = {
       input: `${scssPath}/${template}`,
-      output: {
-        format: 'esm',
-      },
       plugins: [
         scss({
           output: `${cssPath}/${templateName}.css`,

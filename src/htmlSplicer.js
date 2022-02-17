@@ -1,10 +1,10 @@
-const path = require('path')
-import { readFileSync } from 'fs'
+const { join } = require('path')
+const { readFileSync } = require('fs')
 const cheerio = require('cheerio')
 
-export function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
-  const htmlPath = path.join('src/template/html', `${htmlTemplate}.html`)
-  const cssPath = path.join('src/template/css', `${cssTemplate}.css`)
+function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
+  const htmlPath = join('src/template/html', `${htmlTemplate}.html`)
+  const cssPath = join('src/template/css', `${cssTemplate}.css`)
 
   const htmlSource = readFileSync(htmlPath)
   const cssSource = readFileSync(cssPath)
@@ -31,3 +31,5 @@ export function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
 
   return html
 }
+
+module.exports = { spliceHtml }
