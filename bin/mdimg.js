@@ -22,13 +22,13 @@ program
   .addOption(
     new Option(
       '-i, --input <input file>',
-      'Read from a file instead of typing directly'
+      'Read Markdown or HTML text from a file'
     )
   )
   .addOption(
     new Option(
       '-o, --output <output file>',
-      "Output binary image file storage address. File type must be one of 'jpeg', 'png' or 'webp', defaults to 'png'. Available when encoding option is 'binary'"
+      "Output binary image filename. File type must be one of 'jpeg', 'png' or 'webp', defaults to 'png'. Available when encoding option is 'binary'"
     )
   )
   .addOption(
@@ -72,6 +72,6 @@ convert2img({
   cssTemplate: template,
   width: Number(width),
   encoding: encoding,
-  outputFileName: output,
+  outputFilename: output,
   log: true,
 })

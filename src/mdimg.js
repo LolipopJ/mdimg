@@ -19,7 +19,7 @@ async function convert2img({
   width = 800,
   height = 600,
   encoding = 'binary',
-  outputFileName,
+  outputFilename,
   log = false,
 } = {}) {
   const _encodingType = ['base64', 'binary']
@@ -56,20 +56,20 @@ async function convert2img({
   }
 
   if (encoding === 'binary') {
-    if (!outputFileName) {
-      // Set default output file name
-      _output = resolve('mdimg_output', _generateImageFileName())
+    if (!outputFilename) {
+      // Set default output filename
+      _output = resolve('mdimg_output', _generateImageFilename())
     } else {
-      // Check validation of ouput file name
-      const _outputFileName = basename(outputFileName)
-      const _outputFilePath = dirname(outputFileName)
-      const _outputFileNameArr = _outputFileName.split('.')
-      if (_outputFileNameArr.length <= 1) {
+      // Check validation of ouput filename
+      const _outputFilename = basename(outputFilename)
+      const _outputFilePath = dirname(outputFilename)
+      const _outputFilenameArr = _outputFilename.split('.')
+      if (_outputFilenameArr.length <= 1) {
         // Output file type is not specified
-        _output = resolve(_outputFilePath, _outputFileName + '.png')
+        _output = resolve(_outputFilePath, _outputFilename + '.png')
       } else if (
         !_outputFileType.includes(
-          _outputFileNameArr[_outputFileNameArr.length - 1]
+          _outputFilenameArr[_outputFilenameArr.length - 1]
         )
       ) {
         // Output file type is wrongly specified
@@ -78,7 +78,7 @@ async function convert2img({
         )
       } else {
         // Set absolute file path
-        _output = resolve(outputFileName)
+        _output = resolve(outputFilename)
       }
     }
   }
@@ -144,23 +144,23 @@ async function convert2img({
   }
 }
 
-function _createEmptyFile(fileName) {
-  const _filePath = dirname(fileName)
+function _createEmptyFile(filename) {
+  const _filePath = dirname(filename)
 
   try {
     mkdirSync(_filePath, { recursive: true })
-    writeFileSync(fileName, '')
+    writeFileSync(filename, '')
   } catch (error) {
-    throw new Error(`Create new file ${fileName} failed.\n`, error)
+    throw new Error(`Create new file ${filename} failed.\n`, error)
   }
 }
 
-function _generateImageFileName() {
+function _generateImageFilename() {
   const _now = new Date()
-  const _outputFileNameSuffix = `${_now.getFullYear()}_${
+  const _outputFilenameSuffix = `${_now.getFullYear()}_${
     _now.getMonth() + 1
   }_${_now.getDate()}_${_now.getHours()}_${_now.getMinutes()}_${_now.getSeconds()}_${_now.getMilliseconds()}`
-  return `mdimg_${_outputFileNameSuffix}.png`
+  return `mdimg_${_outputFilenameSuffix}.png`
 }
 
 module.exports = { convert2img }
