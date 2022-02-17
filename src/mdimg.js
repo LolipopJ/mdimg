@@ -12,9 +12,12 @@ export async function convert2img({
   cssTemplate = 'default',
   width = 800,
   height = 600,
-  outputPath = 'output',
+  encoding = 'binary',
   outputFileName,
 } = {}) {
+  let input = mdText
+  let output
+
   if (mdFile) {
     const inputFilePath = path.resolve(mdFile)
     if (!fs.existsSync(inputFilePath)) {
@@ -25,24 +28,41 @@ export async function convert2img({
         // Input is not a file
         throw new Error('Input is not a file.')
       } else {
-        mdText = fs.readFileSync(inputFilePath, { encoding: 'utf-8' })
+        // Read text from input file
+        input = fs.readFileSync(inputFilePath, { encoding: 'utf-8' })
       }
     }
   } else if (!mdText) {
+    // There is no input text or file
     throw new Error('You must provide a text or a file to be converted.')
   }
 
-  if (!outputFileName) {
-    const now = new Date()
-    const outputFileNameSuffix = `${now.getFullYear()}${
-      now.getMonth() + 1
-    }${now.getDate()}${now.getHours()}${now.getMinutes()}${now.getSeconds()}${now.getMilliseconds()}`
-    outputFileName = `MarkdownImage-${outputFileNameSuffix}.png`
+  const encodingType = ['base64', 'binary']
+  if (!encodingType.includes(encoding)) {
+    // Params encoding is not valid
+    throw new Error(
+      `Encoding ${encoding} is not supported. Valid values: 'base64' and 'binary'.`
+    )
   }
 
-  const html = spliceHtml(parseMarkdown(mdText), htmlTemplate, cssTemplate)
+  if (encoding === 'binary') {
+    if (!outputFileName) {
+      // Set default output file name
+      const now = new Date()
+      const outputFileNameSuffix = `${now.getFullYear()}_${
+        now.getMonth() + 1
+      }_${now.getDate()}_${now.getHours()}_${now.getMinutes()}_${now.getSeconds()}_${now.getMilliseconds()}`
+      output = path.resolve('mdimg_output', `mdimg_${outputFileNameSuffix}.png`)
+    } else {
+      output = path.resolve(outputFileName)
+    }
+  }
+
+  // Parse markdown text to HTML
+  const html = spliceHtml(parseMarkdown(input), htmlTemplate, cssTemplate)
   console.log('HTML Document:\n', html)
 
+  // Launch headless browser to load HTML
   const browser = await puppeteer.launch({
     defaultViewport: {
       width,
@@ -54,33 +74,50 @@ export async function convert2img({
   await page.setContent(html, {
     waitUntil: 'networkidle0',
   })
+
   const body = await page.$('#mdimg-body')
-
   if (body) {
-    const exportPath = path.resolve(outputPath)
-    const exportFile = path.join(exportPath, outputFileName)
-    if (!createEmptyFile(exportPath, outputFileName)) {
-      throw new Error(`Create ${exportFile} failed.`)
+    if (encoding === 'binary') {
+      // Create empty output file
+      if (!createEmptyFile(output)) {
+        throw new Error(`Create new file ${output} failed.`)
+      }
+
+      // Generate output image
+      await body.screenshot({
+        path: output,
+        encoding,
+      })
+
+      console.log(`Convert to image successfully!\nFile: ${output}`)
+
+      await browser.close()
+      return true
+    } else if (encoding === 'base64') {
+      const outputBase64String = await body.screenshot({
+        encoding,
+      })
+
+      await browser.close()
+      return outputBase64String
     }
-
-    await body.screenshot({
-      path: exportFile,
-    })
-
-    console.log(`Convert to image successfully!\nFile: ${exportFile}`)
   } else {
-    throw new Error('Missing HTML element with id: mdimg-body')
-  }
+    await browser.close()
 
-  await browser.close()
-  return true
+    // HTML template is not valid
+    throw new Error(
+      `Missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.`
+    )
+  }
 }
 
-function createEmptyFile(filePath, fileName) {
+function createEmptyFile(fileName) {
+  const filePath = path.dirname(fileName)
+
   try {
     fs.mkdirSync(filePath, { recursive: true })
 
-    fs.writeFileSync(path.join(filePath, fileName), '')
+    fs.writeFileSync(fileName, '')
 
     return true
   } catch (error) {
