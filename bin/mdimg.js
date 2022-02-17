@@ -1,13 +1,11 @@
 #!/usr/bin/env node
 
-const { basename } = require('path')
 const { Command, Option } = require('commander')
 const { convert2img } = require('../lib/mdimg.js')
 
 const pkg = require('../package.json')
 
 const encodingType = ['base64', 'binary']
-const outputFileType = ['jpeg', 'png', 'webp']
 
 const program = new Command()
 
@@ -62,46 +60,18 @@ program.parse()
 
 const { text, input, output, encoding, width, template } = program.opts()
 
-;(async () => {
-  if (!text && !input) {
-    console.error(
-      'You must provide input text or file! Help me:\n',
-      '$ mdimg -h'
-    )
-    return
-  }
+if (!text && !input) {
+  console.error('You must provide input text or file! Help me:\n', '$ mdimg -h')
+  process.exit(1)
+}
 
-  let outputFileName = output
-  if (output) {
-    const _outputFileName = basename(output)
-    const _outputFileNameArr = _outputFileName.split('.')
-    if (_outputFileNameArr.length <= 1) {
-      // Output file type is not specified
-      outputFileName = output + '.png'
-    } else if (
-      !outputFileType.includes(
-        _outputFileNameArr[_outputFileNameArr.length - 1]
-      )
-    ) {
-      // Output file type is wrongly specified
-      console.error("Output file type must be one of 'jpeg', 'png' or 'webp'")
-      return
-    }
-  }
-
-  const convertRes = await convert2img({
-    mdText: text,
-    mdFile: input,
-    htmlTemplate: template,
-    cssTemplate: template,
-    width: Number(width),
-    encoding: encoding,
-    outputFileName: outputFileName,
-  })
-
-  if (encoding === 'binary') {
-    console.log(`Convert to image successfully!\nFile: ${convertRes.data}`)
-  } else if (encoding === 'base64') {
-    console.log(`Convert to base64 string successfully!\n${convertRes.data}`)
-  }
-})()
+convert2img({
+  mdText: text,
+  mdFile: input,
+  htmlTemplate: template,
+  cssTemplate: template,
+  width: Number(width),
+  encoding: encoding,
+  outputFileName: output,
+  log: true,
+})

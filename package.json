@@ -18,11 +18,12 @@
     "src/"
   ],
   "scripts": {
-    "mdimg": "babel-node ./bin/mdimg.js",
+    "mdimg": "node ./bin/mdimg.js",
     "test": "babel-node ./test/index.js",
     "build": "npm run rollup",
     "rollup": "rollup -c rollup.config.js",
-    "lint": "prettier --write **/* --ignore-path .eslintignore --ignore-unknown"
+    "lint": "eslint --ext .js .",
+    "prettier": "prettier --write **/* --ignore-path .eslintignore --ignore-unknown"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
   },
   "homepage": "https://github.com/LolipopJ/mdimg#readme",
   "dependencies": {
+    "@babel/runtime": "^7.17.2",
     "cheerio": "^1.0.0-rc.10",
     "commander": "^9.0.0",
     "marked": "^4.0.12",
@@ -44,6 +46,7 @@
     "@babel/core": "^7.17.4",
     "@babel/eslint-parser": "^7.17.0",
     "@babel/node": "^7.16.8",
+    "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^21.0.1",

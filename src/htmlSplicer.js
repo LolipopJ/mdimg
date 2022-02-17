@@ -3,16 +3,16 @@ const { readFileSync } = require('fs')
 const cheerio = require('cheerio')
 
 function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
-  const htmlPath = join('src/template/html', `${htmlTemplate}.html`)
-  const cssPath = join('src/template/css', `${cssTemplate}.css`)
+  const _htmlPath = join('src/template/html', `${htmlTemplate}.html`)
+  const _cssPath = join('src/template/css', `${cssTemplate}.css`)
 
-  const htmlSource = readFileSync(htmlPath)
-  const cssSource = readFileSync(cssPath)
+  const _htmlSource = readFileSync(_htmlPath)
+  const _cssSource = readFileSync(_cssPath)
 
-  const $ = cheerio.load(htmlSource)
+  const $ = cheerio.load(_htmlSource)
   $('.markdown-body').html(mdHtml)
 
-  const html = `
+  const _html = `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -21,7 +21,7 @@ function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
     <title>mdimg</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css">
     <style>
-      ${cssSource}
+      ${_cssSource}
     </style>
   </head>
   <body>
@@ -29,7 +29,7 @@ function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
   </body>
   </html>`
 
-  return html
+  return _html
 }
 
 module.exports = { spliceHtml }

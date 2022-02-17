@@ -11,7 +11,7 @@ Copyright (c) 2022-${new Date().getFullYear()}, LolipopJ. (MIT Licensed)
 https://github.com/LolipopJ/mdimg
 `
 
-const externalModules = ['cheerio', 'marked', 'puppeteer']
+const externalModules = ['cheerio', 'marked', 'puppeteer', /@babel\/runtime/]
 
 module.exports = [
   {
@@ -29,7 +29,7 @@ module.exports = [
       nodeResolve({ preferBuiltins: true }),
       commonjs(),
       babel({
-        babelHelpers: 'bundled',
+        babelHelpers: 'runtime',
       }),
     ],
   },
