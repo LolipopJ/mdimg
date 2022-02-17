@@ -32,12 +32,12 @@ program
     )
   )
   .addOption(
-    new Option('-e, --encoding <type>', 'The encoding of the image')
+    new Option('-e, --encoding <type>', 'The encoding of output image')
       .default('binary')
       .choices(encodingType)
   )
   .addOption(
-    new Option('-w, --width <width>', 'The width of the image').default(800)
+    new Option('-w, --width <width>', 'The width of output image').default(800)
   )
   .addOption(
     new Option(
@@ -61,7 +61,7 @@ program.parse()
 const { text, input, output, encoding, width, template } = program.opts()
 
 if (!text && !input) {
-  console.error('You must provide input text or file! Help me:\n', '$ mdimg -h')
+  program.help()
   process.exit(1)
 }
 
