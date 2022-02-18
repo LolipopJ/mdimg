@@ -10,7 +10,7 @@ function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
     accessSync(_htmlPath, constants.R_OK)
   } catch (err) {
     console.warn(
-      `HTML template file ${_htmlPath} is not found. Use default HTML template.`
+      `HTML template ${_htmlPath} is not found or unreadable. Use default HTML template.`
     )
     _htmlPath = resolve(__dirname, '../template/html/default.html')
   }
@@ -18,7 +18,7 @@ function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
     accessSync(_cssPath, constants.R_OK)
   } catch (err) {
     console.warn(
-      `CSS template file ${_htmlPath} is not found. Use default CSS template.`
+      `CSS template ${_htmlPath} is not found or unreadable. Use default CSS template.`
     )
     _cssPath = resolve(__dirname, '../template/css/default.css')
   }

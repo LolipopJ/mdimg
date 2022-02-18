@@ -72,6 +72,77 @@ Options:
 | outputFilename | `String`  | `mdimg_output/mdimg_${now}.png` | Output binary image filename. File type can be `jpeg`, `png` or `webp`, defaults to `png`. Available when `encoding` option is `binary`                                                            |
 | log            | `Boolean` | `false`                         | Show preset console log                                                                                                                                                                            |
 
+## Development
+
+```bash
+git clone https://github.com/LolipopJ/mdimg.git
+cd mdimg
+yarn
+# npm install
+```
+
+### Custom template
+
+Templates are stored in the `template` directory.
+
+When you use the following command:
+
+```bash
+mdimg -i input.md --html custom --css custom
+```
+
+The mdimg will read `custom.html` from `template/html` directory as HTML template and `custom.css` from `template/css` directory as CSS template to render the image result.
+
+#### HTML template
+
+Create a new `.html` file in `template/html` directory.
+
+There is only one rule you need to follow: an element with id `mdimg-body` wrapping an element with class `markdown-body`.
+
+The simplest example:
+
+```html
+<div id="mdimg-body">
+  <div class="markdown-body" />
+</div>
+```
+
+The mdimg will put the parsed HTML content in the element with class `markdown-body`, and finally generate the image for the whole element whose id is `mdimg-body`.
+
+#### CSS template
+
+It is recommended that write `.scss` or `.sass` files in the `template/scss` directory, and use the following command to generate CSS templates:
+
+```bash
+# Build .scss and .sass files
+npm run rollup:sass
+```
+
+CSS templates with the corresponding name will be generated in `template/css` directory.
+
+### Lint
+
+```bash
+# Check .js syntax only
+npm run lint
+# Check and fix syntax
+npm run prettier
+```
+
+### Build
+
+```bash
+# Build .js, .scss and .sass files
+npm run build
+```
+
+### Test
+
+```bash
+# Build before testing
+npm run test
+```
+
 ## Inspired by
 
 - [md2img](https://github.com/363797271/md2img). Provided me the idea and a complete feasible solution.
