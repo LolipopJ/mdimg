@@ -1,6 +1,6 @@
 {
   "name": "mdimg",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Covert Markdown or HTML to image",
   "keywords": [
     "markdown",
@@ -20,8 +20,9 @@
   "scripts": {
     "mdimg": "node ./bin/mdimg.js",
     "test": "babel-node ./test/index.js",
-    "build": "npm run rollup",
-    "rollup": "rollup -c rollup.config.js",
+    "build": "npm run rollup:js && npm run rollup:sass",
+    "rollup:js": "rollup -c rollup.config.js",
+    "rollup:sass": "rollup -c rollup.sass.config.js",
     "lint": "eslint --ext .js .",
     "prettier": "prettier --write **/* --ignore-path .eslintignore --ignore-unknown"
   },
@@ -43,7 +44,7 @@
     "puppeteer": "^13.3.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.4",
+    "@babel/core": "^7.17.5",
     "@babel/eslint-parser": "^7.17.0",
     "@babel/node": "^7.16.8",
     "@babel/plugin-transform-runtime": "^7.17.0",
@@ -58,6 +59,6 @@
     "rollup": "^2.67.2",
     "rollup-plugin-license": "^2.6.1",
     "rollup-plugin-scss": "3",
-    "sass": "^1.49.7"
+    "sass": "^1.49.8"
   }
 }

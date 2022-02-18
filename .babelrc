@@ -1,4 +1,4 @@
 {
-  "presets": [["@babel/preset-env", { "bugfixes": true, "loose": true }]],
+  "presets": [["@babel/preset-env", { "bugfixes": true }]],
   "plugins": ["@babel/plugin-transform-runtime"]
 }

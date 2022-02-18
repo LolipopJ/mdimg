@@ -2,7 +2,7 @@ import scss from 'rollup-plugin-scss'
 const fs = require('fs')
 const path = require('path')
 
-export function getScssTasks() {
+function getSassTasks() {
   const cssPath = 'src/template/css'
   const scssPath = 'src/template/scss'
   const templates = fs
@@ -28,3 +28,5 @@ export function getScssTasks() {
 
   return tasks
 }
+
+module.exports = [...getSassTasks()]

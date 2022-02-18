@@ -3,8 +3,6 @@ import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import license from 'rollup-plugin-license'
 
-import { getScssTasks } from './rollup.scss'
-
 const licenseBanner = `
 mdimg - convert markdown to image
 Copyright (c) 2022-${new Date().getFullYear()}, LolipopJ. (MIT Licensed)
@@ -48,5 +46,4 @@ module.exports = [
       commonjs(),
     ],
   },
-  ...getScssTasks(),
 ]
