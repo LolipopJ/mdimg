@@ -16,7 +16,7 @@ program
   .addOption(
     new Option(
       '-t, --text <input text>',
-      'Input Markdown or HTML text directly. This option has no effect if input file is specified'
+      'Input Markdown or HTML text directly. This option has no effect if option input is specified'
     )
   )
   .addOption(
@@ -28,7 +28,7 @@ program
   .addOption(
     new Option(
       '-o, --output <output file>',
-      "Output binary image filename. File type must be one of 'jpeg', 'png' or 'webp', defaults to 'png'. Available when encoding option is 'binary'"
+      "Output binary image filename. File type must be one of 'jpeg', 'png' or 'webp', defaults to 'png'. Available when option encoding is 'binary'"
     )
   )
   .addOption(
@@ -42,8 +42,20 @@ program
   .addOption(
     new Option(
       '--template <template>',
-      'Specify a template. You can find them in src/template folder'
+      'Specify a template. You can find them in src/template folder. HTML and CSS templates will try to use the same name'
     ).default('default')
+  )
+  .addOption(
+    new Option(
+      '--template-html <template>',
+      'Specify a HTML template. You can find them in src/template/html folder. Option template will be overrided'
+    )
+  )
+  .addOption(
+    new Option(
+      '--template-css <template>',
+      'Specify a CSS template. You can find them in src/template/css folder. Option template will be overrided'
+    )
   )
 
 program.addHelpText(
@@ -51,14 +63,23 @@ program.addHelpText(
   `
 
 Example call:
-  $ mdimg -i input.md -o output/image.png
-  $ mdimg -t '# Hello World!' -o output/hello_world.jpeg -w 600
+  $ mdimg -t '# Hello World!' -o output/hello_world.jpeg
+  $ mdimg -i README.md -o output/image.png -w 1000 --template-css github
 `
 )
 
 program.parse()
 
-const { text, input, output, encoding, width, template } = program.opts()
+const {
+  text,
+  input,
+  output,
+  encoding,
+  width,
+  template,
+  templateHtml,
+  templateCss,
+} = program.opts()
 
 if (!text && !input) {
   program.help()
@@ -68,8 +89,8 @@ if (!text && !input) {
 convert2img({
   mdText: text,
   mdFile: input,
-  htmlTemplate: template,
-  cssTemplate: template,
+  htmlTemplate: templateHtml || template,
+  cssTemplate: templateCss || template,
   width: Number(width),
   encoding: encoding,
   outputFilename: output,

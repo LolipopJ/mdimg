@@ -27,10 +27,12 @@ npm install mdimg
 Example:
 
 ```bash
-mdimg -i input.md -o output.png -w 600
+mdimg -i input.md -o output.png -w 600 --template-css github
 ```
 
 mdimg will read text from `input.md` and convert it to an image file `output.png`.
+
+When using the command, you must specify either `-i` (read file, recommended) or `-t` (directly input).
 
 ### In Node.js project
 
@@ -54,6 +56,8 @@ const convertRes = await convert2img({
 
 console.log(`Convert to image successfully!\nFile: ${convertRes.data}`)
 ```
+
+When using `convert2img()`, you must specify either `mdFile` (read file) or `mdText` (directly input).
 
 Options:
 

@@ -33,7 +33,7 @@ async function convert2img({
     const _inputFilePath = resolve(mdFile)
     if (!existsSync(_inputFilePath)) {
       // Input is not exist
-      throw new Error('Input file is not exists.')
+      throw new Error(`Input file ${_inputFilePath} is not exists.`)
     } else {
       if (!statSync(_inputFilePath).isFile()) {
         // Input is not a file

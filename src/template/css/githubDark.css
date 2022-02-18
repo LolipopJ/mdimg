@@ -1,7 +1,12 @@
 @import 'https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css';
+@import 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css';
 #mdimg-body {
   padding: 80px;
   white-space: normal;
   word-wrap: break-word;
   word-break: break-all;
+}
+
+#mdimg-body {
+  background-color: #0d1117;
 }
