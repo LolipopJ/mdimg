@@ -42,19 +42,19 @@ program
   .addOption(
     new Option(
       '--template <template>',
-      'Specify a template. You can find them in src/template folder. HTML and CSS templates will try to use the same name'
+      'Specify a template. You can find them in template folder. HTML and CSS templates will try to use the same name'
     ).default('default')
   )
   .addOption(
     new Option(
-      '--template-html <template>',
-      'Specify a HTML template. You can find them in src/template/html folder. Option template will be overrided'
+      '--html <template>',
+      'Specify a HTML template. You can find them in template/html folder. Option template will be overrided'
     )
   )
   .addOption(
     new Option(
-      '--template-css <template>',
-      'Specify a CSS template. You can find them in src/template/css folder. Option template will be overrided'
+      '--css <template>',
+      'Specify a CSS template. You can find them in template/css folder. Option template will be overrided'
     )
   )
 
@@ -64,22 +64,14 @@ program.addHelpText(
 
 Example call:
   $ mdimg -t '# Hello World!' -o output/hello_world.jpeg
-  $ mdimg -i README.md -o output/image.png -w 1000 --template-css github
+  $ mdimg -i README.md -o output/image.png -w 1000 --css github
 `
 )
 
 program.parse()
 
-const {
-  text,
-  input,
-  output,
-  encoding,
-  width,
-  template,
-  templateHtml,
-  templateCss,
-} = program.opts()
+const { text, input, output, encoding, width, template, html, css } =
+  program.opts()
 
 if (!text && !input) {
   program.help()
@@ -89,8 +81,8 @@ if (!text && !input) {
 convert2img({
   mdText: text,
   mdFile: input,
-  htmlTemplate: templateHtml || template,
-  cssTemplate: templateCss || template,
+  htmlTemplate: html || template,
+  cssTemplate: css || template,
   width: Number(width),
   encoding: encoding,
   outputFilename: output,

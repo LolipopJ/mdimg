@@ -3,8 +3,8 @@ const fs = require('fs')
 const path = require('path')
 
 function getSassTasks() {
-  const cssPath = 'src/template/css'
-  const scssPath = 'src/template/scss'
+  const cssPath = 'template/css'
+  const scssPath = 'template/scss'
   const templates = fs
     .readdirSync(path.join(__dirname, scssPath))
     .filter((filename) => {

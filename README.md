@@ -27,7 +27,7 @@ npm install mdimg
 Example:
 
 ```bash
-mdimg -i input.md -o output.png -w 600 --template-css github
+mdimg -i input.md -o output.png -w 600 --css github
 ```
 
 mdimg will read text from `input.md` and convert it to an image file `output.png`.
@@ -65,8 +65,8 @@ Options:
 | -------------- | --------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | mdText         | `String`  | `null`                          | Input Markdown or HTML text directly. This option **has no effect** if `mdFile` is specified                                                                                                       |
 | mdFile         | `String`  | `null`                          | Read Markdown or HTML text from a file                                                                                                                                                             |
-| htmlTemplate   | `String`  | `default`                       | HTML rendering template. Available templates can be found in `src/template/html`                                                                                                                   |
-| cssTemplate    | `String`  | `default`                       | CSS rendering template. Available templates can be found in `src/template/css`                                                                                                                     |
+| htmlTemplate   | `String`  | `default`                       | HTML rendering template. Available templates can be found in `template/html`                                                                                                                       |
+| cssTemplate    | `String`  | `default`                       | CSS rendering template. Available templates can be found in `template/css`                                                                                                                         |
 | width          | `Number`  | `800`                           | The width of output image                                                                                                                                                                          |
 | encoding       | `String`  | `binary`                        | The encoding of output image. Available value can be `binary` or `base64`. If `binary`, return data will be the image's path. If `base64`, return data will be the image's base64 encoding string. |
 | outputFilename | `String`  | `mdimg_output/mdimg_${now}.png` | Output binary image filename. File type can be `jpeg`, `png` or `webp`, defaults to `png`. Available when `encoding` option is `binary`                                                            |

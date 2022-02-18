@@ -3,8 +3,8 @@ const { readFileSync, accessSync, constants } = require('fs')
 const cheerio = require('cheerio')
 
 function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
-  let _htmlPath = resolve('src/template/html', `${htmlTemplate}.html`)
-  let _cssPath = resolve('src/template/css', `${cssTemplate}.css`)
+  let _htmlPath = resolve(__dirname, '../template/html', `${htmlTemplate}.html`)
+  let _cssPath = resolve(__dirname, '../template/css', `${cssTemplate}.css`)
 
   try {
     accessSync(_htmlPath, constants.R_OK)
@@ -12,7 +12,7 @@ function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
     console.warn(
       `HTML template file ${_htmlPath} is not found. Use default HTML template.`
     )
-    _htmlPath = resolve('src/template/html/default.html')
+    _htmlPath = resolve(__dirname, '../template/html/default.html')
   }
   try {
     accessSync(_cssPath, constants.R_OK)
@@ -20,7 +20,7 @@ function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
     console.warn(
       `CSS template file ${_htmlPath} is not found. Use default CSS template.`
     )
-    _cssPath = resolve('src/template/css/default.css')
+    _cssPath = resolve(__dirname, '../template/css/default.css')
   }
 
   const _htmlSource = readFileSync(_htmlPath)
