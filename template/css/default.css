@@ -1,7 +1,4 @@
 @import 'https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css';
-#mdimg-body {
-  padding: 80px;
-  white-space: normal;
-  word-wrap: break-word;
-  word-break: break-all;
+.markdown-body {
+  padding: 6rem 4rem;
 }

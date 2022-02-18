@@ -1,0 +1,38 @@
+@import 'https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css';
+.markdown-body {
+  padding: 6rem 4rem;
+}
+
+.html {
+  font-size: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+#mdimg-body {
+  border-left: 3rem solid #1d9bf0;
+}
+
+.top {
+  color: #1d9bf0;
+  font-size: 5rem;
+  font-weight: bold;
+  padding-left: 4rem;
+  padding-top: 3rem;
+}
+
+.markdown-body {
+  padding: 2rem 4rem;
+  margin: 0 4rem;
+  background-color: #fafafa;
+  hyphens: auto;
+}
+.markdown-body p {
+  color: #121212;
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 3.5rem;
+}
+
+.bottom {
+  padding-bottom: 3rem;
+}
