@@ -1,11 +1,13 @@
 {
   "name": "mdimg",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Covert Markdown or HTML to image",
   "keywords": [
     "markdown",
     "html",
-    "image"
+    "image",
+    "md2img",
+    "html2img"
   ],
   "main": "lib/mdimg.js",
   "module": "lib/mdimg.mjs",

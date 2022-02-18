@@ -107,7 +107,7 @@ The simplest example:
 </div>
 ```
 
-The mdimg will put the parsed HTML content in the element with class `markdown-body`, and finally generate the image for the whole element whose id is `mdimg-body`.
+The mdimg will put the parsed HTML content in the element with class `markdown-body` (elements inside will be replaced), and finally generate the image for the whole element whose id is `mdimg-body`.
 
 #### CSS template
 
