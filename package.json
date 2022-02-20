@@ -1,6 +1,6 @@
 {
   "name": "mdimg",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Covert Markdown or HTML to image",
   "keywords": [
     "markdown",
@@ -17,7 +17,9 @@
   "files": [
     "bin/",
     "lib/",
-    "src/"
+    "src/",
+    "template/css",
+    "template/html"
   ],
   "scripts": {
     "mdimg": "node ./bin/mdimg.js",
