@@ -6,6 +6,7 @@ const {
   mkdirSync,
   writeFileSync,
 } = require('fs')
+const S = require('string')
 const puppeteer = require('puppeteer')
 
 const { parseMarkdown } = require('./mdParser')
@@ -84,7 +85,11 @@ async function convert2img({
   }
 
   // Parse markdown text to HTML
-  const _html = spliceHtml(parseMarkdown(_input), htmlTemplate, cssTemplate)
+  const _html = spliceHtml(
+    parseMarkdown(_input),
+    _resolveTemplateName(htmlTemplate),
+    _resolveTemplateName(cssTemplate)
+  )
   _result.html = _html
 
   // Launch headless browser to load HTML
@@ -142,6 +147,12 @@ async function convert2img({
       `Missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.`
     )
   }
+}
+
+function _resolveTemplateName(templateName) {
+  const _templateName = templateName.split('.')[0]
+  // Convert to lower camel case
+  return S(_templateName).camelize().s
 }
 
 function _createEmptyFile(filename) {
