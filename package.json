@@ -18,8 +18,8 @@
     "bin/",
     "lib/",
     "src/",
-    "template/css",
-    "template/html"
+    "template/css/",
+    "template/html/"
   ],
   "scripts": {
     "mdimg": "node ./bin/mdimg.js",

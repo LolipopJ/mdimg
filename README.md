@@ -4,7 +4,17 @@ A tool that can be used to convert Markdown or HTML format text to an image.
 
 ## How does it work?
 
-First, the script calls [marked](https://github.com/markedjs/marked) to parse Markdown text into an HTML document. Next, use [Puppeteer](https://github.com/puppeteer/puppeteer) to start a headless browser to render the HTML with preset CSS file. Finally, export our image through Puppeteer's [screenshot](https://pptr.dev/#?product=Puppeteer&show=api-pagescreenshotoptions) API.
+First, the script calls [marked](https://github.com/markedjs/marked) to parse Markdown into a HTML document. Next, use [Puppeteer](https://github.com/puppeteer/puppeteer) to start a headless browser and render the document with preset HTML and CSS files. Finally, export our image through Puppeteer's [screenshot](https://pptr.dev/#?product=Puppeteer&show=api-pagescreenshotoptions) API.
+
+## Preview
+
+Template|Preview|Notes
+---|---|---
+**Default**|![default preview](./docs/default.png)|
+**Empty**|![empty preview](./docs/empty.png)|Not using any CSS presets
+**Github**|![github preview](./docs/github.png)|
+**Github Dark**|![github dark preview](./docs/githubDark.png)|
+**Words**|![words preview](./docs/words.png)|It is recommended to use with **plain text only**
 
 ## Installation
 
@@ -32,7 +42,7 @@ mdimg -i input.md -o output.png -w 600 --css github
 
 mdimg will read text from `input.md` and convert it to an image file `output.png`.
 
-When using the command, you must specify either `-i` (read file, recommended) or `-t` (directly input).
+When using the command, you must specify either `-i` (input file, recommended) or `-t` (directly input text).
 
 ### In Node.js project
 
@@ -52,12 +62,13 @@ const convertRes = await convert2img({
   mdFile: 'path/to/input.md',
   outputFilename: 'path/to/output.png',
   width: 600,
+  cssTemplate: 'github',
 })
 
 console.log(`Convert to image successfully!\nFile: ${convertRes.data}`)
 ```
 
-When using `convert2img()`, you must specify either `mdFile` (read file) or `mdText` (directly input).
+When using `convert2img()` method, you must specify either `mdFile` (input file) or `mdText` (directly input text).
 
 Options:
 
@@ -139,7 +150,7 @@ npm run build
 ### Test
 
 ```bash
-# Build before testing
+# You should build before testing
 npm run test
 ```
 
