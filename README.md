@@ -8,13 +8,13 @@ First, the script calls [marked](https://github.com/markedjs/marked) to parse Ma
 
 ## Preview
 
-Template|Preview|Notes
----|---|---
-**Default**|![default preview](./docs/default.png)|
-**Empty**|![empty preview](./docs/empty.png)|Not using any CSS presets
-**Github**|![github preview](./docs/github.png)|
-**Github Dark**|![github dark preview](./docs/githubDark.png)|
-**Words**|![words preview](./docs/words.png)|It is recommended to use with **plain text only**
+Preview|HTML Template|CSS Template|Notes
+---|---|---|---
+<img alt="default preview" src="./docs/default.png" height="150">|Default|Default|
+<img alt="empty preview" src="./docs/empty.png" height="150">|Default|Empty|Not using any CSS presets
+<img alt="github preview" src="./docs/github.png" height="150">|Default|Github|
+<img alt="github dark preview" src="./docs/githubDark.png" height="150">|Default|Github Dark|
+<img alt="words preview" src="./docs/words.png" height="150">|Words|Words|It is recommended to use with **plain text only**
 
 ## Installation
 
