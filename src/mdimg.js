@@ -30,6 +30,7 @@ async function convert2img({
   let _input = mdText
   let _output
 
+  // Resolve input file or text
   if (mdFile) {
     const _inputFilePath = resolve(mdFile)
     if (!existsSync(_inputFilePath)) {
@@ -49,6 +50,7 @@ async function convert2img({
     throw new Error('You must provide a text or a file to be converted.')
   }
 
+  // Resolve encoding
   if (!_encodingType.includes(encoding)) {
     // Params encoding is not valid
     throw new Error(
@@ -56,6 +58,7 @@ async function convert2img({
     )
   }
 
+  // Resolve output filename
   if (encoding === 'binary') {
     if (!outputFilename) {
       // Set default output filename
@@ -74,9 +77,10 @@ async function convert2img({
         )
       ) {
         // Output file type is wrongly specified
-        throw new Error(
-          "Output file type must be one of 'jpeg', 'png' or 'webp'"
+        console.warn(
+          "Output file type must be one of 'jpeg', 'png' or 'webp'. Use default 'png' type."
         )
+        _output = resolve(_outputFilePath, _outputFilenameArr[0] + '.png')
       } else {
         // Set absolute file path
         _output = resolve(outputFilename)
@@ -125,6 +129,7 @@ async function convert2img({
       _result.data = _output
       return _result
     } else if (encoding === 'base64') {
+      // Generate base64 encoded image
       const _outputBase64String = await _body.screenshot({
         encoding,
       })
@@ -140,9 +145,9 @@ async function convert2img({
       return _result
     }
   } else {
+    // HTML template is not valid
     await _browser.close()
 
-    // HTML template is not valid
     throw new Error(
       `Missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.`
     )
