@@ -12,7 +12,6 @@ const program = new Command()
 
 program
   .name(pkg.name)
-  .version(pkg.version)
   .usage('-i <input file> [-o <output file>] [-w <width>]')
   .addOption(
     new Option(
@@ -75,6 +74,7 @@ program
       'Specify a CSS template. You can find them in template/css folder. Option --template will be overrided'
     )
   )
+  .version(pkg.version)
 
 program.addHelpText(
   'after',
