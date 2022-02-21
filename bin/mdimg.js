@@ -5,7 +5,8 @@ const { convert2img } = require('../lib/mdimg.js')
 
 const pkg = require('../package.json')
 
-const encodingType = ['base64', 'binary']
+const _encodingTypes = ['base64', 'binary']
+const _outputFileTypes = ['jpeg', 'png', 'webp']
 
 const program = new Command()
 
@@ -16,7 +17,7 @@ program
   .addOption(
     new Option(
       '-t, --text <input text>',
-      'Input Markdown or HTML text directly. This option has no effect if option input is specified'
+      'Input Markdown or HTML text directly. Not applicable when option --input is specified'
     )
   )
   .addOption(
@@ -28,16 +29,33 @@ program
   .addOption(
     new Option(
       '-o, --output <output file>',
-      "Output binary image filename. File type must be one of 'jpeg', 'png' or 'webp', defaults to 'png'. Available when option encoding is 'binary'"
+      "Output binary image filename. File type can be one of 'jpeg', 'png' or 'webp' Available when option --encoding is 'binary'"
     )
   )
   .addOption(
-    new Option('-e, --encoding <type>', 'The encoding of output image')
-      .default('binary')
-      .choices(encodingType)
+    new Option(
+      '--type <image type>',
+      "The file type of the image. Type can be one of 'jpeg', 'png' or 'webp', defaults to 'png'. Type will be inferred from option --output if available"
+    )
+      .default('png')
+      .choices(_outputFileTypes)
   )
   .addOption(
     new Option('-w, --width <width>', 'The width of output image').default(800)
+  )
+  .addOption(
+    new Option(
+      '-e, --encoding <encoding type>',
+      "The encoding of output image. If 'base64' is specified, mdimg will print the BASE64 encoded string to the console"
+    )
+      .default('binary')
+      .choices(_encodingTypes)
+  )
+  .addOption(
+    new Option(
+      '-q, --quality <image quality>',
+      "The quality of the image, between 0-100. Not applicable to 'png' image."
+    ).default(100)
   )
   .addOption(
     new Option(
@@ -48,13 +66,13 @@ program
   .addOption(
     new Option(
       '--html <template>',
-      'Specify a HTML template. You can find them in template/html folder. Option template will be overrided'
+      'Specify a HTML template. You can find them in template/html folder. Option --template will be overrided'
     )
   )
   .addOption(
     new Option(
       '--css <template>',
-      'Specify a CSS template. You can find them in template/css folder. Option template will be overrided'
+      'Specify a CSS template. You can find them in template/css folder. Option --template will be overrided'
     )
   )
 
@@ -70,8 +88,18 @@ Example call:
 
 program.parse()
 
-const { text, input, output, encoding, width, template, html, css } =
-  program.opts()
+const {
+  text,
+  input,
+  output,
+  type,
+  quality,
+  encoding,
+  width,
+  template,
+  html,
+  css,
+} = program.opts()
 
 if (!text && !input) {
   program.help()
@@ -81,10 +109,12 @@ if (!text && !input) {
 convert2img({
   mdText: text,
   mdFile: input,
-  htmlTemplate: html || template,
-  cssTemplate: css || template,
+  outputFilename: output,
+  type: type,
   width: Number(width),
   encoding: encoding,
-  outputFilename: output,
+  quality: Number(quality),
+  htmlTemplate: html || template,
+  cssTemplate: css || template,
   log: true,
 })

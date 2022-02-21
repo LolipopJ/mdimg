@@ -44,6 +44,8 @@ mdimg will read text from `input.md` and convert it to an image file `output.png
 
 When using the command, you must specify either `-i` (input file, recommended) or `-t` (directly input text).
 
+You can always call `mdimg -h` to get complete help.
+
 ### In Node.js project
 
 Import mdimg to your project:
@@ -72,27 +74,28 @@ When using `convert2img()` method, you must specify either `mdFile` (input file)
 
 Options:
 
-| Argument       | Type      | Default                         | Notes                                                                                                                                                                                              |
-| -------------- | --------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| mdText         | `String`  | `null`                          | Input Markdown or HTML text directly. This option **has no effect** if `mdFile` is specified                                                                                                       |
-| mdFile         | `String`  | `null`                          | Read Markdown or HTML text from a file                                                                                                                                                             |
-| htmlTemplate   | `String`  | `default`                       | HTML rendering template. Available templates can be found in `template/html`                                                                                                                       |
-| cssTemplate    | `String`  | `default`                       | CSS rendering template. Available templates can be found in `template/css`                                                                                                                         |
-| width          | `Number`  | `800`                           | The width of output image                                                                                                                                                                          |
-| encoding       | `String`  | `binary`                        | The encoding of output image. Available value can be `binary` or `base64`. If `binary`, return data will be the image's path. If `base64`, return data will be the image's base64 encoding string. |
-| outputFilename | `String`  | `mdimg_output/mdimg_${now}.png` | Output binary image filename. File type can be `jpeg`, `png` or `webp`, defaults to `png`. Available when `encoding` option is `binary`                                                            |
-| log            | `Boolean` | `false`                         | Show preset console log                                                                                                                                                                            |
+| Argument       | Type      | Default                                      | Notes                                                                                                                                                                                                |
+| -------------- | --------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| mdText         | `String`  | `undefined`                                  | Input Markdown or HTML text directly. This option **has no effect** if `mdFile` is specified                                                                                                         |
+| mdFile         | `String`  | `undefined`                                  | Read Markdown or HTML text from a file                                                                                                                                                               |
+| outputFilename | `String`  | `./mdimg_output/mdimg_${new Date()}.${type}` | Output binary image filename. File type can be `jpeg`, `png` or `webp`. Available when `encoding` option is `binary`                                                                                 |
+| type           | `String`  | `png`                                        | The file type of the image. Type can be one of `jpeg`, `png` or `webp`, defaults to `png`. Type will be inferred from `outputFilename` if available                                                  |
+| width          | `Number`  | `800`                                        | The width of output image                                                                                                                                                                            |
+| encoding       | `String`  | `binary`                                     | The encoding of output image. Available value can be `binary` or `base64`. If `binary`, return data will be the image's buffer. If `base64`, return data will be the image's base64 encoding string. |
+| quality        | `Number`  | `100`                                        | The quality of the image, between 0-100. **Not applicable** to `png` image.                                                                                                                          |
+| htmlTemplate   | `String`  | `default`                                    | HTML rendering template. Available templates can be found in `template/html`                                                                                                                         |
+| cssTemplate    | `String`  | `default`                                    | CSS rendering template. Available templates can be found in `template/css`                                                                                                                           |
+| log            | `Boolean` | `false`                                      | Show preset console log                                                                                                                                                                              |
 
-## Development
+Returns: \<Promise\<object\>\>
 
-```bash
-git clone https://github.com/LolipopJ/mdimg.git
-cd mdimg
-yarn
-# npm install
-```
+| Key  | Value Type           | Notes                                                                                                     |
+| ---- | -------------------- | --------------------------------------------------------------------------------------------------------- |
+| data | `string` \| `Buffer` | Buffer (`encoding` is `binary`) or a BASE64 encoded string (`encoding` is `base64`) with the output image |
+| path | `string`             | The path of output iamge. Available when `encoding` is `binary`                                           |
+| html | `string`             | The rendered HTML document                                                                                |
 
-### Custom template
+## Custom template
 
 Templates are stored in the `template` directory.
 
@@ -104,7 +107,7 @@ mdimg -i input.md --html custom --css custom
 
 The mdimg will read `custom.html` from `template/html` directory as HTML template and `custom.css` from `template/css` directory as CSS template to render the image result.
 
-#### HTML template
+### HTML template
 
 Create a new `.html` file in `template/html` directory.
 
@@ -120,9 +123,11 @@ The simplest example:
 
 The mdimg will put the parsed HTML content in the element with class `markdown-body` (elements inside will be replaced), and finally generate the image for the whole element whose id is `mdimg-body`.
 
-#### CSS template
+### CSS template
 
-It is recommended that write `.scss` or `.sass` files in the `template/scss` directory, and use the following command to generate CSS templates:
+Create a new `.css` file in `template/css` directory and then make your style!
+
+For further development, it is recommended that write `.scss` or `.sass` files in the `template/scss` directory, and use the following command to generate CSS templates:
 
 ```bash
 # Build .scss and .sass files
@@ -130,6 +135,15 @@ npm run rollup:sass
 ```
 
 CSS templates with the corresponding name will be generated in `template/css` directory.
+
+## Development
+
+```bash
+git clone https://github.com/LolipopJ/mdimg.git
+cd mdimg
+yarn
+# npm install
+```
 
 ### Lint
 
