@@ -6,7 +6,6 @@ const {
   mkdirSync,
   writeFileSync,
 } = require('fs')
-const S = require('string')
 const puppeteer = require('puppeteer')
 
 const { parseMarkdown } = require('./mdParser')
@@ -190,8 +189,7 @@ async function convert2img({
 
 function _resolveTemplateName(templateName) {
   const _templateName = templateName.split('.')[0]
-  // Convert to lower camel case
-  return S(_templateName).camelize().s
+  return _templateName
 }
 
 function _createEmptyFile(filename) {
