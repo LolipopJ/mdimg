@@ -9,7 +9,17 @@ Copyright (c) 2022-${new Date().getFullYear()}, LolipopJ. (MIT Licensed)
 https://github.com/LolipopJ/mdimg
 `
 
-const externalModules = ['cheerio', 'marked', 'puppeteer', /@babel\/runtime/]
+const externalModules = ['cheerio', 'marked', 'puppeteer']
+const pluginsArray = [
+  license({
+    banner: licenseBanner,
+  }),
+  nodeResolve({ preferBuiltins: true }),
+  commonjs(),
+  babel({
+    babelHelpers: 'bundled',
+  }),
+]
 
 module.exports = [
   {
@@ -20,16 +30,7 @@ module.exports = [
       exports: 'auto',
     },
     external: externalModules,
-    plugins: [
-      license({
-        banner: licenseBanner,
-      }),
-      nodeResolve({ preferBuiltins: true }),
-      commonjs(),
-      babel({
-        babelHelpers: 'runtime',
-      }),
-    ],
+    plugins: pluginsArray,
   },
   {
     input: 'src/mdimg.js',
@@ -38,12 +39,6 @@ module.exports = [
       format: 'esm',
     },
     external: externalModules,
-    plugins: [
-      license({
-        banner: licenseBanner,
-      }),
-      nodeResolve({ preferBuiltins: true }),
-      commonjs(),
-    ],
+    plugins: pluginsArray,
   },
 ]

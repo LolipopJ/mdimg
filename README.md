@@ -16,6 +16,10 @@ First, the script calls [marked](https://github.com/markedjs/marked) to parse Ma
 | <img alt="github dark preview" src="./docs/githubDark.png" height="150"> | Default       | Github Dark  |
 | <img alt="words preview" src="./docs/words.png" height="150">            | Words         | Words        | It is recommended to use with **plain text only** |
 
+## Requirements
+
+This tool requires an LTS Node version (v12.0.0+).
+
 ## Installation
 
 CLI:

@@ -41,7 +41,6 @@
   },
   "homepage": "https://github.com/LolipopJ/mdimg#readme",
   "dependencies": {
-    "@babel/runtime": "^7.17.2",
     "cheerio": "^1.0.0-rc.10",
     "commander": "^9.0.0",
     "marked": "^4.0.12",
@@ -51,7 +50,6 @@
     "@babel/core": "^7.17.5",
     "@babel/eslint-parser": "^7.17.0",
     "@babel/node": "^7.16.8",
-    "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-commonjs": "^21.0.1",
