@@ -1,6 +1,6 @@
 # mdimg
 
-A tool that can be used to convert Markdown or HTML format text to an image.
+A tool that can be used to convert **Markdown** or **HTML** format text to an image.
 
 ## How does it work?
 
@@ -48,6 +48,8 @@ mdimg will read text from `input.md` and convert it to an image file `output.png
 
 When using the command, you must specify either `-i` (input file, recommended) or `-t` (directly input text).
 
+When using `-t` to input Markdown text directly, escape characters will **not be available**. To fix this, for example, you should replace `\n` with `<br>`.
+
 You can always call `mdimg -h` to get complete help.
 
 ### In Node.js project
@@ -78,18 +80,18 @@ When using `convert2img()` method, you must specify either `mdFile` (input file)
 
 Options:
 
-| Argument       | Type      | Default                                      | Notes                                                                                                                                                                                                |
-| -------------- | --------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| mdText         | `String`  | `undefined`                                  | Input Markdown or HTML text directly. This option **has no effect** if `mdFile` is specified                                                                                                         |
-| mdFile         | `String`  | `undefined`                                  | Read Markdown or HTML text from a file                                                                                                                                                               |
-| outputFilename | `String`  | `./mdimg_output/mdimg_${new Date()}.${type}` | Output binary image filename. File type can be `jpeg`, `png` or `webp`. Available when `encoding` option is `binary`                                                                                 |
-| type           | `String`  | `png`                                        | The file type of the image. Type can be one of `jpeg`, `png` or `webp`, defaults to `png`. Type will be inferred from `outputFilename` if available                                                  |
-| width          | `Number`  | `800`                                        | The width of output image                                                                                                                                                                            |
-| encoding       | `String`  | `binary`                                     | The encoding of output image. Available value can be `binary` or `base64`. If `binary`, return data will be the image's buffer. If `base64`, return data will be the image's base64 encoding string. |
-| quality        | `Number`  | `100`                                        | The quality of the image, between 0-100. **Not applicable** to `png` image.                                                                                                                          |
-| htmlTemplate   | `String`  | `default`                                    | HTML rendering template. Available templates can be found in `template/html`                                                                                                                         |
-| cssTemplate    | `String`  | `default`                                    | CSS rendering template. Available templates can be found in `template/css`                                                                                                                           |
-| log            | `Boolean` | `false`                                      | Show preset console log                                                                                                                                                                              |
+| Argument       | Type      | Default                                      | Notes                                                                                                                                               |
+| -------------- | --------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| mdText         | `String`  | `undefined`                                  | Input Markdown or HTML text directly. This option **has no effect** if `mdFile` is specified                                                        |
+| mdFile         | `String`  | `undefined`                                  | Read Markdown or HTML text from a file                                                                                                              |
+| outputFilename | `String`  | `./mdimg_output/mdimg_${new Date()}.${type}` | Output binary image filename. File type can be `jpeg`, `png` or `webp`. Available when `encoding` option is `binary`                                |
+| type           | `String`  | `png`                                        | The file type of the image. Type can be one of `jpeg`, `png` or `webp`, defaults to `png`. Type will be inferred from `outputFilename` if available |
+| width          | `Number`  | `800`                                        | The width of output image                                                                                                                           |
+| encoding       | `String`  | `binary`                                     | The encoding of output image. Available value can be `binary` or `base64`.                                                                          |
+| quality        | `Number`  | `100`                                        | The quality of the image, between 0-100. **Not applicable** to `png` image.                                                                         |
+| htmlTemplate   | `String`  | `default`                                    | HTML rendering template. Available templates can be found in `template/html`                                                                        |
+| cssTemplate    | `String`  | `default`                                    | CSS rendering template. Available templates can be found in `template/css`                                                                          |
+| log            | `Boolean` | `false`                                      | Show preset console log                                                                                                                             |
 
 Returns: \<Promise\<object\>\>
 
@@ -103,13 +105,13 @@ Returns: \<Promise\<object\>\>
 
 Templates are stored in the `template` directory.
 
-When you use the following command:
+Now, if you run the following command:
 
 ```bash
 mdimg -i input.md --html custom --css custom
 ```
 
-The mdimg will read `custom.html` from `template/html` directory as HTML template and `custom.css` from `template/css` directory as CSS template to render the image result.
+The mdimg will read `custom.html` from `template/html` directory as HTML template and `custom.css` from `template/css` directory as CSS template to render the image of `input.md`.
 
 ### HTML template
 
