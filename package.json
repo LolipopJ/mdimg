@@ -9,6 +9,9 @@
     "md2img",
     "html2img"
   ],
+  "engines": {
+    "node": ">= 12.0.0"
+  },
   "main": "lib/mdimg.js",
   "module": "lib/mdimg.mjs",
   "bin": {
@@ -23,7 +26,7 @@
   ],
   "scripts": {
     "mdimg": "node ./bin/mdimg.js",
-    "test": "babel-node ./test/index.js",
+    "test": "jest --roots test --testTimeout 15000",
     "build": "npm run rollup:js && npm run rollup:sass",
     "rollup:js": "rollup -c rollup.config.js",
     "rollup:sass": "rollup -c rollup.sass.config.js",
@@ -54,9 +57,11 @@
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.1.3",
+    "babel-jest": "^27.5.1",
     "eslint": "^8.9.0",
     "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^27.5.1",
     "prettier": "^2.5.1",
     "rollup": "^2.68.0",
     "rollup-plugin-license": "^2.6.1",

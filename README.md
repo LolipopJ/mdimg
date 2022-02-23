@@ -169,6 +169,7 @@ npm run build
 
 ```bash
 # You should build before testing
+# npm run build
 npm run test
 ```
 
