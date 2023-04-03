@@ -2,13 +2,7 @@
   "name": "mdimg",
   "version": "0.2.0",
   "description": "Covert Markdown or HTML to image",
-  "keywords": [
-    "markdown",
-    "html",
-    "image",
-    "md2img",
-    "html2img"
-  ],
+  "keywords": ["markdown", "html", "image", "md2img", "html2img"],
   "engines": {
     "node": ">= 12.0.0"
   },
@@ -17,13 +11,7 @@
   "bin": {
     "mdimg": "bin/mdimg.js"
   },
-  "files": [
-    "bin/",
-    "lib/",
-    "src/",
-    "template/css/",
-    "template/html/"
-  ],
+  "files": ["bin/", "lib/", "src/", "template/css/", "template/html/"],
   "scripts": {
     "mdimg": "node ./bin/mdimg.js",
     "test": "jest --roots test --testTimeout 15000",
@@ -67,5 +55,6 @@
     "rollup-plugin-license": "^2.6.1",
     "rollup-plugin-scss": "3",
     "sass": "^1.49.8"
-  }
+  },
+  "types": "types.d.ts"
 }
