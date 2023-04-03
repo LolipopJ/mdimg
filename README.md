@@ -57,43 +57,44 @@ You can always call `mdimg -h` to get complete help.
 Import mdimg to your project:
 
 ```js
-const { convert2img } = require('mdimg')
+const { convert2img } = require("mdimg");
 
 // or use import
-import { convert2img } from 'mdimg'
+import { convert2img } from "mdimg";
 ```
 
 Convert markdown text or file to image:
 
 ```js
 const convertRes = await convert2img({
-  mdFile: 'path/to/input.md',
-  outputFilename: 'path/to/output.png',
+  mdFile: "path/to/input.md",
+  outputFilename: "path/to/output.png",
   width: 600,
-  cssTemplate: 'github',
-})
+  cssTemplate: "github",
+});
 
-console.log(`Convert to image successfully!\nFile: ${convertRes.data}`)
+console.log(`Convert to image successfully!\nFile: ${convertRes.data}`);
 ```
 
 When using `convert2img()` method, you must specify either `mdFile` (input file) or `mdText` (directly input text).
 
 Options:
 
-| Argument       | Type      | Default                                      | Notes                                                                                                                                               |
-| -------------- | --------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| mdText         | `String`  | `undefined`                                  | Input Markdown or HTML text directly. This option **has no effect** if `mdFile` is specified                                                        |
-| mdFile         | `String`  | `undefined`                                  | Read Markdown or HTML text from a file                                                                                                              |
-| outputFilename | `String`  | `./mdimg_output/mdimg_${new Date()}.${type}` | Output binary image filename. File type can be `jpeg`, `png` or `webp`. Available when `encoding` option is `binary`                                |
-| type           | `String`  | `png`                                        | The file type of the image. Type can be one of `jpeg`, `png` or `webp`, defaults to `png`. Type will be inferred from `outputFilename` if available |
-| width          | `Number`  | `800`                                        | The width of output image                                                                                                                           |
-| encoding       | `String`  | `binary`                                     | The encoding of output image. Available value can be `binary` or `base64`.                                                                          |
-| quality        | `Number`  | `100`                                        | The quality of the image, between 0-100. **Not applicable** to `png` image.                                                                         |
-| htmlTemplate   | `String`  | `default`                                    | HTML rendering template. Available templates can be found in `template/html`                                                                        |
-| cssTemplate    | `String`  | `default`                                    | CSS rendering template. Available templates can be found in `template/css`                                                                          |
-| log            | `Boolean` | `false`                                      | Show preset console log                                                                                                                             |
+| Argument       | Type            | Default                                      | Notes                                                                                                                                               |
+| -------------- | --------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| mdText         | `String`        | `undefined`                                  | Input Markdown or HTML text directly. This option **has no effect** if `mdFile` is specified                                                        |
+| mdFile         | `String`        | `undefined`                                  | Read Markdown or HTML text from a file                                                                                                              |
+| outputFilename | `String`        | `./mdimg_output/mdimg_${new Date()}.${type}` | Output binary image filename. File type can be `jpeg`, `png` or `webp`. Available when `encoding` option is `binary`                                |
+| type           | `String`        | `png`                                        | The file type of the image. Type can be one of `jpeg`, `png` or `webp`, defaults to `png`. Type will be inferred from `outputFilename` if available |
+| width          | `Number`        | `800`                                        | The width of output image                                                                                                                           |
+| encoding       | `String`        | `binary`                                     | The encoding of output image. Available value can be `binary` or `base64`.                                                                          |
+| quality        | `Number`        | `100`                                        | The quality of the image, between 0-100. **Not applicable** to `png` image.                                                                         |
+| htmlTemplate   | `String`        | `default`                                    | HTML rendering template. Available templates can be found in `template/html`                                                                        |
+| cssTemplate    | `String`        | `default`                                    | CSS rendering template. Available templates can be found in `template/css`                                                                          |
+| log            | `Boolean`       | `false`                                      | Show preset console log                                                                                                                             |
+| puppeteerProps | `LaunchOptions` | `undefined`                                  | [Launch options](https://pptr.dev/api/puppeteer.puppeteerlaunchoptions) of Puppeteer                                                                |
 
-Returns: \<Promise\<object\>\>
+Returns: `Promise<object>`
 
 | Key  | Value Type           | Notes                                                                                                     |
 | ---- | -------------------- | --------------------------------------------------------------------------------------------------------- |
