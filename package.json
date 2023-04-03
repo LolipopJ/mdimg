@@ -1,6 +1,6 @@
 {
   "name": "mdimg",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Covert Markdown or HTML to image",
   "keywords": ["markdown", "html", "image", "md2img", "html2img"],
   "engines": {
