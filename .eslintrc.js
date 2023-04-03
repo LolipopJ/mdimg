@@ -1,7 +1,7 @@
 module.exports = {
-  parser: '@babel/eslint-parser',
+  parser: "@babel/eslint-parser",
   parserOptions: {
     requireConfigFile: false,
   },
-  extends: ['plugin:prettier/recommended', 'prettier'],
-}
+  extends: ["plugin:prettier/recommended", "prettier"],
+};

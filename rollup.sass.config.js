@@ -1,32 +1,32 @@
-import scss from 'rollup-plugin-scss'
-const fs = require('fs')
-const path = require('path')
+import scss from "rollup-plugin-scss";
+const fs = require("fs");
+const path = require("path");
 
 function getSassTasks() {
-  const cssPath = 'template/css'
-  const scssPath = 'template/scss'
+  const cssPath = "template/css";
+  const scssPath = "template/scss";
   const templates = fs
     .readdirSync(path.join(__dirname, scssPath))
     .filter((filename) => {
-      return filename.endsWith('.scss') || filename.endsWith('.sass')
-    })
+      return filename.endsWith(".scss") || filename.endsWith(".sass");
+    });
 
-  const tasks = []
+  const tasks = [];
   for (const template of templates) {
-    const templateName = template.slice(0, -5)
+    const templateName = template.slice(0, -5);
     const task = {
       input: `${scssPath}/${template}`,
       plugins: [
         scss({
           output: `${cssPath}/${templateName}.css`,
-          sass: require('sass'),
+          sass: require("sass"),
         }),
       ],
-    }
-    tasks.push(task)
+    };
+    tasks.push(task);
   }
 
-  return tasks
+  return tasks;
 }
 
-module.exports = [...getSassTasks()]
+module.exports = [...getSassTasks()];

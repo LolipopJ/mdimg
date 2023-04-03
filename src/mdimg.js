@@ -1,5 +1,11 @@
 const { resolve, dirname, basename } = require("path");
-const { existsSync, statSync, readFileSync, mkdirSync, writeFileSync } = require("fs");
+const {
+  existsSync,
+  statSync,
+  readFileSync,
+  mkdirSync,
+  writeFileSync,
+} = require("fs");
 const puppeteer = require("puppeteer");
 
 const { parseMarkdown } = require("./mdParser");
@@ -51,14 +57,18 @@ async function convert2img({
   const _encoding = encoding;
   if (!_encodingTypes.includes(_encoding)) {
     // Params encoding is not valid
-    throw new Error(`Encoding ${_encoding} is not supported. Valid values: 'base64' and 'binary'.`);
+    throw new Error(
+      `Encoding ${_encoding} is not supported. Valid values: 'base64' and 'binary'.`
+    );
   }
 
   // Resolve type
   let _type = type;
   if (!_outputFileTypes.includes(_type)) {
     // Params encoding is not valid
-    throw new Error(`Output file type ${_type} is not supported. Valid values: 'jpeg', 'png' and 'webp'.`);
+    throw new Error(
+      `Output file type ${_type} is not supported. Valid values: 'jpeg', 'png' and 'webp'.`
+    );
   }
 
   // Resolve output filename
@@ -82,8 +92,13 @@ async function convert2img({
         const _outputFileType = _outputFilenameArr[_outputFilenameArrLeng - 1];
         if (!_outputFileTypes.includes(_outputFileType)) {
           // Output file type is wrongly specified
-          console.warn(`Output file type must be one of 'jpeg', 'png' or 'webp'. Use '${_type}' type.`);
-          _output = resolve(_outputFilePath, `${_outputFilenameArr[0]}.${_type}`);
+          console.warn(
+            `Output file type must be one of 'jpeg', 'png' or 'webp'. Use '${_type}' type.`
+          );
+          _output = resolve(
+            _outputFilePath,
+            `${_outputFilenameArr[0]}.${_type}`
+          );
         } else {
           // Output file path is correctly specified
           _output = resolve(outputFilename);
@@ -135,7 +150,11 @@ async function convert2img({
         encoding: _encoding,
       });
       if (log) {
-        console.log(`Convert to image successfully!${_quality ? " Iamge quality: " + _quality : ""}\nFile: ${_output}`);
+        console.log(
+          `Convert to image successfully!${
+            _quality ? " Iamge quality: " + _quality : ""
+          }\nFile: ${_output}`
+        );
       }
 
       _result.data = _outputBuffer;
@@ -164,7 +183,9 @@ async function convert2img({
     // HTML template is not valid
     await _browser.close();
 
-    throw new Error(`Missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.`);
+    throw new Error(
+      `Missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.`
+    );
   }
 }
 
