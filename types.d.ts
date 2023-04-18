@@ -9,8 +9,8 @@ export interface IOptions {
   height?: number;
   encoding?: "binary" | "base64";
   quality?: number;
-  htmlTemplate?: string;
-  cssTemplate?: string;
+  htmlTemplate?: "default" | "words";
+  cssTemplate?: "default" | "empty" | "github" | "githubDark" | "words";
   log?: boolean;
   puppeteerProps?: LaunchOptions;
 }
