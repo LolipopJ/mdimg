@@ -1,6 +1,6 @@
 import type { LaunchOptions } from "puppeteer";
 
-export interface IOptions {
+interface IConvertOptions {
   mdText?: string;
   mdFile?: string;
   outputFilename?: string;
@@ -15,10 +15,12 @@ export interface IOptions {
   puppeteerProps?: LaunchOptions;
 }
 
-export interface IResponse {
+interface IConvertResponse {
   data: string | Buffer;
   path?: string;
   html: string;
 }
 
-export type convert2img = (props: IOptions) => Promise<IResponse>;
+declare function convert2img(props: IConvertOptions): Promise<IConvertResponse>;
+
+export { convert2img, IConvertOptions, IConvertResponse };
