@@ -5,3 +5,4 @@ template/css/
 template/html/
 
 *.min.js
+.*/

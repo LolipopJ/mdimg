@@ -2,7 +2,7 @@
   "presets": [
     [
       "@babel/preset-env",
-      { "bugfixes": true, "modules": false, "targets": { "node": "12.0.0" } }
+      { "bugfixes": true, "modules": false, "targets": { "node": "18.0.0" } }
     ]
   ]
 }

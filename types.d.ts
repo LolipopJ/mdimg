@@ -1,18 +1,16 @@
-import type { LaunchOptions } from "puppeteer";
-
 interface IConvertOptions {
   mdText?: string;
   mdFile?: string;
   outputFilename?: string;
-  type?: "jpeg" | "png" | "webp";
+  type?: IConvertTypeOption;
   width?: number;
   height?: number;
-  encoding?: "binary" | "base64";
+  encoding?: IConvertEncodingOption;
   quality?: number;
-  htmlTemplate?: "default" | "words";
-  cssTemplate?: "default" | "empty" | "github" | "githubDark" | "words";
+  htmlTemplate?: string /** "default" | "words" */;
+  cssTemplate?: string /** "default" | "empty" | "github" | "githubDark" | "words" */;
   log?: boolean;
-  puppeteerProps?: LaunchOptions;
+  puppeteerProps?: import("puppeteer").LaunchOptions;
 }
 
 interface IConvertResponse {
@@ -21,6 +19,6 @@ interface IConvertResponse {
   html: string;
 }
 
-declare function convert2img(props: IConvertOptions): Promise<IConvertResponse>;
+type IConvertTypeOption = "jpeg" | "png" | "webp";
 
-export { convert2img, IConvertOptions, IConvertResponse };
+type IConvertEncodingOption = "binary" | "base64";

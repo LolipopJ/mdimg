@@ -1,5 +1,5 @@
 @import "https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css";
-@import "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css";
+@import "https://cdn.jsdelivr.net/npm/github-markdown-css@5.5.1/github-markdown-light.min.css";
 .markdown-body {
   padding: 6rem 4rem;
 }

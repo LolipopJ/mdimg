@@ -1,12 +1,16 @@
-const { resolve } = require("path");
-const { readFileSync, accessSync, constants } = require("fs");
-const cheerio = require("cheerio");
+import { resolve } from "path";
+import { readFileSync, accessSync, constants } from "fs";
+import cheerio from "cheerio";
 
-function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
+const spliceHtml = (
+  mdHtml: string,
+  htmlTemplate: string,
+  cssTemplate: string,
+) => {
   let _htmlPath = resolve(
     __dirname,
     "../template/html",
-    `${htmlTemplate}.html`
+    `${htmlTemplate}.html`,
   );
   let _cssPath = resolve(__dirname, "../template/css", `${cssTemplate}.css`);
 
@@ -14,7 +18,7 @@ function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
     accessSync(_htmlPath, constants.R_OK);
   } catch (err) {
     console.warn(
-      `HTML template ${_htmlPath} is not found or unreadable. Use default HTML template.`
+      `HTML template ${_htmlPath} is not found or unreadable. Use default HTML template.`,
     );
     _htmlPath = resolve(__dirname, "../template/html/default.html");
   }
@@ -22,7 +26,7 @@ function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
     accessSync(_cssPath, constants.R_OK);
   } catch (err) {
     console.warn(
-      `CSS template ${_htmlPath} is not found or unreadable. Use default CSS template.`
+      `CSS template ${_htmlPath} is not found or unreadable. Use default CSS template.`,
     );
     _cssPath = resolve(__dirname, "../template/css/default.css");
   }
@@ -50,6 +54,6 @@ function spliceHtml(mdHtml, htmlTemplate, cssTemplate) {
   </html>`;
 
   return _html;
-}
+};
 
-module.exports = { spliceHtml };
+export { spliceHtml };

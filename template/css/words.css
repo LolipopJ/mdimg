@@ -9,11 +9,11 @@
 }
 
 #mdimg-body {
-  border-left: 3rem solid #1d9bf0;
+  border-left: 3rem solid rgb(29, 155, 240);
 }
 
 .top {
-  color: #1d9bf0;
+  color: rgb(29, 155, 240);
   font-size: 5rem;
   font-weight: bold;
   padding-left: 4rem;
