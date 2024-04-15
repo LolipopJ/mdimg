@@ -1,33 +1,33 @@
-const { resolve, dirname, basename } = require("path");
-const {
+import { resolve, dirname, basename } from "path";
+import {
   existsSync,
   statSync,
   readFileSync,
   mkdirSync,
   writeFileSync,
-} = require("fs");
-const puppeteer = require("puppeteer");
+} from "fs";
+import puppeteer from "puppeteer";
 
-const { parseMarkdown } = require("./mdParser");
-const { spliceHtml } = require("./htmlSplicer");
+import { parseMarkdown } from "./mdParser";
+import { spliceHtml } from "./htmlSplicer";
 
-async function convert2img({
-  mdText,
-  mdFile,
-  outputFilename,
+const convert2img = async ({
+  mdText = "",
+  mdFile = "",
+  outputFilename = "",
   type = "png",
   width = 800,
   height = 600,
   encoding = "binary",
-  quality,
+  quality = 100,
   htmlTemplate = "default",
   cssTemplate = "default",
   log = false,
-  puppeteerProps,
-} = {}) {
-  const _encodingTypes = ["base64", "binary"];
-  const _outputFileTypes = ["jpeg", "png", "webp"];
-  const _result = {};
+  puppeteerProps = {},
+}: IConvertOptions) => {
+  const _outputFileTypes: IConvertTypeOption[] = ["jpeg", "png", "webp"];
+  const _encodingTypes: IConvertEncodingOption[] = ["base64", "binary"];
+  const _result: IConvertResponse = { data: "", html: "" };
 
   // Resolve input file or text
   let _input = mdText;
@@ -58,7 +58,7 @@ async function convert2img({
   if (!_encodingTypes.includes(_encoding)) {
     // Params encoding is not valid
     throw new Error(
-      `Encoding ${_encoding} is not supported. Valid values: 'base64' and 'binary'.`
+      `Encoding ${_encoding} is not supported. Valid values: 'base64' and 'binary'.`,
     );
   }
 
@@ -67,12 +67,12 @@ async function convert2img({
   if (!_outputFileTypes.includes(_type)) {
     // Params encoding is not valid
     throw new Error(
-      `Output file type ${_type} is not supported. Valid values: 'jpeg', 'png' and 'webp'.`
+      `Output file type ${_type} is not supported. Valid values: 'jpeg', 'png' and 'webp'.`,
     );
   }
 
   // Resolve output filename
-  let _output;
+  let _output = "";
   if (_encoding === "binary") {
     if (!outputFilename) {
       // Output filename is not specified
@@ -89,15 +89,17 @@ async function convert2img({
         _output = resolve(_outputFilePath, `_outputFilename.${_type}`);
       } else {
         // Output file type is specified
-        const _outputFileType = _outputFilenameArr[_outputFilenameArrLeng - 1];
+        const _outputFileType = _outputFilenameArr[
+          _outputFilenameArrLeng - 1
+        ] as IConvertTypeOption;
         if (!_outputFileTypes.includes(_outputFileType)) {
           // Output file type is wrongly specified
           console.warn(
-            `Output file type must be one of 'jpeg', 'png' or 'webp'. Use '${_type}' type.`
+            `Output file type must be one of 'jpeg', 'png' or 'webp'. Use '${_type}' type.`,
           );
           _output = resolve(
             _outputFilePath,
-            `${_outputFilenameArr[0]}.${_type}`
+            `${_outputFilenameArr[0]}.${_type}`,
           );
         } else {
           // Output file path is correctly specified
@@ -117,9 +119,9 @@ async function convert2img({
 
   // Parse markdown text to HTML
   const _html = spliceHtml(
-    parseMarkdown(_input),
+    await parseMarkdown(_input),
     _resolveTemplateName(htmlTemplate),
-    _resolveTemplateName(cssTemplate)
+    _resolveTemplateName(cssTemplate),
   );
   _result.html = _html;
 
@@ -153,7 +155,7 @@ async function convert2img({
         console.log(
           `Convert to image successfully!${
             _quality ? " Iamge quality: " + _quality : ""
-          }\nFile: ${_output}`
+          }\nFile: ${_output}`,
         );
       }
 
@@ -170,7 +172,7 @@ async function convert2img({
         console.log(
           `Convert to BASE64 encoded string successfully!${
             _quality ? " Iamge quality: " + _quality : ""
-          }\n${_outputBase64String}`
+          }\n${_outputBase64String}`,
         );
       }
 
@@ -184,28 +186,28 @@ async function convert2img({
     await _browser.close();
 
     throw new Error(
-      `Missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.`
+      `Missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.`,
     );
   }
-}
+};
 
-function _resolveTemplateName(templateName) {
+function _resolveTemplateName(templateName: string) {
   const _templateName = templateName.split(".")[0];
   return _templateName;
 }
 
-function _createEmptyFile(filename) {
+function _createEmptyFile(filename: string) {
   const _filePath = dirname(filename);
 
   try {
     mkdirSync(_filePath, { recursive: true });
     writeFileSync(filename, "");
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(`Create new file ${filename} failed.\n`, error);
   }
 }
 
-function _generateImageFilename(type) {
+function _generateImageFilename(type: IConvertOptions["type"]) {
   const _now = new Date();
   const _outputFilenameSuffix = `${_now.getFullYear()}_${
     _now.getMonth() + 1
@@ -213,4 +215,4 @@ function _generateImageFilename(type) {
   return `mdimg_${_outputFilenameSuffix}.${type}`;
 }
 
-module.exports = { convert2img };
+export { convert2img };

@@ -8,6 +8,8 @@ First, the script calls [marked](https://github.com/markedjs/marked) to parse Ma
 
 ## Preview
 
+Rendering results under MacOS:
+
 | Preview                                                                  | HTML Template | CSS Template | Notes                                             |
 | ------------------------------------------------------------------------ | ------------- | ------------ | ------------------------------------------------- |
 | <img alt="default preview" src="./docs/default.png" height="150">        | Default       | Default      |
@@ -18,7 +20,9 @@ First, the script calls [marked](https://github.com/markedjs/marked) to parse Ma
 
 ## Requirements
 
-This tool requires an LTS Node version (v12.0.0+).
+This tool requires a LTS Node version (v18.0.0+).
+
+If your node version is lower than 18, please use the legacy version [0.2.3](https://github.com/LolipopJ/mdimg/releases/tag/0.2.3).
 
 ## Installation
 
@@ -171,12 +175,12 @@ npm run build
 ### Test
 
 ```bash
-# You should build before testing
-# npm run build
+# Test CLI
+node bin/mdimg -i test/test.md -o output.png
+# Test node function
 npm run test
 ```
 
 ## Inspired by
 
 - [md2img](https://github.com/363797271/md2img). Provided me the idea and a complete feasible solution.
-- [marked](https://github.com/markedjs/marked). Learned a possible method to write a JavaScript library.

@@ -1,7 +1,9 @@
 import babel from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
 import license from "rollup-plugin-license";
+import nodeResolve from "@rollup/plugin-node-resolve";
+import terser from "@rollup/plugin-terser";
+import typescript from "rollup-plugin-typescript2";
 
 const licenseBanner = `
 mdimg - convert markdown to image
@@ -15,15 +17,15 @@ const pluginsArray = [
     banner: licenseBanner,
   }),
   nodeResolve({ preferBuiltins: true }),
+  typescript(),
   commonjs(),
-  babel({
-    babelHelpers: "bundled",
-  }),
+  babel({ babelHelpers: "bundled" }),
+  terser(),
 ];
 
-module.exports = [
+export default [
   {
-    input: "src/mdimg.js",
+    input: "src/mdimg.ts",
     output: {
       file: "lib/mdimg.js",
       format: "cjs",
@@ -33,7 +35,7 @@ module.exports = [
     plugins: pluginsArray,
   },
   {
-    input: "src/mdimg.js",
+    input: "src/mdimg.ts",
     output: {
       file: "lib/mdimg.mjs",
       format: "esm",
