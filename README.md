@@ -22,7 +22,7 @@ Rendering results under MacOS:
 
 This tool requires a LTS Node version (v18.0.0+).
 
-If your node version is lower than 18, please use the legacy version [0.2.3](https://github.com/LolipopJ/mdimg/releases/tag/0.2.3).
+If your node version is lower than 18, please use the legacy version [0.2.3](https://www.npmjs.com/package/mdimg/v/0.2.3).
 
 ## Installation
 
