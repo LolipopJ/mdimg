@@ -1,3 +1,5 @@
+![lts-version](https://img.shields.io/npm/v/mdimg.svg) ![language](https://img.shields.io/badge/language-TypeScript-3178c6.svg) ![download-counts](https://img.shields.io/npm/d18m/mdimg.svg)
+
 # mdimg
 
 A tool that can be used to convert **Markdown** or **HTML** format text to an image.
