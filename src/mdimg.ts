@@ -12,14 +12,18 @@ import { parseMarkdown } from "./mdParser";
 import { spliceHtml } from "./htmlSplicer";
 
 const convert2img = async ({
-  mdText = "",
-  mdFile = "",
-  outputFilename = "",
+  inputText,
+  inputFilename,
+  mdText,
+  mdFile,
+  outputFilename,
   type = "png",
   width = 800,
   height = 600,
   encoding = "binary",
   quality = 100,
+  htmlText,
+  cssText,
   htmlTemplate = "default",
   cssTemplate = "default",
   log = false,
@@ -30,9 +34,10 @@ const convert2img = async ({
   const _result: IConvertResponse = { data: "", html: "" };
 
   // Resolve input file or text
-  let _input = mdText;
-  if (mdFile) {
-    const _inputFilePath = resolve(mdFile);
+  let _input = inputText || mdText;
+  const _inputFilename = inputFilename || mdFile;
+  if (_inputFilename) {
+    const _inputFilePath = resolve(_inputFilename);
     if (!existsSync(_inputFilePath)) {
       // Input is not exist
       throw new Error(`Input file ${_inputFilePath} is not exists.`);
@@ -62,7 +67,7 @@ const convert2img = async ({
     );
   }
 
-  // Resolve type
+  // Resolve output file type
   let _type = type;
   if (!_outputFileTypes.includes(_type)) {
     // Params encoding is not valid
@@ -118,14 +123,16 @@ const convert2img = async ({
   }
 
   // Parse markdown text to HTML
-  const _html = spliceHtml(
-    await parseMarkdown(_input),
-    _resolveTemplateName(htmlTemplate),
-    _resolveTemplateName(cssTemplate),
-  );
+  const _html = spliceHtml({
+    inputHtml: await parseMarkdown(_input),
+    htmlText,
+    cssText,
+    htmlTemplate: _resolveTemplateName(htmlTemplate),
+    cssTemplate: _resolveTemplateName(cssTemplate),
+  });
   _result.html = _html;
 
-  // Launch headless browser to load HTML
+  // Launch headless browser to render HTML
   const _browser = await puppeteer.launch({
     defaultViewport: {
       width,
@@ -193,7 +200,8 @@ const convert2img = async ({
 
 function _resolveTemplateName(templateName: string) {
   const _templateName = templateName.split(".")[0];
-  return _templateName;
+  return _templateName as IConvertOptions["htmlTemplate"] &
+    IConvertOptions["cssTemplate"];
 }
 
 function _createEmptyFile(filename: string) {
@@ -202,8 +210,8 @@ function _createEmptyFile(filename: string) {
   try {
     mkdirSync(_filePath, { recursive: true });
     writeFileSync(filename, "");
-  } catch (error: any) {
-    throw new Error(`Create new file ${filename} failed.\n`, error);
+  } catch (error: unknown) {
+    throw new Error(`Create new file ${filename} failed.\n` + String(error));
   }
 }
 
