@@ -1,8 +1,0 @@
-node_modules/
-lib/
-
-template/css/
-template/html/
-
-*.min.js
-.*/

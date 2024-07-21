@@ -1,41 +1,58 @@
 import { resolve } from "path";
 import { readFileSync, accessSync, constants } from "fs";
-import cheerio from "cheerio";
+import { load } from "cheerio";
 
-const spliceHtml = (
-  mdHtml: string,
-  htmlTemplate: string,
-  cssTemplate: string,
-) => {
-  let _htmlPath = resolve(
-    __dirname,
-    "../template/html",
-    `${htmlTemplate}.html`,
-  );
-  let _cssPath = resolve(__dirname, "../template/css", `${cssTemplate}.css`);
+const spliceHtml = ({
+  inputHtml,
+  htmlText,
+  cssText,
+  htmlTemplate,
+  cssTemplate,
+}: Pick<
+  IConvertOptions,
+  "htmlText" | "cssText" | "htmlTemplate" | "cssTemplate"
+> & {
+  inputHtml: string;
+}) => {
+  let _htmlSource = htmlText;
+  let _cssSource = cssText;
 
-  try {
-    accessSync(_htmlPath, constants.R_OK);
-  } catch (err) {
-    console.warn(
-      `HTML template ${_htmlPath} is not found or unreadable. Use default HTML template.`,
+  if (!_htmlSource) {
+    let _htmlPath = resolve(
+      __dirname,
+      "../template/html",
+      `${htmlTemplate}.html`,
     );
-    _htmlPath = resolve(__dirname, "../template/html/default.html");
-  }
-  try {
-    accessSync(_cssPath, constants.R_OK);
-  } catch (err) {
-    console.warn(
-      `CSS template ${_htmlPath} is not found or unreadable. Use default CSS template.`,
-    );
-    _cssPath = resolve(__dirname, "../template/css/default.css");
+
+    try {
+      accessSync(_htmlPath, constants.R_OK);
+    } catch (err) {
+      console.warn(
+        `HTML template ${_htmlPath} is not found or unreadable. Use default HTML template.`,
+      );
+      _htmlPath = resolve(__dirname, "../template/html/default.html");
+    }
+
+    _htmlSource = readFileSync(_htmlPath).toString();
   }
 
-  const _htmlSource = readFileSync(_htmlPath);
-  const _cssSource = readFileSync(_cssPath);
+  if (!_cssSource) {
+    let _cssPath = resolve(__dirname, "../template/css", `${cssTemplate}.css`);
 
-  const $ = cheerio.load(_htmlSource);
-  $(".markdown-body").html(mdHtml);
+    try {
+      accessSync(_cssPath, constants.R_OK);
+    } catch (err) {
+      console.warn(
+        `CSS template ${_cssPath} is not found or unreadable. Use default CSS template.`,
+      );
+      _cssPath = resolve(__dirname, "../template/css/default.css");
+    }
+
+    _cssSource = readFileSync(_cssPath).toString();
+  }
+
+  const $ = load(_htmlSource);
+  $(".markdown-body").html(inputHtml);
 
   const _html = `
   <!DOCTYPE html>

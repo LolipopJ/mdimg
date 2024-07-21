@@ -1,5 +1,9 @@
 interface IConvertOptions {
+  inputText?: string;
+  inputFilename?: string;
+  /** @deprecated: rename to `inputText` */
   mdText?: string;
+  /** @deprecated: rename to `inputFilename` */
   mdFile?: string;
   outputFilename?: string;
   type?: IConvertTypeOption;
@@ -7,8 +11,10 @@ interface IConvertOptions {
   height?: number;
   encoding?: IConvertEncodingOption;
   quality?: number;
-  htmlTemplate?: string /** "default" | "words" */;
-  cssTemplate?: string /** "default" | "empty" | "github" | "githubDark" | "words" */;
+  htmlText?: string;
+  cssText?: string;
+  htmlTemplate?: "default" | "words";
+  cssTemplate?: "default" | "empty" | "github" | "githubDark" | "words";
   log?: boolean;
   puppeteerProps?: import("puppeteer").LaunchOptions;
 }

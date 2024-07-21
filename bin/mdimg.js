@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 const { Command, Option } = require("commander");
 const { convert2img } = require("../lib/mdimg.js");
@@ -64,14 +65,26 @@ program
   )
   .addOption(
     new Option(
+      "--htmlText <html text>",
+      "Use the input text as a custom HTML template",
+    ),
+  )
+  .addOption(
+    new Option(
       "--html <template>",
-      "Specify a HTML template. You can find them in template/html folder. Option --template will be overrided",
+      "Specify a HTML template. You can find them in template/html folder. Option --template will be overridden",
+    ),
+  )
+  .addOption(
+    new Option(
+      "--cssText <css text>",
+      "Use the input text as a custom CSS template",
     ),
   )
   .addOption(
     new Option(
       "--css <template>",
-      "Specify a CSS template. You can find them in template/css folder. Option --template will be overrided",
+      "Specify a CSS template. You can find them in template/css folder. Option --template will be overridden",
     ),
   )
   .version(pkg.version);
@@ -97,7 +110,9 @@ const {
   encoding,
   width,
   template,
+  htmlText,
   html,
+  cssText,
   css,
 } = program.opts();
 
@@ -107,13 +122,15 @@ if (!text && !input) {
 }
 
 convert2img({
-  mdText: text,
-  mdFile: input,
+  inputText: text,
+  inputFilename: input,
   outputFilename: output,
-  type: type,
+  type,
   width: Number(width),
-  encoding: encoding,
+  encoding,
   quality: Number(quality),
+  htmlText,
+  cssText,
   htmlTemplate: html || template,
   cssTemplate: css || template,
   log: true,
