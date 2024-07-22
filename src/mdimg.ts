@@ -11,7 +11,7 @@ import puppeteer from "puppeteer";
 import { parseMarkdown } from "./mdParser";
 import { spliceHtml } from "./htmlSplicer";
 
-const convert2img = async ({
+const mdimg = async ({
   inputText,
   inputFilename,
   mdText,
@@ -223,4 +223,4 @@ function _generateImageFilename(type: IConvertOptions["type"]) {
   return `mdimg_${_outputFilenameSuffix}.${type}`;
 }
 
-export { convert2img };
+export { mdimg, mdimg as convert2img };
