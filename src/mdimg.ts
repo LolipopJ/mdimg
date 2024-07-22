@@ -7,9 +7,14 @@ import {
   writeFileSync,
 } from "fs";
 import puppeteer from "puppeteer";
-
-import { parseMarkdown } from "./mdParser";
-import { spliceHtml } from "./htmlSplicer";
+import { parseMarkdown } from "./utils/mdParser";
+import { spliceHtml } from "./utils/htmlSplicer";
+import type {
+  IConvertOptions,
+  IConvertTypeOption,
+  IConvertEncodingOption,
+  IConvertResponse,
+} from "./interfaces";
 
 const mdimg = async ({
   inputText,
@@ -47,7 +52,7 @@ const mdimg = async ({
         throw new Error("Input is not a file.");
       } else {
         // Read text from input file
-        _input = readFileSync(_inputFilePath, { encoding: "utf-8" });
+        _input = readFileSync(_inputFilePath).toString();
         if (log) {
           console.log(`Start to convert ${_inputFilePath} to an image.`);
         }

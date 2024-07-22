@@ -1,4 +1,4 @@
-interface IConvertOptions {
+export interface IConvertOptions {
   inputText?: string;
   inputFilename?: string;
   /** @deprecated: rename to `inputText` */
@@ -19,12 +19,12 @@ interface IConvertOptions {
   puppeteerProps?: import("puppeteer").LaunchOptions;
 }
 
-interface IConvertResponse {
+export interface IConvertResponse {
   data: string | Buffer;
   path?: string;
   html: string;
 }
 
-type IConvertTypeOption = "jpeg" | "png" | "webp";
+export type IConvertTypeOption = "jpeg" | "png" | "webp";
 
-type IConvertEncodingOption = "binary" | "base64";
+export type IConvertEncodingOption = "binary" | "base64";

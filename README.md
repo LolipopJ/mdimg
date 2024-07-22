@@ -217,9 +217,9 @@ yarn build
 ### Test
 
 ```bash
-# Test CLI
-node bin/mdimg -i test/test.md -o output.png
-# Test node function
+# Build productions before testing
+yarn build
+# Run test cases
 yarn test
 ```
 

@@ -15,19 +15,23 @@ if (existsSync(outputDir)) {
 }
 
 test("Convert to image with default template, using `inputText`, `htmlText` and `cssText`", async () => {
-  const inputTextTest = readFileSync(inputFilenameTest);
+  const inputTextTest = readFileSync(inputFilenameTest).toString();
 
   const htmlTemplateDefaultFilename = resolve(
     __dirname,
     "../template/html/default.html",
   );
-  const htmlTemplateDefaultText = readFileSync(htmlTemplateDefaultFilename);
+  const htmlTemplateDefaultText = readFileSync(
+    htmlTemplateDefaultFilename,
+  ).toString();
 
   const cssTemplateDefaultFilename = resolve(
     __dirname,
     "../template/css/default.css",
   );
-  const cssTemplateDefaultText = readFileSync(cssTemplateDefaultFilename);
+  const cssTemplateDefaultText = readFileSync(
+    cssTemplateDefaultFilename,
+  ).toString();
 
   const outputFilename = resolve(`${outputDir}/default.png`);
 
