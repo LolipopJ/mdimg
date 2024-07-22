@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const { Command, Option } = require("commander");
-const { convert2img } = require("../lib/mdimg.js");
+const { mdimg } = require("../lib/mdimg.js");
 
 const pkg = require("../package.json");
 
@@ -13,22 +13,22 @@ const program = new Command();
 
 program
   .name(pkg.name)
-  .usage("-i <input file> [-o <output file>] [-w <width>]")
+  .usage("-i <input filename> [-o <output file>] [-w <width>]")
   .addOption(
     new Option(
       "-t, --text <input text>",
-      "Input Markdown or HTML text directly. Not applicable when option --input is specified",
+      "Input Markdown or HTML text directly",
     ),
   )
   .addOption(
     new Option(
-      "-i, --input <input file>",
-      "Read Markdown or HTML text from a file",
+      "-i, --input <input filename>",
+      "Read Markdown or HTML text from a file. Option -t or --text will be ignored",
     ),
   )
   .addOption(
     new Option(
-      "-o, --output <output file>",
+      "-o, --output <output filename>",
       "Output binary image filename. File type can be one of 'jpeg', 'png' or 'webp' Available when option --encoding is 'binary'",
     ),
   )
@@ -59,32 +59,32 @@ program
   )
   .addOption(
     new Option(
-      "--template <template>",
+      "--template <template name>",
       "Specify a template. You can find them in template folder. HTML and CSS templates will try to use the same name",
     ).default("default"),
   )
   .addOption(
     new Option(
-      "--htmlText <html text>",
-      "Use the input text as a custom HTML template",
-    ),
-  )
-  .addOption(
-    new Option(
-      "--html <template>",
+      "--html <template name>",
       "Specify a HTML template. You can find them in template/html folder. Option --template will be overridden",
     ),
   )
   .addOption(
     new Option(
-      "--cssText <css text>",
-      "Use the input text as a custom CSS template",
+      "--htmlText <html text>",
+      "Use the input text as a custom HTML template. Option --html will be ignored",
     ),
   )
   .addOption(
     new Option(
-      "--css <template>",
+      "--css <template name>",
       "Specify a CSS template. You can find them in template/css folder. Option --template will be overridden",
+    ),
+  )
+  .addOption(
+    new Option(
+      "--cssText <css text>",
+      "Use the input text as a custom CSS template. Option --css will be ignored",
     ),
   )
   .version(pkg.version);
@@ -93,7 +93,7 @@ program.addHelpText(
   "after",
   `
 
-Example call:
+Examples:
   $ mdimg -t '# Hello World!' -o output/hello_world.jpeg
   $ mdimg -i README.md -o output/image.png -w 1000 --css github
 `,
@@ -121,7 +121,7 @@ if (!text && !input) {
   process.exit(1);
 }
 
-convert2img({
+mdimg({
   inputText: text,
   inputFilename: input,
   outputFilename: output,
