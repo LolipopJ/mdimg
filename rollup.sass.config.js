@@ -7,9 +7,9 @@ const getSassTasks = () => {
   const scssPath = "template/scss";
   const templates = fs
     .readdirSync(path.join(__dirname, scssPath))
-    .filter((filename) => {
-      return filename.endsWith(".scss") || filename.endsWith(".sass");
-    });
+    .filter(
+      (filename) => filename.endsWith(".scss") || filename.endsWith(".sass"),
+    );
 
   const tasks = [];
   for (const template of templates) {

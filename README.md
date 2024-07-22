@@ -14,11 +14,11 @@ Rendering results under MacOS:
 
 | Preview                                                                  | HTML Template | CSS Template | Notes                                             |
 | ------------------------------------------------------------------------ | ------------- | ------------ | ------------------------------------------------- |
-| <img alt="default preview" src="./docs/default.png" height="150">        | Default       | Default      |
-| <img alt="empty preview" src="./docs/empty.png" height="150">            | Default       | Empty        | Not using any CSS presets                         |
-| <img alt="github preview" src="./docs/github.png" height="150">          | Default       | Github       |
-| <img alt="github dark preview" src="./docs/githubDark.png" height="150"> | Default       | Github Dark  |
-| <img alt="words preview" src="./docs/words.png" height="150">            | Words         | Words        | It is recommended to use with **plain text only** |
+| <img alt="default preview" src="./docs/default.png" height="150">        | `default`     | `default`    |
+| <img alt="empty preview" src="./docs/empty.png" height="150">            | `default`     | `empty`      | Not using any CSS presets                         |
+| <img alt="github preview" src="./docs/github.png" height="150">          | `default`     | `github`     |
+| <img alt="github dark preview" src="./docs/githubDark.png" height="150"> | `default`     | `githubDark` |
+| <img alt="words preview" src="./docs/words.png" height="150">            | `words`       | `words`      | It is recommended to use with **plain text only** |
 
 ## Requirements
 
@@ -63,42 +63,46 @@ You can always call `mdimg -h` to get complete help.
 Import mdimg to your project:
 
 ```js
-const { convert2img } = require("mdimg");
+const { mdimg } = require("mdimg");
 
 // or use import
-import { convert2img } from "mdimg";
+import { mdimg } from "mdimg";
 ```
 
 Convert markdown text or file to image:
 
 ```js
-const convertRes = await convert2img({
-  mdFile: "path/to/input.md",
+const convertRes = await mdimg({
+  inputFilename: "path/to/input.md",
   outputFilename: "path/to/output.png",
   width: 600,
   cssTemplate: "github",
 });
 
-console.log(`Convert to image successfully!\nFile: ${convertRes.data}`);
+console.log(
+  `Convert to image successfully!\nImage has been saved as \`${convertRes.data}\``,
+);
 ```
 
-When using `convert2img()` method, you must specify either `mdFile` (input file) or `mdText` (directly input text).
+When using `mdimg()` method, you must specify either `inputFilename` (input file) or `inputText` (directly input text).
 
-Options:
+Here are all available options:
 
-| Argument       | Type            | Default                                      | Notes                                                                                                                                               |
-| -------------- | --------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| mdText         | `String`        | `undefined`                                  | Input Markdown or HTML text directly. This option **has no effect** if `mdFile` is specified                                                        |
-| mdFile         | `String`        | `undefined`                                  | Read Markdown or HTML text from a file                                                                                                              |
-| outputFilename | `String`        | `./mdimg_output/mdimg_${new Date()}.${type}` | Output binary image filename. File type can be `jpeg`, `png` or `webp`. Available when `encoding` option is `binary`                                |
-| type           | `String`        | `png`                                        | The file type of the image. Type can be one of `jpeg`, `png` or `webp`, defaults to `png`. Type will be inferred from `outputFilename` if available |
-| width          | `Number`        | `800`                                        | The width of output image                                                                                                                           |
-| encoding       | `String`        | `binary`                                     | The encoding of output image. Available value can be `binary` or `base64`.                                                                          |
-| quality        | `Number`        | `100`                                        | The quality of the image, between 0-100. **Not applicable** to `png` image.                                                                         |
-| htmlTemplate   | `String`        | `default`                                    | HTML rendering template. Available templates can be found in `template/html`                                                                        |
-| cssTemplate    | `String`        | `default`                                    | CSS rendering template. Available templates can be found in `template/css`                                                                          |
-| log            | `Boolean`       | `false`                                      | Show preset console log                                                                                                                             |
-| puppeteerProps | `LaunchOptions` | `undefined`                                  | [Launch options](https://pptr.dev/api/puppeteer.puppeteerlaunchoptions) of Puppeteer                                                                |
+| Argument       | Type            | Default                                      | Notes                                                                                                                                                    |
+| -------------- | --------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| inputText      | `String`        | `undefined`                                  | Input Markdown or HTML text directly. This option **has no effect** if `inputFilename` is specified                                                      |
+| inputFilename  | `String`        | `undefined`                                  | Read Markdown or HTML text from a file                                                                                                                   |
+| outputFilename | `String`        | `./mdimg_output/mdimg_${new Date()}.${type}` | Output binary image filename. File type can be `jpeg`, `png` or `webp`. Available when `encoding` option is `binary`                                     |
+| type           | `String`        | `png`                                        | The file type of the image. Type can be one of `jpeg`, `png` or `webp`, defaults to `png`. Type will be inferred from `outputFilename` if available      |
+| width          | `Number`        | `800`                                        | The width of output image                                                                                                                                |
+| encoding       | `String`        | `binary`                                     | The encoding of output image. Available value can be `binary` or `base64`                                                                                |
+| quality        | `Number`        | `100`                                        | The quality of the image, between 0-100. **Not applicable** to `png` image                                                                               |
+| htmlText       | `String`        | `undefined`                                  | HTML rendering text                                                                                                                                      |
+| cssText        | `String`        | `undefined`                                  | CSS rendering text                                                                                                                                       |
+| htmlTemplate   | `String`        | `default`                                    | HTML rendering template. Available presets can be found in [`template/html`](./template/html/). This option **has no effect** if `htmlText` is specified |
+| cssTemplate    | `String`        | `default`                                    | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). This option **has no effect** if `cssText` is specified     |
+| log            | `Boolean`       | `false`                                      | Show preset console log                                                                                                                                  |
+| puppeteerProps | `LaunchOptions` | `undefined`                                  | [Launch options](https://pptr.dev/api/puppeteer.puppeteerlaunchoptions) of Puppeteer                                                                     |
 
 Returns: `Promise<object>`
 
@@ -110,12 +114,24 @@ Returns: `Promise<object>`
 
 ## Custom template
 
-Templates are stored in the `template` directory.
+> **😍 Contribute to preset templates via [pull requests](https://github.com/LolipopJ/mdimg/pulls) is welcomed!**
 
-Now, if you run the following command:
+Preset templates are stored in the `template` directory.
+
+If you execute the following command:
 
 ```bash
 mdimg -i input.md --html custom --css custom
+```
+
+Or in Node.js project:
+
+```js
+await mdimg({
+  inputFilename: "input.md",
+  htmlTemplate: "custom",
+  cssTemplate: "custom",
+});
 ```
 
 The mdimg will read `custom.html` from `template/html` directory as HTML template and `custom.css` from `template/css` directory as CSS template to render the image of `input.md`.
@@ -138,40 +154,64 @@ The mdimg will put the parsed HTML content in the element with class `markdown-b
 
 ### CSS template
 
-Create a new `.css` file in `template/css` directory and then make your style!
+Nothing to note, create a new `.css` file in `template/css` directory and then make your style!
 
 For further development, it is recommended that write `.scss` or `.sass` files in the `template/scss` directory, and use the following command to generate CSS templates:
 
 ```bash
 # Build .scss and .sass files
-npm run rollup:sass
+yarn rollup:sass
 ```
 
 CSS templates with the corresponding name will be generated in `template/css` directory.
+
+## Intake template directly
+
+Preset templates may not often meet your needs. If you already know the specifications of [HTML template](#html-template) and [CSS template](#css-template), you can pass the template string directly.
+
+A command example:
+
+```bash
+mdimg -i input.md --htmlText '<div id="mdimg-body"><div class="markdown-body"></div></div>' --cssText '@import "https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"; .markdown-body { padding: 6rem 4rem; }'
+```
+
+Or in Node.js project:
+
+```js
+await mdimg({
+  inputFilename: "input.md",
+  htmlText: `<div id="mdimg-body">
+  <div class="markdown-body"></div>
+</div>`,
+  cssText: `@import "https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css";
+.markdown-body {
+  padding: 6rem 4rem;
+}`,
+});
+```
 
 ## Development
 
 ```bash
 git clone https://github.com/LolipopJ/mdimg.git
 cd mdimg
-yarn
-# npm install
+yarn # npm install
 ```
 
 ### Lint
 
 ```bash
-# Check .js syntax only
-npm run lint
+# Check lint rules
+yarn lint
 # Check and fix syntax
-npm run prettier
+yarn prettier
 ```
 
 ### Build
 
 ```bash
 # Build .js, .scss and .sass files
-npm run build
+yarn build
 ```
 
 ### Test
@@ -180,7 +220,7 @@ npm run build
 # Test CLI
 node bin/mdimg -i test/test.md -o output.png
 # Test node function
-npm run test
+yarn test
 ```
 
 ## Inspired by
