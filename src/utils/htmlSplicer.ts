@@ -1,6 +1,7 @@
 import { resolve } from "path";
 import { readFileSync, accessSync, constants } from "fs";
 import { load } from "cheerio";
+import type { IConvertOptions } from "../interfaces";
 
 const spliceHtml = ({
   inputHtml,

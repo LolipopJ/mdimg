@@ -5,16 +5,13 @@ import nodeResolve from "@rollup/plugin-node-resolve";
 import terser from "@rollup/plugin-terser";
 import typescript from "rollup-plugin-typescript2";
 
-const licenseBanner = `
-mdimg - convert markdown to image
-Copyright (c) 2022-${new Date().getFullYear()}, LolipopJ. (MIT Licensed)
-https://github.com/LolipopJ/mdimg
-`;
-
 const externalModules = ["cheerio", "marked", "puppeteer"];
+
 const pluginsArray = [
   license({
-    banner: licenseBanner,
+    banner: `mdimg - convert markdown to image
+Copyright (c) 2022-${new Date().getFullYear()}, LolipopJ. (MIT Licensed)
+https://github.com/LolipopJ/mdimg`,
   }),
   nodeResolve({ preferBuiltins: true }),
   typescript(),
