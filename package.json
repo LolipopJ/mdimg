@@ -12,12 +12,12 @@
   "engines": {
     "node": ">= 18.0.0"
   },
-  "main": "./lib/mdimg.js",
-  "module": "./lib/mdimg.mjs",
+  "main": "lib/mdimg.js",
+  "module": "lib/mdimg.mjs",
   "bin": {
-    "mdimg": "./bin/mdimg.js"
+    "mdimg": "bin/mdimg.js"
   },
-  "types": "./types.d.ts",
+  "types": "types.d.ts",
   "files": [
     "README.md",
     "types.d.ts",
