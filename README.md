@@ -93,10 +93,10 @@ Here are all available options:
 | inputText      | `String`        | `undefined`                                  | Input Markdown or HTML text directly. This option **has no effect** if `inputFilename` is specified                                                      |
 | inputFilename  | `String`        | `undefined`                                  | Read Markdown or HTML text from a file                                                                                                                   |
 | outputFilename | `String`        | `./mdimg_output/mdimg_${new Date()}.${type}` | Output binary image filename. File type can be `jpeg`, `png` or `webp`. Available when `encoding` option is `binary`                                     |
-| type           | `String`        | `png`                                        | The file type of the image. Type can be one of `jpeg`, `png` or `webp`, defaults to `png`. Type will be inferred from `outputFilename` if available      |
-| width          | `Number`        | `800`                                        | The width of output image                                                                                                                                |
-| encoding       | `String`        | `binary`                                     | The encoding of output image. Available value can be `binary` or `base64`                                                                                |
-| quality        | `Number`        | `100`                                        | The quality of the image, between 0-100. **Not applicable** to `png` image                                                                               |
+| type           | `String`        | `png`                                        | File type of the image. Type can be one of `jpeg`, `png` or `webp`, defaults to `png`. Type will be inferred from `outputFilename` if available          |
+| width          | `Number`        | `800`                                        | Width of output image                                                                                                                                    |
+| encoding       | `String`        | `binary`                                     | Encode type of output image. Available value can be `binary` or `base64`                                                                                 |
+| quality        | `Number`        | `100`                                        | Quality of the image, between 0-100. **Not applicable** to `png` image                                                                                   |
 | htmlText       | `String`        | `undefined`                                  | HTML rendering text                                                                                                                                      |
 | cssText        | `String`        | `undefined`                                  | CSS rendering text                                                                                                                                       |
 | htmlTemplate   | `String`        | `default`                                    | HTML rendering template. Available presets can be found in [`template/html`](./template/html/). This option **has no effect** if `htmlText` is specified |
@@ -109,8 +109,8 @@ Returns: `Promise<object>`
 | Key  | Value Type           | Notes                                                                                                     |
 | ---- | -------------------- | --------------------------------------------------------------------------------------------------------- |
 | data | `string` \| `Buffer` | Buffer (`encoding` is `binary`) or a BASE64 encoded string (`encoding` is `base64`) with the output image |
-| path | `string`             | The path of output iamge. Available when `encoding` is `binary`                                           |
-| html | `string`             | The rendered HTML document                                                                                |
+| path | `string`             | Path of output image. Available when `encoding` is `binary`                                               |
+| html | `string`             | Rendered HTML document                                                                                    |
 
 ## Custom template
 

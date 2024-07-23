@@ -36,7 +36,11 @@ const mdimg = async ({
 }: IConvertOptions) => {
   const _outputFileTypes: IConvertTypeOption[] = ["jpeg", "png", "webp"];
   const _encodingTypes: IConvertEncodingOption[] = ["base64", "binary"];
-  const _result: IConvertResponse = { data: "", html: "" };
+  const _result: IConvertResponse = {
+    html: "",
+    data: encoding === "binary" ? Buffer.from("") : "",
+    path: undefined,
+  };
 
   // Resolve input file or text
   let _input = inputText || mdText;
