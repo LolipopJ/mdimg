@@ -38,7 +38,7 @@ const mdimg = async ({
   const _encodingTypes: IConvertEncodingOption[] = ["base64", "binary"];
   const _result: IConvertResponse = {
     html: "",
-    data: encoding === "binary" ? Buffer.from("") : "",
+    data: encoding === "binary" ? Uint8Array.from([]) : "",
     path: undefined,
   };
 

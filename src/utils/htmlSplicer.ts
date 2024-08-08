@@ -29,7 +29,7 @@ const spliceHtml = ({
       accessSync(_htmlPath, constants.R_OK);
     } catch (err) {
       console.warn(
-        `HTML template ${_htmlPath} is not found or unreadable. Use default HTML template.`,
+        `HTML template ${_htmlPath} is not found or unreadable. Use default HTML template.\n${err}`,
       );
       _htmlPath = resolve(__dirname, "../template/html/default.html");
     }
@@ -44,7 +44,7 @@ const spliceHtml = ({
       accessSync(_cssPath, constants.R_OK);
     } catch (err) {
       console.warn(
-        `CSS template ${_cssPath} is not found or unreadable. Use default CSS template.`,
+        `CSS template ${_cssPath} is not found or unreadable. Use default CSS template.\n${err}`,
       );
       _cssPath = resolve(__dirname, "../template/css/default.css");
     }

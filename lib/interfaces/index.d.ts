@@ -59,8 +59,8 @@ export interface IConvertOptions {
 export type IConvertResponse = {
     /** Rendered HTML document */
     html: string;
-    /** Buffer of output image when `encoding: "binary"`, or BASE64 encoded string of output image `encoding: "base64"` */
-    data: Buffer | string;
+    /** Uint8Array of output image when `encoding: "binary"`, or BASE64 encoded string of output image `encoding: "base64"` */
+    data: Uint8Array | string;
     /** Path of output image when `encoding: "binary"` */
     path?: string;
 };
