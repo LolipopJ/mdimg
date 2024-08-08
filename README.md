@@ -106,11 +106,11 @@ Here are all available options:
 
 Returns: `Promise<object>`
 
-| Key  | Value Type           | Notes                                                                                                     |
-| ---- | -------------------- | --------------------------------------------------------------------------------------------------------- |
-| data | `string` \| `Buffer` | Buffer (`encoding` is `binary`) or a BASE64 encoded string (`encoding` is `base64`) with the output image |
-| path | `string`             | Path of output image. Available when `encoding` is `binary`                                               |
-| html | `string`             | Rendered HTML document                                                                                    |
+| Key  | Value Type               | Notes                                                                                                         |
+| ---- | ------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| data | `string` \| `Uint8Array` | Uint8Array (`encoding` is `binary`) or a BASE64 encoded string (`encoding` is `base64`) with the output image |
+| path | `string`                 | Path of output image. Available when `encoding` is `binary`                                                   |
+| html | `string`                 | Rendered HTML document                                                                                        |
 
 ## Custom template
 
@@ -195,7 +195,7 @@ await mdimg({
 ```bash
 git clone https://github.com/LolipopJ/mdimg.git
 cd mdimg
-yarn # npm install
+yarn
 ```
 
 ### Lint
@@ -203,8 +203,8 @@ yarn # npm install
 ```bash
 # Check lint rules
 yarn lint
-# Check and fix syntax
-yarn prettier
+# Check lint rules and fix resolvable errors
+yarn lint:fix
 ```
 
 ### Build
