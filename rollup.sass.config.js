@@ -3,10 +3,10 @@ import fs from "fs";
 import path from "path";
 
 const getSassTasks = () => {
-  const cssPath = "template/css";
-  const scssPath = "template/scss";
+  const cssPath = path.resolve(__dirname, "template/css");
+  const scssPath = path.resolve(__dirname, "template/scss");
   const templates = fs
-    .readdirSync(path.join(__dirname, scssPath))
+    .readdirSync(scssPath)
     .filter(
       (filename) => filename.endsWith(".scss") || filename.endsWith(".sass"),
     );
@@ -15,11 +15,12 @@ const getSassTasks = () => {
   for (const template of templates) {
     const templateName = template.slice(0, -5);
     const task = {
-      input: `${scssPath}/${template}`,
+      input: `${scssPath}/${templateName}.scss`,
       plugins: [
         scss({
-          output: `${cssPath}/${templateName}.css`,
-          sass: require("sass"),
+          output: (styles) => {
+            fs.writeFileSync(`${cssPath}/${templateName}.css`, styles);
+          },
         }),
       ],
     };
@@ -29,4 +30,4 @@ const getSassTasks = () => {
   return tasks;
 };
 
-export default [...getSassTasks()];
+export default getSassTasks();

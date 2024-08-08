@@ -11,7 +11,7 @@ export default tseslint.config(
       "docs/",
       "lib/",
       "node_modules/",
-      "template/",
+      "template/css/",
       "test/**/*.test.js",
     ],
   },
