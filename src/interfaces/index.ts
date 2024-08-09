@@ -73,5 +73,5 @@ export type IConvertTypeOption = NonNullable<
 
 /** Encode type of output image */
 export type IConvertEncodingOption = NonNullable<
-  import("puppeteer").ScreenshotOptions["encoding"]
+  import("puppeteer").ScreenshotOptions["encoding"] | "blob"
 >;
