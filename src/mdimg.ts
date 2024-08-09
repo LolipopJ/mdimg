@@ -54,7 +54,7 @@ const mdimg = async ({
 
         if (log) {
           process.stderr.write(
-            `Start to convert ${_inputFilePath} to an image.\n`,
+            `Info: start to convert file ${_inputFilePath} to an image...\n`,
           );
         }
       } else {
@@ -65,6 +65,10 @@ const mdimg = async ({
     }
   } else if (_inputText) {
     _input = _inputText;
+
+    if (log) {
+      process.stderr.write(`Info: start to convert text to an image...\n`);
+    }
   } else {
     throw new Error("Error: text or file is required to be converted.\n");
   }
