@@ -27,7 +27,7 @@
   ],
   "scripts": {
     "mdimg": "node ./bin/mdimg.js",
-    "test": "jest --roots test --testTimeout 30000",
+    "test": "jest --roots test",
     "build": "npm run rollup:ts && npm run rollup:sass",
     "rollup:ts": "rollup -c rollup.config.js --bundleConfigAsCjs",
     "rollup:sass": "rollup -c rollup.sass.config.js --bundleConfigAsCjs",

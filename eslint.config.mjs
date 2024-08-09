@@ -6,14 +6,7 @@ import globals from "globals";
 
 export default tseslint.config(
   {
-    ignores: [
-      ".*/",
-      "docs/",
-      "lib/",
-      "node_modules/",
-      "template/css/",
-      "test/**/*.test.js",
-    ],
+    ignores: [".*/", "docs/", "lib/", "node_modules/", "template/css/"],
   },
   {
     files: ["**/*.js", "**/*.ts"],
