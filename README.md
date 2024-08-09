@@ -69,7 +69,7 @@ const { mdimg } = require("mdimg");
 import { mdimg } from "mdimg";
 ```
 
-Convert markdown text or file to image:
+Convert markdown file to an image:
 
 ```js
 const convertRes = await mdimg({
@@ -80,8 +80,20 @@ const convertRes = await mdimg({
 });
 
 console.log(
-  `Convert to image successfully!\nImage has been saved as \`${convertRes.data}\``,
+  `Convert to image successfully!\nImage has been saved as \`${convertRes.path}\``,
 );
+```
+
+Convert markdown text to blob:
+
+```js
+const convertRes = await mdimg({
+  inputText: "# Hello world",
+  encoding: "blob",
+});
+
+// import { writeFileSync } from "fs";
+// writeFileSync("path/to/output.png", convertRes.data);
 ```
 
 When using `mdimg()` method, you must specify either `inputFilename` (input file) or `inputText` (directly input text).
