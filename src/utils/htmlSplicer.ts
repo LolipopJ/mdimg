@@ -9,9 +9,10 @@ const spliceHtml = ({
   cssText,
   htmlTemplate,
   cssTemplate,
+  log,
 }: Pick<
   IConvertOptions,
-  "htmlText" | "cssText" | "htmlTemplate" | "cssTemplate"
+  "htmlText" | "cssText" | "htmlTemplate" | "cssTemplate" | "log"
 > & {
   inputHtml: string;
 }) => {
@@ -28,9 +29,11 @@ const spliceHtml = ({
     try {
       accessSync(_htmlPath, constants.R_OK);
     } catch (err) {
-      console.warn(
-        `HTML template ${_htmlPath} is not found or unreadable. Use default HTML template.\n${err}`,
-      );
+      if (log) {
+        process.stderr.write(
+          `Warning: HTML template ${_htmlPath} is not found or unreadable. Use default HTML template.\n${err}\n`,
+        );
+      }
       _htmlPath = resolve(__dirname, "../template/html/default.html");
     }
 
@@ -43,9 +46,11 @@ const spliceHtml = ({
     try {
       accessSync(_cssPath, constants.R_OK);
     } catch (err) {
-      console.warn(
-        `CSS template ${_cssPath} is not found or unreadable. Use default CSS template.\n${err}`,
-      );
+      if (log) {
+        process.stderr.write(
+          `Warning: CSS template ${_cssPath} is not found or unreadable. Use default CSS template.\n${err}\n`,
+        );
+      }
       _cssPath = resolve(__dirname, "../template/css/default.css");
     }
 

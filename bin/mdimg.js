@@ -6,7 +6,7 @@ const { mdimg } = require("../lib/mdimg.js");
 
 const pkg = require("../package.json");
 
-const _encodingTypes = ["base64", "binary"];
+const _encodingTypes = ["base64", "binary", "blob"];
 const _outputFileTypes = ["jpeg", "png", "webp"];
 
 const program = new Command();
@@ -46,7 +46,7 @@ program
   .addOption(
     new Option(
       "-e, --encoding <encoding type>",
-      "The encoding of output image. If 'base64' is specified, mdimg will print the BASE64 encoded string to the console",
+      "The encoding of output image. If 'base64' or 'blob' is specified, the result string or blob will be output via stdout",
     )
       .default("binary")
       .choices(_encodingTypes),
@@ -66,7 +66,7 @@ program
   .addOption(
     new Option(
       "--html <template name>",
-      "Specify a HTML template. You can find them in template/html folder. Option --template will be overridden",
+      "Specify a HTML template. You can find them in template/html folder. Option --template will be ignored",
     ),
   )
   .addOption(
@@ -78,7 +78,7 @@ program
   .addOption(
     new Option(
       "--css <template name>",
-      "Specify a CSS template. You can find them in template/css folder. Option --template will be overridden",
+      "Specify a CSS template. You can find them in template/css folder. Option --template will be ignored",
     ),
   )
   .addOption(
@@ -133,5 +133,12 @@ mdimg({
   cssText,
   htmlTemplate: html || template,
   cssTemplate: css || template,
-  log: true,
-});
+  log: encoding === "binary",
+})
+  .then((res) => {
+    if (encoding === "base64" || encoding === "blob")
+      process.stdout.write(res.data);
+  })
+  .catch((err) => {
+    process.stderr.write(String(err));
+  });

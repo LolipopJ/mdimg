@@ -33,46 +33,49 @@ const mdimg = async ({
   cssTemplate = "default",
   log = false,
   puppeteerProps = {},
-}: IConvertOptions) => {
+}: IConvertOptions): Promise<IConvertResponse> => {
   const _outputFileTypes: IConvertTypeOption[] = ["jpeg", "png", "webp"];
-  const _encodingTypes: IConvertEncodingOption[] = ["base64", "binary"];
+  const _encodingTypes: IConvertEncodingOption[] = ["base64", "binary", "blob"];
   const _result: IConvertResponse = {
     html: "",
-    data: encoding === "binary" ? Uint8Array.from([]) : "",
+    data: encoding === "base64" ? "" : Uint8Array.from([]),
     path: undefined,
   };
 
   // Resolve input file or text
-  let _input = inputText || mdText;
+  let _input = "";
   const _inputFilename = inputFilename || mdFile;
+  const _inputText = inputText || mdText;
   if (_inputFilename) {
     const _inputFilePath = resolve(_inputFilename);
-    if (!existsSync(_inputFilePath)) {
-      // Input is not exist
-      throw new Error(`Input file ${_inputFilePath} is not exists.`);
-    } else {
-      if (!statSync(_inputFilePath).isFile()) {
-        // Input is not a file
-        throw new Error("Input is not a file.");
-      } else {
-        // Read text from input file
+    if (existsSync(_inputFilePath)) {
+      if (statSync(_inputFilePath).isFile()) {
         _input = readFileSync(_inputFilePath).toString();
+
         if (log) {
-          console.log(`Start to convert ${_inputFilePath} to an image.`);
+          process.stderr.write(
+            `Start to convert ${_inputFilePath} to an image.\n`,
+          );
         }
+      } else {
+        throw new Error("Error: input is not a file.\n");
       }
+    } else {
+      throw new Error(`Error: input file ${_inputFilePath} is not exists.\n`);
     }
-  } else if (!_input) {
-    // There is no input text or file
-    throw new Error("You must provide a text or a file to be converted.");
+  } else if (_inputText) {
+    _input = _inputText;
+  } else {
+    throw new Error("Error: text or file is required to be converted.\n");
   }
 
   // Resolve encoding
   const _encoding = encoding;
+  const _saveToDisk = _encoding === "binary";
   if (!_encodingTypes.includes(_encoding)) {
     // Params encoding is not valid
     throw new Error(
-      `Encoding ${_encoding} is not supported. Valid values: 'base64' and 'binary'.`,
+      `Error: encoding type ${_encoding} is not supported. Valid types: ${_encodingTypes.join(", ")}.\n`,
     );
   }
 
@@ -81,47 +84,45 @@ const mdimg = async ({
   if (!_outputFileTypes.includes(_type)) {
     // Params encoding is not valid
     throw new Error(
-      `Output file type ${_type} is not supported. Valid values: 'jpeg', 'png' and 'webp'.`,
+      `Error: output file type ${_type} is not supported. Valid types: ${_outputFileTypes.join(", ")}.\n`,
     );
   }
 
   // Resolve output filename
   let _output = "";
-  if (_encoding === "binary") {
-    if (!outputFilename) {
-      // Output filename is not specified
-      // Set default output filename
-      _output = resolve("mdimg_output", _generateImageFilename(_type));
-    } else {
-      // Check validation of ouput filename
+  if (_saveToDisk) {
+    if (outputFilename) {
+      // Check validation of output filename
       const _outputFilename = basename(outputFilename);
       const _outputFilePath = dirname(outputFilename);
+
       const _outputFilenameArr = _outputFilename.split(".");
-      const _outputFilenameArrLeng = _outputFilenameArr.length;
-      if (_outputFilenameArrLeng <= 1) {
+      const _outputFilenameArrLength = _outputFilenameArr.length;
+
+      if (_outputFilenameArrLength <= 1) {
         // Output file type is not specified
-        _output = resolve(_outputFilePath, `_outputFilename.${_type}`);
+        _output = resolve(_outputFilePath, `${_outputFilename}.${_type}`);
       } else {
-        // Output file type is specified
         const _outputFileType = _outputFilenameArr[
-          _outputFilenameArrLeng - 1
+          _outputFilenameArrLength - 1
         ] as IConvertTypeOption;
-        if (!_outputFileTypes.includes(_outputFileType)) {
-          // Output file type is wrongly specified
-          console.warn(
-            `Output file type must be one of 'jpeg', 'png' or 'webp'. Use '${_type}' type.`,
-          );
-          _output = resolve(
-            _outputFilePath,
-            `${_outputFilenameArr[0]}.${_type}`,
-          );
-        } else {
-          // Output file path is correctly specified
-          _output = resolve(outputFilename);
-          // Option type is overrided
+
+        if (_outputFileTypes.includes(_outputFileType)) {
+          // Option type is overridden
           _type = _outputFileType;
+          _output = resolve(outputFilename);
+        } else {
+          // Output file type is wrongly specified
+          if (log) {
+            process.stderr.write(
+              `Warning: output file type must be one of 'jpeg', 'png' or 'webp'. Use '${_type}' type.\n`,
+            );
+          }
+          _output = resolve(_outputFilePath, `${_outputFilename}.${_type}`);
         }
       }
+    } else {
+      _output = resolve("mdimg_output", _generateImageFilename(_type));
     }
   }
 
@@ -138,6 +139,7 @@ const mdimg = async ({
     cssText,
     htmlTemplate: _resolveTemplateName(htmlTemplate),
     cssTemplate: _resolveTemplateName(cssTemplate),
+    log,
   });
   _result.html = _html;
 
@@ -157,38 +159,37 @@ const mdimg = async ({
 
   const _body = await _page.$("#mdimg-body");
   if (_body) {
-    if (_encoding === "binary") {
-      // Create empty output file
-      _createEmptyFile(_output);
+    if (_encoding === "binary" || _encoding === "blob") {
+      if (_saveToDisk) {
+        // Create empty output file
+        _createEmptyFile(_output);
+      }
 
       // Generate output image
-      const _outputBuffer = await _body.screenshot({
-        path: _output,
+      const _outputBlob = await _body.screenshot({
+        path: _saveToDisk ? _output : undefined,
+        type: _type,
         quality: _quality,
-        encoding: _encoding,
+        encoding: "binary",
       });
       if (log) {
-        console.log(
-          `Convert to image successfully!${
-            _quality ? " Iamge quality: " + _quality : ""
-          }\nFile: ${_output}`,
+        process.stderr.write(
+          `Info: convert to image${_saveToDisk ? ` and saved as ${_output}` : ""} successfully!\n`,
         );
       }
 
-      _result.data = _outputBuffer;
-      _result.path = _output;
+      _result.data = _outputBlob;
+      _result.path = _saveToDisk ? _output : undefined;
     } else if (_encoding === "base64") {
       // Generate base64 encoded image
       const _outputBase64String = await _body.screenshot({
         type: _type,
         quality: _quality,
-        encoding: _encoding,
+        encoding: "base64",
       });
       if (log) {
-        console.log(
-          `Convert to BASE64 encoded string successfully!${
-            _quality ? " Iamge quality: " + _quality : ""
-          }\n${_outputBase64String}`,
+        process.stderr.write(
+          `Info: convert to BASE64 encoded string successfully!\n`,
         );
       }
 
@@ -196,13 +197,13 @@ const mdimg = async ({
     }
 
     await _browser.close();
+
     return _result;
   } else {
-    // HTML template is not valid
     await _browser.close();
 
     throw new Error(
-      `Missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.`,
+      `Error: missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.\n`,
     );
   }
 };
@@ -220,7 +221,9 @@ function _createEmptyFile(filename: string) {
     mkdirSync(_filePath, { recursive: true });
     writeFileSync(filename, "");
   } catch (error: unknown) {
-    throw new Error(`Create new file ${filename} failed.\n` + String(error));
+    throw new Error(
+      `Error: create new file ${filename} failed.\n${String(error)}\n`,
+    );
   }
 }
 

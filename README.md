@@ -92,25 +92,25 @@ Here are all available options:
 | -------------- | --------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | inputText      | `String`        | `undefined`                                  | Input Markdown or HTML text directly. This option **has no effect** if `inputFilename` is specified                                                      |
 | inputFilename  | `String`        | `undefined`                                  | Read Markdown or HTML text from a file                                                                                                                   |
-| outputFilename | `String`        | `./mdimg_output/mdimg_${new Date()}.${type}` | Output binary image filename. File type can be `jpeg`, `png` or `webp`. Available when `encoding` option is `binary`                                     |
-| type           | `String`        | `png`                                        | File type of the image. Type can be one of `jpeg`, `png` or `webp`, defaults to `png`. Type will be inferred from `outputFilename` if available          |
+| outputFilename | `String`        | `./mdimg_output/mdimg_${new Date()}.${type}` | Output binary image filename. Available file extensions: `jpeg`, `png`, `webp`. Available when `encoding` option is `binary`                             |
+| type           | `String`        | `png`                                        | File type of the image. Available types: `jpeg`, `png`, `webp`, defaults to `png`. Type will be inferred from `outputFilename` if specified              |
 | width          | `Number`        | `800`                                        | Width of output image                                                                                                                                    |
-| encoding       | `String`        | `binary`                                     | Encode type of output image. Available value can be `binary` or `base64`                                                                                 |
+| encoding       | `String`        | `binary`                                     | Encode type of output image. Available types: `base64`, `binary`, `blob`                                                                                 |
 | quality        | `Number`        | `100`                                        | Quality of the image, between 0-100. **Not applicable** to `png` image                                                                                   |
 | htmlText       | `String`        | `undefined`                                  | HTML rendering text                                                                                                                                      |
 | cssText        | `String`        | `undefined`                                  | CSS rendering text                                                                                                                                       |
 | htmlTemplate   | `String`        | `default`                                    | HTML rendering template. Available presets can be found in [`template/html`](./template/html/). This option **has no effect** if `htmlText` is specified |
 | cssTemplate    | `String`        | `default`                                    | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). This option **has no effect** if `cssText` is specified     |
-| log            | `Boolean`       | `false`                                      | Show preset console log                                                                                                                                  |
+| log            | `Boolean`       | `false`                                      | Print execution logs via stderr                                                                                                                          |
 | puppeteerProps | `LaunchOptions` | `undefined`                                  | [Launch options](https://pptr.dev/api/puppeteer.puppeteerlaunchoptions) of Puppeteer                                                                     |
 
 Returns: `Promise<object>`
 
-| Key  | Value Type               | Notes                                                                                                         |
-| ---- | ------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| data | `string` \| `Uint8Array` | Uint8Array (`encoding` is `binary`) or a BASE64 encoded string (`encoding` is `base64`) with the output image |
-| path | `string`                 | Path of output image. Available when `encoding` is `binary`                                                   |
-| html | `string`                 | Rendered HTML document                                                                                        |
+| Key  | Value Type               | Notes                                                                                                                    |
+| ---- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| data | `string` \| `Uint8Array` | BASE64 encoded string (`encoding` is `base64`) or Uint8Array blob (`encoding` is `binary` or `blob`) of the output image |
+| path | `string`                 | Path of output image. Available when `encoding` is `binary`                                                              |
+| html | `string`                 | Rendered HTML document                                                                                                   |
 
 ## Custom template
 
@@ -172,7 +172,7 @@ Preset templates may not often meet your needs. If you already know the specific
 A command example:
 
 ```bash
-mdimg -i input.md --htmlText '<div id="mdimg-body"><div class="markdown-body"></div></div>' --cssText '@import "https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"; .markdown-body { padding: 6rem 4rem; }'
+mdimg -i input.md --htmlText '<div id="mdimg-body"><div class="markdown-body"></div></div>' --cssText '@import "https://cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"; .markdown-body { padding: 6rem 4rem; }'
 ```
 
 Or in Node.js project:
