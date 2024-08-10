@@ -10,15 +10,15 @@ First, the script calls [marked](https://github.com/markedjs/marked) to parse Ma
 
 ## Preview
 
-Rendering results under MacOS:
+Rendering results:
 
-| Preview                                                                  | HTML Template | CSS Template | Notes                                             |
-| ------------------------------------------------------------------------ | ------------- | ------------ | ------------------------------------------------- |
-| <img alt="default preview" src="./docs/default.png" height="150">        | `default`     | `default`    |
-| <img alt="empty preview" src="./docs/empty.png" height="150">            | `default`     | `empty`      | Not using any CSS presets                         |
-| <img alt="github preview" src="./docs/github.png" height="150">          | `default`     | `github`     |
-| <img alt="github dark preview" src="./docs/githubDark.png" height="150"> | `default`     | `githubDark` |
-| <img alt="words preview" src="./docs/words.png" height="150">            | `words`       | `words`      | It is recommended to use with **plain text only** |
+| MacOS                                                                           | Windows                                                                        | HTML Template | CSS Template | Notes                                             |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------- | ------------ | ------------------------------------------------- |
+| <img alt="default preview" src="./docs/darwin/default.png" height="150">        | <img alt="default preview" src="./docs/win32/default.png" height="150">        | `default`     | `default`    |
+| <img alt="empty preview" src="./docs/darwin/empty.png" height="150">            | <img alt="empty preview" src="./docs/win32/empty.png" height="150">            | `default`     | `empty`      | Not using any CSS presets                         |
+| <img alt="github preview" src="./docs/darwin/github.png" height="150">          | <img alt="github preview" src="./docs/win32/github.png" height="150">          | `default`     | `github`     |
+| <img alt="github dark preview" src="./docs/darwin/githubDark.png" height="150"> | <img alt="github dark preview" src="./docs/win32/githubDark.png" height="150"> | `default`     | `githubDark` |
+| <img alt="words preview" src="./docs/darwin/words.png" height="150">            | <img alt="words preview" src="./docs/win32/words.png" height="150">            | `words`       | `words`      | It is recommended to use with **plain text only** |
 
 ## Requirements
 
@@ -195,7 +195,7 @@ await mdimg({
   htmlText: `<div id="mdimg-body">
   <div class="markdown-body"></div>
 </div>`,
-  cssText: `@import "https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css";
+  cssText: `@import "https://cdn.jsdelivr.net/npm/normalize.css/normalize.min.css";
 .markdown-body {
   padding: 6rem 4rem;
 }`,

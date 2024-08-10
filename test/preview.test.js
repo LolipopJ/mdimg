@@ -10,7 +10,7 @@ const inputFilenameTestTemplateWords = resolve(
   "testTemplateWords.md",
 );
 
-const outputDir = resolve(__dirname, "../docs");
+const outputDir = resolve(__dirname, "../docs", process.platform);
 if (existsSync(outputDir)) {
   rmSync(outputDir, { recursive: true });
 }
