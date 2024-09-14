@@ -61,20 +61,21 @@ const spliceHtml = ({
   $(".markdown-body").html(inputHtml);
 
   const _html = `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mdimg</title>
-    <style>
-      ${_cssSource}
-    </style>
-  </head>
-  <body>
-    ${$.html()}
-  </body>
-  </html>`;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mdimg rendering preview</title>
+  <style>
+    ${_cssSource}
+  </style>
+  <script defer="defer" type="application/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  ${$.html()}
+</body>
+</html>`;
 
   return _html;
 };
