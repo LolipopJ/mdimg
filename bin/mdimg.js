@@ -29,13 +29,13 @@ program
   .addOption(
     new Option(
       "-o, --output <output filename>",
-      "Output binary image filename. File type can be one of 'jpeg', 'png' or 'webp' Available when option --encoding is 'binary'",
+      "Output binary image filename. File type can be one of 'jpeg', 'png' or 'webp'. Available when option --encoding is 'binary'",
     ),
   )
   .addOption(
     new Option(
       "--type <image type>",
-      "The file type of the image. Type can be one of 'jpeg', 'png' or 'webp', defaults to 'png'. Type will be inferred from option --output if available",
+      "The file type of the image. Type will be inferred from option --output if provided",
     )
       .default("png")
       .choices(_outputFileTypes),

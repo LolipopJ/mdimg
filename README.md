@@ -202,6 +202,28 @@ await mdimg({
 });
 ```
 
+## Extended syntaxes
+
+Some extended syntax, such as LaTeX, cannot be parsed by pure marked correctly. To solve this problem, the mdimg introduces some third-party libraries to enhance rendering capabilities. Below are introduced libraries:
+
+### [MathJax](https://github.com/mathjax/MathJax)
+
+> MathJax is an open-source JavaScript display engine for **LaTeX**, **MathML**, and **AsciiMath** notation.
+
+⚠️ Due to the [unexpected behaviors](https://andrzejq.github.io/markdown-mathjax/editor/md-mhj.html) between marked and MathJax, you need to manually **wrap the LaTeX code in a `<div>` block**. Example:
+
+```md
+<div>$$
+A_{m,n} =
+\begin{pmatrix}
+a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+\end{pmatrix}
+$$</div>
+```
+
 ## Development
 
 ```bash
