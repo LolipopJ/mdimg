@@ -49,6 +49,11 @@ export interface IConvertOptions {
    */
   cssTemplate?: "default" | "empty" | "github" | "githubDark" | "words";
   /**
+   * Rendering color theme
+   * @defaultValue `light`
+   */
+  theme?: "light" | "dark";
+  /**
    * Show preset console log
    * @defaultValue `false`
    */

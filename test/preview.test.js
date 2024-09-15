@@ -63,6 +63,7 @@ test("Generate preview image with `githubDark` CSS template", async () => {
     outputFilename,
     htmlTemplate: "default",
     cssTemplate: "githubDark",
+    theme: "dark",
     width: 1000,
   });
 

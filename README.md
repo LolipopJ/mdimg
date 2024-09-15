@@ -17,7 +17,7 @@ Rendering results:
 | <img alt="default preview" src="./docs/darwin/default.png" height="150">        | <img alt="default preview" src="./docs/win32/default.png" height="150">        | `default`     | `default`    |
 | <img alt="empty preview" src="./docs/darwin/empty.png" height="150">            | <img alt="empty preview" src="./docs/win32/empty.png" height="150">            | `default`     | `empty`      | Not using any CSS presets                         |
 | <img alt="github preview" src="./docs/darwin/github.png" height="150">          | <img alt="github preview" src="./docs/win32/github.png" height="150">          | `default`     | `github`     |
-| <img alt="github dark preview" src="./docs/darwin/githubDark.png" height="150"> | <img alt="github dark preview" src="./docs/win32/githubDark.png" height="150"> | `default`     | `githubDark` |
+| <img alt="github dark preview" src="./docs/darwin/githubDark.png" height="150"> | <img alt="github dark preview" src="./docs/win32/githubDark.png" height="150"> | `default`     | `githubDark` | Should be used with `theme: "dark"`               |
 | <img alt="words preview" src="./docs/darwin/words.png" height="150">            | <img alt="words preview" src="./docs/win32/words.png" height="150">            | `words`       | `words`      | It is recommended to use with **plain text only** |
 
 ## Requirements
@@ -77,6 +77,10 @@ const convertRes = await mdimg({
   outputFilename: "path/to/output.png",
   width: 600,
   cssTemplate: "github",
+  theme: "light",
+  // or with dark theme
+  // cssTemplate: "githubDark",
+  // theme: "dark",
 });
 
 console.log(
@@ -113,6 +117,7 @@ Here are all available options:
 | cssText        | `String`        | `undefined`                                  | CSS rendering text                                                                                                                                       |
 | htmlTemplate   | `String`        | `default`                                    | HTML rendering template. Available presets can be found in [`template/html`](./template/html/). This option **has no effect** if `htmlText` is specified |
 | cssTemplate    | `String`        | `default`                                    | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). This option **has no effect** if `cssText` is specified     |
+| theme          | `String`        | `light`                                      | Rendering color theme, will impact styles of code block and so on                                                                                        |
 | log            | `Boolean`       | `false`                                      | Print execution logs via stderr                                                                                                                          |
 | puppeteerProps | `LaunchOptions` | `undefined`                                  | [Launch options](https://pptr.dev/api/puppeteer.puppeteerlaunchoptions) of Puppeteer                                                                     |
 
@@ -204,13 +209,13 @@ await mdimg({
 
 ## Extended syntaxes
 
-Some extended syntax, such as LaTeX, cannot be parsed by pure marked correctly. To solve this problem, the mdimg introduces some third-party libraries to enhance rendering capabilities. Below are introduced libraries:
+Some extended syntaxes, such as LaTeX, cannot be parsed by pure marked correctly. To solve this problem, the mdimg introduces some third-party libraries to enhance rendering capabilities. Below are introduced libraries:
 
 ### [MathJax](https://github.com/mathjax/MathJax)
 
 > MathJax is an open-source JavaScript display engine for **LaTeX**, **MathML**, and **AsciiMath** notation.
 
-⚠️ Due to the [unexpected behaviors](https://andrzejq.github.io/markdown-mathjax/editor/md-mhj.html) between marked and MathJax, you need to manually **wrap the LaTeX code in a `<div>` block**. Example:
+⚠️ Due to the [unexpected behaviors](https://andrzejq.github.io/markdown-mathjax/editor/md-mhj.html) between marked and MathJax: "\\" before any ASCII punctuation character is backslash escape, so "\\\\" (or "\\,") should be written as "\\\\\\\\" (or "\\\\,"). You need to manually replace characters or **wrap the LaTeX code in a `<div>` block**. Example:
 
 ```md
 <div>$$
@@ -223,6 +228,28 @@ a_{m,1} & a_{m,2} & \cdots & a_{m,n}
 \end{pmatrix}
 $$</div>
 ```
+
+### [Mermaid](https://github.com/mermaid-js/mermaid)
+
+> Mermaid is a JavaScript-based **diagramming** and **charting** tool that uses Markdown-inspired text definitions and a renderer to create and modify complex diagrams.
+
+Sequence diagram example:
+
+````md
+```mermaid
+sequenceDiagram
+  Alice->>Bob: Hello Bob, how are you ?
+  Bob->>Alice: Fine, thank you. And you?
+  create participant Carl
+  Alice->>Carl: Hi Carl!
+  create actor D as Donald
+  Carl->>D: Hi!
+  destroy Carl
+  Alice-xCarl: We are too many
+  destroy Bob
+  Bob->>Alice: I agree
+```
+````
 
 ## Development
 
