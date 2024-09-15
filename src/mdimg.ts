@@ -165,7 +165,10 @@ const mdimg = async ({
     : process.cwd();
   const _tempLocalHtmlFile = resolve(
     _baseDirname,
-    `.mdimg_temp_${new Date().getTime()}.html`,
+    `.mdimg_temp_${new Date().getTime()}_${_padStartWithZero(
+      Math.floor(Math.random() * 10000),
+      4,
+    )}.html`,
   );
   try {
     writeFileSync(_tempLocalHtmlFile, _html); // used to load local files
@@ -266,11 +269,22 @@ function _createEmptyFile(filename: string) {
   }
 }
 
+function _padStartWithZero(num: number, length: number) {
+  return String(num).padStart(length, "0");
+}
+
 function _generateImageFilename(type: IConvertOptions["type"]) {
   const _now = new Date();
-  const _outputFilenameSuffix = `${_now.getFullYear()}_${
-    _now.getMonth() + 1
-  }_${_now.getDate()}_${_now.getHours()}_${_now.getMinutes()}_${_now.getSeconds()}_${_now.getMilliseconds()}`;
+  const _outputFilenameSuffix = `${_now.getFullYear()}_${_padStartWithZero(
+    _now.getMonth() + 1,
+    2,
+  )}_${_padStartWithZero(_now.getDate(), 2)}_${_padStartWithZero(
+    _now.getHours(),
+    2,
+  )}_${_padStartWithZero(_now.getMinutes(), 2)}_${_padStartWithZero(
+    _now.getSeconds(),
+    2,
+  )}_${_padStartWithZero(_now.getMilliseconds(), 3)}`;
   return `mdimg_${_outputFilenameSuffix}.${type}`;
 }
 
