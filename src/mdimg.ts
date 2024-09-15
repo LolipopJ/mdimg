@@ -31,6 +31,7 @@ const mdimg = async ({
   cssText,
   htmlTemplate = "default",
   cssTemplate = "default",
+  theme = "light",
   log = false,
   puppeteerProps = {},
 }: IConvertOptions): Promise<IConvertResponse> => {
@@ -46,6 +47,7 @@ const mdimg = async ({
   let _input = "";
   const _inputFilename = inputFilename || mdFile;
   const _inputText = inputText || mdText;
+  const _baseDirname = _inputFilename ? dirname(_inputFilename) : process.cwd();
   if (_inputFilename) {
     const _inputFilePath = resolve(_inputFilename);
     if (existsSync(_inputFilePath)) {
@@ -143,6 +145,7 @@ const mdimg = async ({
     cssText,
     htmlTemplate: _resolveTemplateName(htmlTemplate),
     cssTemplate: _resolveTemplateName(cssTemplate),
+    theme,
     log,
   });
   _result.html = _html;

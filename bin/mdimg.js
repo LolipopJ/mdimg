@@ -8,6 +8,7 @@ const pkg = require("../package.json");
 
 const _encodingTypes = ["base64", "binary", "blob"];
 const _outputFileTypes = ["jpeg", "png", "webp"];
+const _colorThemes = ["light", "dark"];
 
 const program = new Command();
 
@@ -37,8 +38,8 @@ program
       "--type <image type>",
       "The file type of the image. Type will be inferred from option --output if provided",
     )
-      .default("png")
-      .choices(_outputFileTypes),
+      .choices(_outputFileTypes)
+      .default("png"),
   )
   .addOption(
     new Option("-w, --width <width>", "The width of output image").default(800),
@@ -48,8 +49,8 @@ program
       "-e, --encoding <encoding type>",
       "The encoding of output image. If 'base64' or 'blob' is specified, the result string or blob will be output via stdout",
     )
-      .default("binary")
-      .choices(_encodingTypes),
+      .choices(_encodingTypes)
+      .default("binary"),
   )
   .addOption(
     new Option(
@@ -87,6 +88,14 @@ program
       "Use the input text as a custom CSS template. Option --css will be ignored",
     ),
   )
+  .addOption(
+    new Option(
+      "--theme <color theme>",
+      "Use the input text as a custom CSS template. Option --css will be ignored",
+    )
+      .choices(_colorThemes)
+      .default("light"),
+  )
   .version(pkg.version);
 
 program.addHelpText(
@@ -114,6 +123,7 @@ const {
   html,
   cssText,
   css,
+  theme,
 } = program.opts();
 
 if (!text && !input) {
@@ -133,6 +143,7 @@ mdimg({
   cssText,
   htmlTemplate: html || template,
   cssTemplate: css || template,
+  theme,
   log: encoding === "binary",
 })
   .then((res) => {

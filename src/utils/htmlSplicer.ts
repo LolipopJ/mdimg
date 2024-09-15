@@ -9,10 +9,11 @@ const spliceHtml = ({
   cssText,
   htmlTemplate,
   cssTemplate,
+  theme,
   log,
 }: Pick<
   IConvertOptions,
-  "htmlText" | "cssText" | "htmlTemplate" | "cssTemplate" | "log"
+  "htmlText" | "cssText" | "htmlTemplate" | "cssTemplate" | "theme" | "log"
 > & {
   inputHtml: string;
 }) => {
@@ -58,26 +59,26 @@ const spliceHtml = ({
   }
 
   const $ = load(_htmlSource);
+  $("head").append(`<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mdimg rendering preview</title>
+<style>${_cssSource}</style>
+
+<!-- highlight.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-${theme}.min.css">
+<script defer="defer" src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js" onload="hljs.highlightAll();"></script>
+
+<!-- MathJax -->
+<script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<!-- Mermaid -->
+<script defer="defer" type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: ${theme === "dark" ? "dark" : undefined} });
+</script>`);
   $(".markdown-body").html(inputHtml);
 
-  const _html = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>mdimg rendering preview</title>
-  <style>
-    ${_cssSource}
-  </style>
-  <script defer="defer" type="application/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-</head>
-<body>
-  ${$.html()}
-</body>
-</html>`;
-
-  return _html;
+  return $.html();
 };
 
 export { spliceHtml };

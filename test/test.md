@@ -1,6 +1,8 @@
+<img alt="marked-logo" src="./marked-logo-black.svg" style="float: right;">
+
 # Marked - Markdown Parser
 
-> source: https://github.com/markedjs/marked/blob/master/docs/demo/initial.md
+> Source: https://github.com/markedjs/marked/blob/master/docs/demo/initial.md
 
 [Marked] lets you convert [Markdown] into HTML. Markdown is a simple text format whose goal is to be very easy to read and write, even when not converted to HTML. This demo page will let you type anything you like and see how it gets converted. Live. No more waiting around.
 
@@ -34,27 +36,28 @@ Ready to start writing? Either start changing stuff on the left or
 [marked]: https://github.com/markedjs/marked/
 [markdown]: http://daringfireball.net/projects/markdown/
 
+## Code Block
+
+> Source: https://www.typescriptlang.org/
+
+```ts
+interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  role: string;
+}
+
+function updateUser(id: number, update: Partial<User>) {
+  const user = getUser(id);
+  const newUser = { ...user, ...update };
+  saveUser(id, newUser);
+}
+```
+
 ## LaTex
 
-> source: https://ashki23.github.io/markdown-latex.html#latex
-
-The following provides a quick reference of the most commonly used LaTeX syntax. You may find a more extensive references about mathematical formulas at [LaTeX Wikibooks](https://en.wikibooks.org/wiki/LaTeX/Mathematics).
-
-### Equations
-
-<div>$$\text{$\dfrac{b}{a+b}=3, \:$ therefore we can set $\: a=6$}$$</div>
-
-### Functions
-
-<div>$$
-f(x)=
-\begin{cases}
-1/d_{ij} & \quad \text{when $d_{ij} \leq 160$}\\
-0 & \quad \text{otherwise}
-\end{cases}
-$$</div>
-
-### Matrices
+> Source: https://ashki23.github.io/markdown-latex.html#latex
 
 <div>$$
 A_{m,n} =
@@ -65,3 +68,13 @@ a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
 a_{m,1} & a_{m,2} & \cdots & a_{m,n}
 \end{pmatrix}
 $$</div>
+
+## Mermaid
+
+> Source: https://mermaid.js.org/
+
+```mermaid
+sequenceDiagram
+  A->>B: I #9829; you!
+  B->>A: I #9829; you #infin; times more!
+```
