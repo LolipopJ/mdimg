@@ -151,23 +151,6 @@ const mdimg = async ({
   _result.html = _html;
 
   // Launch headless browser to render HTML
-  let _useLocalHtmlFileFlag = false;
-  const _baseDirname = _inputFilename
-    ? dirname(resolve(_inputFilename))
-    : process.cwd();
-  const _tempLocalHtmlFile = resolve(
-    _baseDirname,
-    `.mdimg_temp_${new Date().getTime()}.html`,
-  );
-  try {
-    writeFileSync(_tempLocalHtmlFile, _html); // used to load local files
-    _useLocalHtmlFileFlag = true;
-  } catch (error) {
-    process.stderr.write(
-      `Warning: write temporary local HTML file failed, local files may not display correctly. ${error}\n`,
-    );
-  }
-
   const _browser = await puppeteer.launch({
     defaultViewport: {
       width,
@@ -177,68 +160,89 @@ const mdimg = async ({
     ...puppeteerProps,
   });
 
+  const _baseDirname = _inputFilename
+    ? dirname(resolve(_inputFilename))
+    : process.cwd();
+  const _tempLocalHtmlFile = resolve(
+    _baseDirname,
+    `.mdimg_temp_${new Date().getTime()}.html`,
+  );
+  try {
+    writeFileSync(_tempLocalHtmlFile, _html); // used to load local files
+  } catch (error) {
+    process.stderr.write(
+      `Warning: write temporary local HTML file failed, local files may not display correctly. ${error}\n`,
+    );
+  }
+  const _useLocalHtmlFileFlag = existsSync(_tempLocalHtmlFile);
+
   const cleanup = async () => {
-    rmSync(_tempLocalHtmlFile);
+    if (_useLocalHtmlFileFlag) {
+      rmSync(_tempLocalHtmlFile);
+    }
     await _browser.close();
   };
 
-  const _page = await _browser.newPage();
-  if (_useLocalHtmlFileFlag) {
-    await _page.goto(_tempLocalHtmlFile, {
-      waitUntil: "networkidle0",
-    });
-  } else {
-    await _page.setContent(_html, {
-      waitUntil: "networkidle0",
-    });
-  }
+  try {
+    const _page = await _browser.newPage();
+    if (_useLocalHtmlFileFlag) {
+      await _page.goto(`file://${_tempLocalHtmlFile}`, {
+        waitUntil: "networkidle0",
+      });
+    } else {
+      await _page.setContent(_html, {
+        waitUntil: "networkidle0",
+      });
+    }
 
-  const _body = await _page.$("#mdimg-body");
-  if (!_body) {
+    const _body = await _page.$("#mdimg-body");
+    if (!_body) {
+      throw new Error(
+        `Error: missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.\n`,
+      );
+    }
+
+    if (_encoding === "binary" || _encoding === "blob") {
+      if (_saveToDisk) {
+        // Create empty output file
+        _createEmptyFile(_output);
+      }
+
+      // Generate output image
+      const _outputBlob = await _body.screenshot({
+        path: _saveToDisk ? _output : undefined,
+        type: _type,
+        quality: _quality,
+        encoding: "binary",
+      });
+      if (log) {
+        process.stderr.write(
+          `Info: convert to image${_saveToDisk ? ` and saved as ${_output}` : ""} successfully!\n`,
+        );
+      }
+
+      _result.data = _outputBlob;
+      _result.path = _saveToDisk ? _output : undefined;
+    } else if (_encoding === "base64") {
+      // Generate base64 encoded image
+      const _outputBase64String = await _body.screenshot({
+        type: _type,
+        quality: _quality,
+        encoding: "base64",
+      });
+      if (log) {
+        process.stderr.write(
+          `Info: convert to BASE64 encoded string successfully!\n`,
+        );
+      }
+
+      _result.data = _outputBase64String;
+    }
+  } catch (error: unknown) {
+    throw new Error(String(error));
+  } finally {
     await cleanup();
-    throw new Error(
-      `Error: missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.\n`,
-    );
   }
-
-  if (_encoding === "binary" || _encoding === "blob") {
-    if (_saveToDisk) {
-      // Create empty output file
-      _createEmptyFile(_output);
-    }
-
-    // Generate output image
-    const _outputBlob = await _body.screenshot({
-      path: _saveToDisk ? _output : undefined,
-      type: _type,
-      quality: _quality,
-      encoding: "binary",
-    });
-    if (log) {
-      process.stderr.write(
-        `Info: convert to image${_saveToDisk ? ` and saved as ${_output}` : ""} successfully!\n`,
-      );
-    }
-
-    _result.data = _outputBlob;
-    _result.path = _saveToDisk ? _output : undefined;
-  } else if (_encoding === "base64") {
-    // Generate base64 encoded image
-    const _outputBase64String = await _body.screenshot({
-      type: _type,
-      quality: _quality,
-      encoding: "base64",
-    });
-    if (log) {
-      process.stderr.write(
-        `Info: convert to BASE64 encoded string successfully!\n`,
-      );
-    }
-
-    _result.data = _outputBase64String;
-  }
-
-  await cleanup();
 
   return _result;
 };
