@@ -1,4 +1,3 @@
 node_modules/
 mdimg_output/
-.*/
-test/.*.html
+**/*/.*.html

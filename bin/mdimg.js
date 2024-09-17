@@ -9,6 +9,7 @@ const pkg = require("../package.json");
 const _encodingTypes = ["base64", "binary", "blob"];
 const _outputFileTypes = ["jpeg", "png", "webp"];
 const _colorThemes = ["light", "dark"];
+const _booleanOptions = ["true", "false"];
 
 const program = new Command();
 
@@ -91,10 +92,21 @@ program
   .addOption(
     new Option(
       "--theme <color theme>",
-      "Use the input text as a custom CSS template. Option --css will be ignored",
+      "Rendering color theme, will impact styles of code block and so on",
     )
       .choices(_colorThemes)
       .default("light"),
+  )
+  .addOption(
+    new Option("--extensions <enabled>", "Whether to enable extensions")
+      .choices(_booleanOptions)
+      .default("true"),
+  )
+  .addOption(
+    new Option(
+      "--debug",
+      "Whether to keep temporary HTML file after rendering",
+    ),
   )
   .version(pkg.version);
 
@@ -123,7 +135,9 @@ const {
   html,
   cssText,
   css,
+  extensions,
   theme,
+  debug,
 } = program.opts();
 
 if (!text && !input) {
@@ -143,8 +157,10 @@ mdimg({
   cssText,
   htmlTemplate: html || template,
   cssTemplate: css || template,
+  extensions: extensions !== "false",
   theme,
   log: encoding === "binary",
+  debug: !!debug,
 })
   .then((res) => {
     if (encoding === "base64" || encoding === "blob")

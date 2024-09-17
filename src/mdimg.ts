@@ -12,9 +12,8 @@ import { spliceHtml } from "./utils/htmlSplicer";
 import { parseMarkdown } from "./utils/mdParser";
 import {
   createEmptyFile,
-  generateImageFilename,
+  generateImageDefaultFilename,
   padStartWithZero,
-  resolveTemplateName,
 } from "./utils/utils";
 
 const mdimg = async ({
@@ -33,11 +32,14 @@ const mdimg = async ({
   htmlTemplate = "default",
   cssTemplate = "default",
   theme = "light",
+  extensions = true,
   log = false,
+  debug = false,
   puppeteerProps = {},
 }: IConvertOptions): Promise<IConvertResponse> => {
   const _outputFileTypes: IConvertTypeOption[] = ["jpeg", "png", "webp"];
   const _encodingTypes: IConvertEncodingOption[] = ["base64", "binary", "blob"];
+
   const _result: IConvertResponse = {
     html: "",
     data: encoding === "base64" ? "" : Uint8Array.from([]),
@@ -131,7 +133,10 @@ const mdimg = async ({
         }
       }
     } else {
-      _output = path.resolve("mdimg_output", generateImageFilename(_type));
+      _output = path.resolve(
+        "mdimg_output",
+        generateImageDefaultFilename(_type),
+      );
     }
   }
 
@@ -143,11 +148,12 @@ const mdimg = async ({
 
   // Parse markdown text to HTML
   const _html = spliceHtml({
-    inputHtml: await parseMarkdown(_input),
+    renderedHtml: await parseMarkdown(_input),
     htmlText,
     cssText,
-    htmlTemplate: resolveTemplateName(htmlTemplate),
-    cssTemplate: resolveTemplateName(cssTemplate),
+    htmlTemplate,
+    cssTemplate,
+    extensions,
     theme,
     log,
   });
@@ -176,14 +182,16 @@ const mdimg = async ({
   try {
     fs.writeFileSync(_tempLocalHtmlFile, _html); // used to load local files
   } catch (error) {
-    process.stderr.write(
-      `Warning: write temporary local HTML file failed, local files may not display correctly. ${error}\n`,
-    );
+    if (log) {
+      process.stderr.write(
+        `Warning: write temporary local HTML file failed, local files may not display correctly. ${error}\n`,
+      );
+    }
   }
   const _useLocalHtmlFileFlag = fs.existsSync(_tempLocalHtmlFile);
 
   const cleanup = async () => {
-    if (_useLocalHtmlFileFlag) {
+    if (_useLocalHtmlFileFlag && !debug) {
       fs.rmSync(_tempLocalHtmlFile);
     }
     await _browser.close();
