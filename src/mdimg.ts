@@ -1,21 +1,21 @@
-import { resolve, dirname, basename } from "path";
-import {
-  existsSync,
-  statSync,
-  readFileSync,
-  mkdirSync,
-  writeFileSync,
-  rmSync,
-} from "fs";
+import fs from "fs";
+import path from "path";
 import puppeteer from "puppeteer";
-import { parseMarkdown } from "./utils/mdParser";
-import { spliceHtml } from "./utils/htmlSplicer";
+
 import type {
-  IConvertOptions,
-  IConvertTypeOption,
   IConvertEncodingOption,
+  IConvertOptions,
   IConvertResponse,
+  IConvertTypeOption,
 } from "./interfaces";
+import { spliceHtml } from "./utils/htmlSplicer";
+import { parseMarkdown } from "./utils/mdParser";
+import {
+  createEmptyFile,
+  generateImageFilename,
+  padStartWithZero,
+  resolveTemplateName,
+} from "./utils/utils";
 
 const mdimg = async ({
   inputText,
@@ -49,10 +49,10 @@ const mdimg = async ({
   const _inputFilename = inputFilename || mdFile;
   const _inputText = inputText || mdText;
   if (_inputFilename) {
-    const _inputFilePath = resolve(_inputFilename);
-    if (existsSync(_inputFilePath)) {
-      if (statSync(_inputFilePath).isFile()) {
-        _input = readFileSync(_inputFilePath).toString();
+    const _inputFilePath = path.resolve(_inputFilename);
+    if (fs.existsSync(_inputFilePath)) {
+      if (fs.statSync(_inputFilePath).isFile()) {
+        _input = fs.readFileSync(_inputFilePath).toString();
 
         if (log) {
           process.stderr.write(
@@ -99,15 +99,15 @@ const mdimg = async ({
   if (_saveToDisk) {
     if (outputFilename) {
       // Check validation of output filename
-      const _outputFilename = basename(outputFilename);
-      const _outputFilePath = dirname(outputFilename);
+      const _outputFilename = path.basename(outputFilename);
+      const _outputFilePath = path.dirname(outputFilename);
 
       const _outputFilenameArr = _outputFilename.split(".");
       const _outputFilenameArrLength = _outputFilenameArr.length;
 
       if (_outputFilenameArrLength <= 1) {
         // Output file type is not specified
-        _output = resolve(_outputFilePath, `${_outputFilename}.${_type}`);
+        _output = path.resolve(_outputFilePath, `${_outputFilename}.${_type}`);
       } else {
         const _outputFileType = _outputFilenameArr[
           _outputFilenameArrLength - 1
@@ -116,7 +116,7 @@ const mdimg = async ({
         if (_outputFileTypes.includes(_outputFileType)) {
           // Option type is overridden
           _type = _outputFileType;
-          _output = resolve(outputFilename);
+          _output = path.resolve(outputFilename);
         } else {
           // Output file type is wrongly specified
           if (log) {
@@ -124,11 +124,14 @@ const mdimg = async ({
               `Warning: output file type must be one of 'jpeg', 'png' or 'webp'. Use '${_type}' type.\n`,
             );
           }
-          _output = resolve(_outputFilePath, `${_outputFilename}.${_type}`);
+          _output = path.resolve(
+            _outputFilePath,
+            `${_outputFilename}.${_type}`,
+          );
         }
       }
     } else {
-      _output = resolve("mdimg_output", _generateImageFilename(_type));
+      _output = path.resolve("mdimg_output", generateImageFilename(_type));
     }
   }
 
@@ -143,8 +146,8 @@ const mdimg = async ({
     inputHtml: await parseMarkdown(_input),
     htmlText,
     cssText,
-    htmlTemplate: _resolveTemplateName(htmlTemplate),
-    cssTemplate: _resolveTemplateName(cssTemplate),
+    htmlTemplate: resolveTemplateName(htmlTemplate),
+    cssTemplate: resolveTemplateName(cssTemplate),
     theme,
     log,
   });
@@ -161,27 +164,27 @@ const mdimg = async ({
   });
 
   const _baseDirname = _inputFilename
-    ? dirname(resolve(_inputFilename))
+    ? path.dirname(path.resolve(_inputFilename))
     : process.cwd();
-  const _tempLocalHtmlFile = resolve(
+  const _tempLocalHtmlFile = path.resolve(
     _baseDirname,
-    `.mdimg_temp_${new Date().getTime()}_${_padStartWithZero(
+    `.mdimg_temp_${new Date().getTime()}_${padStartWithZero(
       Math.floor(Math.random() * 10000),
       4,
     )}.html`,
   );
   try {
-    writeFileSync(_tempLocalHtmlFile, _html); // used to load local files
+    fs.writeFileSync(_tempLocalHtmlFile, _html); // used to load local files
   } catch (error) {
     process.stderr.write(
       `Warning: write temporary local HTML file failed, local files may not display correctly. ${error}\n`,
     );
   }
-  const _useLocalHtmlFileFlag = existsSync(_tempLocalHtmlFile);
+  const _useLocalHtmlFileFlag = fs.existsSync(_tempLocalHtmlFile);
 
   const cleanup = async () => {
     if (_useLocalHtmlFileFlag) {
-      rmSync(_tempLocalHtmlFile);
+      fs.rmSync(_tempLocalHtmlFile);
     }
     await _browser.close();
   };
@@ -208,7 +211,7 @@ const mdimg = async ({
     if (_encoding === "binary" || _encoding === "blob") {
       if (_saveToDisk) {
         // Create empty output file
-        _createEmptyFile(_output);
+        createEmptyFile(_output);
       }
 
       // Generate output image
@@ -250,42 +253,4 @@ const mdimg = async ({
   return _result;
 };
 
-function _resolveTemplateName(templateName: string) {
-  const _templateName = templateName.split(".")[0];
-  return _templateName as IConvertOptions["htmlTemplate"] &
-    IConvertOptions["cssTemplate"];
-}
-
-function _createEmptyFile(filename: string) {
-  const _filePath = dirname(filename);
-
-  try {
-    mkdirSync(_filePath, { recursive: true });
-    writeFileSync(filename, "");
-  } catch (error: unknown) {
-    throw new Error(
-      `Error: create new file ${filename} failed.\n${String(error)}\n`,
-    );
-  }
-}
-
-function _padStartWithZero(num: number, length: number) {
-  return String(num).padStart(length, "0");
-}
-
-function _generateImageFilename(type: IConvertOptions["type"]) {
-  const _now = new Date();
-  const _outputFilenameSuffix = `${_now.getFullYear()}_${_padStartWithZero(
-    _now.getMonth() + 1,
-    2,
-  )}_${_padStartWithZero(_now.getDate(), 2)}_${_padStartWithZero(
-    _now.getHours(),
-    2,
-  )}_${_padStartWithZero(_now.getMinutes(), 2)}_${_padStartWithZero(
-    _now.getSeconds(),
-    2,
-  )}_${_padStartWithZero(_now.getMilliseconds(), 3)}`;
-  return `mdimg_${_outputFilenameSuffix}.${type}`;
-}
-
-export { mdimg, mdimg as convert2img };
+export { mdimg as convert2img, mdimg };

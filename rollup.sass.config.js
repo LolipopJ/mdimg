@@ -1,6 +1,6 @@
-import scss from "rollup-plugin-scss";
 import fs from "fs";
 import path from "path";
+import scss from "rollup-plugin-scss";
 
 const getSassTasks = () => {
   const cssPath = path.resolve(__dirname, "template/css");
