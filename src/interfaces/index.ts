@@ -42,12 +42,12 @@ export interface IConvertOptions {
    * HTML rendering template. This option has no effect if `htmlText` is specified
    * @defaultValue `default`
    */
-  htmlTemplate?: "default" | "words";
+  htmlTemplate?: string;
   /**
    * CSS rendering template. This option has no effect if `cssText` is specified
    * @defaultValue `default`
    */
-  cssTemplate?: "default" | "empty" | "github" | "githubDark" | "words";
+  cssTemplate?: string;
   /**
    * Rendering color theme
    * @defaultValue `light`
