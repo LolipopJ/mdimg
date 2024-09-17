@@ -1,4 +1,4 @@
-![lts-version](https://img.shields.io/npm/v/mdimg.svg) ![language](https://img.shields.io/badge/language-TypeScript-3178c6.svg) ![download-counts](https://img.shields.io/npm/d18m/mdimg.svg)
+<a href="https://www.npmjs.com/package/mdimg" target="_blank"><img alt="lts-version" src="https://img.shields.io/npm/v/mdimg.svg"></a> <a href="https://www.npmjs.com/package/mdimg?activeTab=versions" target="_blank"><img alt="download-counts" src="https://img.shields.io/npm/d18m/mdimg.svg"></a> <a href="https://www.typescriptlang.org/" target="_blank"><img alt="language" src="https://img.shields.io/badge/language-TypeScript-3178c6.svg"></a>
 
 # mdimg
 
@@ -6,7 +6,7 @@ A tool that can be used to convert **Markdown** or **HTML** format text to an im
 
 ## How does it work?
 
-First, the script calls [marked](https://github.com/markedjs/marked) to parse Markdown into a HTML document. Next, use [Puppeteer](https://github.com/puppeteer/puppeteer) to start a headless browser and render the document with HTML and CSS templates. Finally, export our image through Puppeteer's [screenshot](https://pptr.dev/#?product=Puppeteer&show=api-pagescreenshotoptions) API.
+First, the script calls [marked](https://github.com/markedjs/marked) to parse Markdown into a HTML document. Next, use [Puppeteer](https://github.com/puppeteer/puppeteer) to start a headless browser and render the document with HTML and CSS templates. Finally, export our image through Puppeteer's [screenshot](https://pptr.dev/guides/screenshots/) API.
 
 ## Preview
 
