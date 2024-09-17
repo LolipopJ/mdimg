@@ -54,11 +54,23 @@ export interface IConvertOptions {
    */
   theme?: "light" | "dark";
   /**
+   * Configuration for third-party extensions
+   */
+  extensions: boolean | IExtensionOptions;
+  /**
    * Show preset console log
    * @defaultValue `false`
    */
   log?: boolean;
-  /** Launch options of Puppeteer. More info: https://pptr.dev/api/puppeteer.puppeteerlaunchoptions */
+  /**
+   * If true, temporary HTML file will be kept after rendering.
+   * You can find the hidden temporary files in the folder where the input file is located or the script is executed.
+   * @defaultValue `false`
+   */
+  debug?: boolean;
+  /**
+   * Launch options of Puppeteer
+   * @link https://pptr.dev/api/puppeteer.puppeteerlaunchoptions */
   puppeteerProps?: import("puppeteer").LaunchOptions;
 }
 
@@ -80,3 +92,36 @@ export type IConvertTypeOption = NonNullable<
 export type IConvertEncodingOption = NonNullable<
   import("puppeteer").ScreenshotOptions["encoding"] | "blob"
 >;
+
+export interface IExtensionOptions {
+  /**
+   * Provide a boolean value of a configuration object for `hljs.configure()`.
+   * Available options: https://highlightjs.readthedocs.io/en/latest/api.html#configure
+   * @link https://github.com/highlightjs/highlight.js
+   * @defaultValue `true`
+   */
+  highlightJs?:
+    | boolean
+    | {
+        /**
+         * Follow global `theme` option by default.
+         * Available themes: https://highlightjs.org/demo
+         */
+        theme?: string;
+        [key: string]: unknown;
+      };
+  /**
+   * Provide a boolean value of a configuration object.
+   * * Available options: https://docs.mathjax.org/en/latest/options/index.html
+   * @link https://github.com/mathjax/MathJax
+   * @defaultValue `true`
+   */
+  mathJax?: boolean | Record<string, unknown>;
+  /**
+   * Provide a boolean value of a configuration object.
+   * Available options: https://mermaid.js.org/config/schema-docs/config.html
+   * @link https://github.com/mermaid-js/mermaid
+   * @defaultValue `true`
+   */
+  mermaid?: boolean | Record<string, unknown>;
+}

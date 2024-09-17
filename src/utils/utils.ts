@@ -3,12 +3,6 @@ import path from "path";
 
 import type { IConvertOptions } from "../interfaces";
 
-export const resolveTemplateName = (templateName: string) => {
-  const _templateName = templateName.split(".")[0];
-  return _templateName as IConvertOptions["htmlTemplate"] &
-    IConvertOptions["cssTemplate"];
-};
-
 export const createEmptyFile = (filename: string) => {
   const _filePath = path.dirname(filename);
 
@@ -26,7 +20,7 @@ export const padStartWithZero = (num: number, length: number) => {
   return String(num).padStart(length, "0");
 };
 
-export const generateImageFilename = (type: IConvertOptions["type"]) => {
+export const generateImageDefaultFilename = (type: IConvertOptions["type"]) => {
   const _now = new Date();
   const _outputFilenameSuffix = `${_now.getFullYear()}_${padStartWithZero(
     _now.getMonth() + 1,

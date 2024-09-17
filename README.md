@@ -6,7 +6,7 @@ A tool that can be used to convert **Markdown** or **HTML** format text to an im
 
 ## How does it work?
 
-First, the script calls [marked](https://github.com/markedjs/marked) to parse Markdown into a HTML document. Next, use [Puppeteer](https://github.com/puppeteer/puppeteer) to start a headless browser and render the document with preset HTML and CSS files. Finally, export our image through Puppeteer's [screenshot](https://pptr.dev/#?product=Puppeteer&show=api-pagescreenshotoptions) API.
+First, the script calls [marked](https://github.com/markedjs/marked) to parse Markdown into a HTML document. Next, use [Puppeteer](https://github.com/puppeteer/puppeteer) to start a headless browser and render the document with HTML and CSS templates. Finally, export our image through Puppeteer's [screenshot](https://pptr.dev/#?product=Puppeteer&show=api-pagescreenshotoptions) API.
 
 ## Preview
 
@@ -47,10 +47,10 @@ npm install mdimg
 Example:
 
 ```bash
-mdimg -i input.md -o output.png -w 600 --css github
+mdimg -i path/to/input.md -o path/to/output.png -w 600 --css github
 ```
 
-mdimg will read text from `input.md` and convert it to an image file `output.png`.
+mdimg will read text from `path/to/input.md` and convert it to an image file `path/to/output.png`.
 
 When using the command, you must specify either `-i` (input file, recommended) or `-t` (directly input text).
 
@@ -63,9 +63,6 @@ You can always call `mdimg -h` to get complete help.
 Import mdimg to your project:
 
 ```js
-const { mdimg } = require("mdimg");
-
-// or use import
 import { mdimg } from "mdimg";
 ```
 
@@ -104,22 +101,24 @@ When using `mdimg()` method, you must specify either `inputFilename` (input file
 
 Here are all available options:
 
-| Argument       | Type            | Default                                      | Notes                                                                                                                                                    |
-| -------------- | --------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| inputText      | `String`        | `undefined`                                  | Input Markdown or HTML text directly. This option **has no effect** if `inputFilename` is specified                                                      |
-| inputFilename  | `String`        | `undefined`                                  | Read Markdown or HTML text from a file                                                                                                                   |
-| outputFilename | `String`        | `./mdimg_output/mdimg_${new Date()}.${type}` | Output binary image filename. Available file extensions: `jpeg`, `png`, `webp`. Available when `encoding` option is `binary`                             |
-| type           | `String`        | `png`                                        | File type of the image. Available types: `jpeg`, `png`, `webp`, defaults to `png`. Type will be inferred from `outputFilename` if specified              |
-| width          | `Number`        | `800`                                        | Width of output image                                                                                                                                    |
-| encoding       | `String`        | `binary`                                     | Encode type of output image. Available types: `base64`, `binary`, `blob`                                                                                 |
-| quality        | `Number`        | `100`                                        | Quality of the image, between 0-100. **Not applicable** to `png` image                                                                                   |
-| htmlText       | `String`        | `undefined`                                  | HTML rendering text                                                                                                                                      |
-| cssText        | `String`        | `undefined`                                  | CSS rendering text                                                                                                                                       |
-| htmlTemplate   | `String`        | `default`                                    | HTML rendering template. Available presets can be found in [`template/html`](./template/html/). This option **has no effect** if `htmlText` is specified |
-| cssTemplate    | `String`        | `default`                                    | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). This option **has no effect** if `cssText` is specified     |
-| theme          | `String`        | `light`                                      | Rendering color theme, will impact styles of code block and so on                                                                                        |
-| log            | `Boolean`       | `false`                                      | Print execution logs via stderr                                                                                                                          |
-| puppeteerProps | `LaunchOptions` | `undefined`                                  | [Launch options](https://pptr.dev/api/puppeteer.puppeteerlaunchoptions) of Puppeteer                                                                     |
+| Argument       | Type                             | Default                                      | Notes                                                                                                                                                                                                                 |
+| -------------- | -------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| inputText      | `String`                         | `undefined`                                  | Input Markdown or HTML text directly. This option **has no effect** if `inputFilename` is specified                                                                                                                   |
+| inputFilename  | `String`                         | `undefined`                                  | Read Markdown or HTML text from a file                                                                                                                                                                                |
+| outputFilename | `String`                         | `./mdimg_output/mdimg_${new Date()}.${type}` | Output binary image filename. Available file extensions: `jpeg`, `png`, `webp`. Available when `encoding` option is `binary`                                                                                          |
+| type           | `"jpeg" \| "png" \| "webp"`      | `png`                                        | File type of the image. Type will be inferred from `outputFilename` if specified                                                                                                                                      |
+| width          | `Number`                         | `800`                                        | Width of output image                                                                                                                                                                                                 |
+| encoding       | `"base64" \| "binary" \| "blob"` | `binary`                                     | Encode type of output image                                                                                                                                                                                           |
+| quality        | `Number`                         | `100`                                        | Quality of the image, between 0-100. **Not applicable** to `png` image                                                                                                                                                |
+| htmlText       | `String`                         | `undefined`                                  | HTML rendering text                                                                                                                                                                                                   |
+| cssText        | `String`                         | `undefined`                                  | CSS rendering text                                                                                                                                                                                                    |
+| htmlTemplate   | `String`                         | `default`                                    | HTML rendering template. Available presets can be found in [`template/html`](./template/html/). If ends with `.html`, the mdimg will try to read local file. This option **has no effect** if `htmlText` is specified |
+| cssTemplate    | `String`                         | `default`                                    | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). If ends with `.css`, the mdimg will try to read local file. This option **has no effect** if `cssText` is specified      |
+| theme          | `String`                         | `light`                                      | Rendering color theme, will impact styles of code block and so on                                                                                                                                                     |
+| extensions     | `Boolean \| IExtensionOptions`   | `true`                                       | Configurations for [extensions](#extensions)                                                                                                                                                                          |
+| log            | `Boolean`                        | `false`                                      | Print execution logs via stderr                                                                                                                                                                                       |
+| debug          | `Boolean`                        | `false`                                      | Whether to keep temporary HTML file after rendering                                                                                                                                                                   |
+| puppeteerProps | `LaunchOptions`                  | `undefined`                                  | [Launch options](https://pptr.dev/api/puppeteer.puppeteerlaunchoptions) of Puppeteer                                                                                                                                  |
 
 Returns: `Promise<object>`
 
@@ -131,29 +130,28 @@ Returns: `Promise<object>`
 
 ## Custom template
 
-> **😍 Contribute to preset templates via [pull requests](https://github.com/LolipopJ/mdimg/pulls) is welcomed!**
+> **😍 Contribute to template presets via [pull requests](https://github.com/LolipopJ/mdimg/pulls) is welcomed!**
 
-Preset templates are stored in the `template` directory.
+Template presets are stored in the `template` directory.
 
 If you execute the following command:
 
 ```bash
-mdimg -i input.md --html custom --css custom
+mdimg --html custom --css custom
 ```
 
 Or in Node.js project:
 
 ```js
 await mdimg({
-  inputFilename: "input.md",
   htmlTemplate: "custom",
   cssTemplate: "custom",
 });
 ```
 
-The mdimg will read `custom.html` from `template/html` directory as HTML template and `custom.css` from `template/css` directory as CSS template to render the image of `input.md`.
+The mdimg will read `template/html/custom.html` as HTML template and `template/css/custom.css` as CSS template in the mdimg directory to render the image.
 
-### HTML template
+### HTML Template
 
 Create a new `.html` file in `template/html` directory.
 
@@ -163,13 +161,13 @@ The simplest example:
 
 ```html
 <div id="mdimg-body">
-  <div class="markdown-body" />
+  <div class="markdown-body"></div>
 </div>
 ```
 
-The mdimg will put the parsed HTML content in the element with class `markdown-body` (elements inside will be replaced), and finally generate the image for the whole element whose id is `mdimg-body`.
+The mdimg will put the parsed HTML content in the element which `class="markdown-body"` (elements inside will be replaced), and finally generate the image for the whole element which `id="mdimg-body"`.
 
-### CSS template
+### CSS Template
 
 Nothing to note, create a new `.css` file in `template/css` directory and then make your style!
 
@@ -182,21 +180,34 @@ yarn rollup:sass
 
 CSS templates with the corresponding name will be generated in `template/css` directory.
 
-## Intake template directly
+## Local Template
 
-Preset templates may not often meet your needs. If you already know the specifications of [HTML template](#html-template) and [CSS template](#css-template), you can pass the template string directly.
+Template presets may not often meet your needs. If you already know the specifications of [HTML template](#html-template) and [CSS template](#css-template), you can pass the template directly. There are two methods:
 
-A command example:
+1. Using local template file. Pass a local filepath with the **file extension `.html` and `.css`** through options `--html` and `--css` with CLI (`htmlTemplate` and `cssTemplate` with Node.js).
+2. Using template text. Pass template text through `--htmlText` and `--cssText` with CLI (`htmlText` and `cssText` with Node.js).
+
+CLI:
 
 ```bash
-mdimg -i input.md --htmlText '<div id="mdimg-body"><div class="markdown-body"></div></div>' --cssText '@import "https://cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"; .markdown-body { padding: 6rem 4rem; }'
+# use local file
+mdimg --html path/to/custom.html --css path/to/custom.css
+
+# use text directly
+mdimg --htmlText '<div id="mdimg-body"><div class="markdown-body"></div></div>' --cssText '@import "https://cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"; .markdown-body { padding: 6rem 4rem; }'
 ```
 
 Or in Node.js project:
 
 ```js
+// use local file
 await mdimg({
-  inputFilename: "input.md",
+  htmlTemplate: "path/to/custom.html",
+  cssTemplate: "path/to/custom.css",
+});
+
+// use text directly
+await mdimg({
   htmlText: `<div id="mdimg-body">
   <div class="markdown-body"></div>
 </div>`,
@@ -207,15 +218,83 @@ await mdimg({
 });
 ```
 
-## Extended syntaxes
+## Extensions
+
+Extensions are default enabled. You can easily configuration them in Node.js:
+
+```ts
+await mdimg({
+  extensions: false, // disable all extensions
+});
+
+await mdimg({
+  extensions: {
+    highlightJs: false, // disable highlight.js
+    mathJax: {
+      // further configuration for MathJax
+      // ...
+    },
+    mermaid: true, // enable mermaid (by default)
+  },
+});
+```
+
+In CLI, you can only enable or disable extensions globally:
+
+```bash
+mdimg --extensions false # disable all extensions
+```
+
+### Extended Syntaxes
 
 Some extended syntaxes, such as LaTeX, cannot be parsed by pure marked correctly. To solve this problem, the mdimg introduces some third-party libraries to enhance rendering capabilities. Below are introduced libraries:
 
-### [MathJax](https://github.com/mathjax/MathJax)
+#### [MathJax](https://github.com/mathjax/MathJax)
 
 > MathJax is an open-source JavaScript display engine for **LaTeX**, **MathML**, and **AsciiMath** notation.
 
-⚠️ Due to the [unexpected behaviors](https://andrzejq.github.io/markdown-mathjax/editor/md-mhj.html) between marked and MathJax: "\\" before any ASCII punctuation character is backslash escape, so "\\\\" (or "\\,") should be written as "\\\\\\\\" (or "\\\\,"). You need to manually replace characters or **wrap the LaTeX code in a `<div>` block**. Example:
+⚠️ The single dollar sign `$` is **not enabled by default** to render inline LaTeX. Because It is used too frequently in normal text, so if you want to use it for math delimiters, you must specify it explicitly. In Node.js project:
+
+```ts
+await mdimg({
+  extensions: {
+    mathJax: {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+    },
+  },
+});
+```
+
+CLI doesn't support to configuration extensions, so you need to override MathJax options in HTML template directly:
+
+```html
+<!-- path/to/template.html -->
+<div id="mdimg-body">
+  <div class="markdown-body"></div>
+</div>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"],
+      ],
+    },
+  };
+</script>
+```
+
+```bash
+mdimg --html path/to/template.html
+```
+
+⚠️ Due to the [parse behaviors](https://andrzejq.github.io/markdown-mathjax/editor/md-mhj.html) between marked and MathJax: "\\" before any ASCII punctuation character is backslash escape, so "\\\\" (or "\\,") should be written as "\\\\\\\\" (or "\\\\,"). You need to manually replace characters or **wrap the LaTeX code in a `<div>` block**. Example:
 
 ```md
 <div>$$
@@ -229,7 +308,7 @@ a_{m,1} & a_{m,2} & \cdots & a_{m,n}
 $$</div>
 ```
 
-### [Mermaid](https://github.com/mermaid-js/mermaid)
+#### [Mermaid](https://github.com/mermaid-js/mermaid)
 
 > Mermaid is a JavaScript-based **diagramming** and **charting** tool that uses Markdown-inspired text definitions and a renderer to create and modify complex diagrams.
 
@@ -250,6 +329,12 @@ sequenceDiagram
   Bob->>Alice: I agree
 ```
 ````
+
+### Other Extensions
+
+#### [Highlight.js](https://github.com/highlightjs/highlight.js)
+
+> Highlight.js is a syntax highlighter.
 
 ## Development
 

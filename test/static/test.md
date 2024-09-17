@@ -59,6 +59,8 @@ function updateUser(id: number, update: Partial<User>) {
 
 > Source: https://ashki23.github.io/markdown-latex.html#latex
 
+This is a inline LaTex example: $\dfrac{0}{1} \neq \infty$. And below is a block LaTeX example:
+
 <div>$$
 A_{m,n} =
 \begin{pmatrix}
