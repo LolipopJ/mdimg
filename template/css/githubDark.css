@@ -1,5 +1,9 @@
 @import "https://cdn.jsdelivr.net/npm/normalize.css/normalize.min.css";
 @import "https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown-dark.min.css";
+#mdimg-body {
+  min-height: 100vh;
+}
+
 .markdown-body {
   padding: 6rem 4rem;
 }

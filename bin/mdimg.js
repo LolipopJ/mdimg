@@ -43,7 +43,16 @@ program
       .default("png"),
   )
   .addOption(
-    new Option("-w, --width <width>", "The width of output image").default(800),
+    new Option(
+      "-w, --width <pixel>",
+      "The width in pixel of output image",
+    ).default(800),
+  )
+  .addOption(
+    new Option(
+      "-h, --height <pixel>",
+      "The min-height in pixel of output image (>= 100)",
+    ).default(100),
   )
   .addOption(
     new Option(

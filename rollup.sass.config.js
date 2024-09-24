@@ -8,7 +8,9 @@ const getSassTasks = () => {
   const templates = fs
     .readdirSync(scssPath)
     .filter(
-      (filename) => filename.endsWith(".scss") || filename.endsWith(".sass"),
+      (filename) =>
+        (filename.endsWith(".scss") || filename.endsWith(".sass")) &&
+        !filename.startsWith("."),
     );
 
   const tasks = [];
