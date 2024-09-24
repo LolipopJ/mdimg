@@ -15,13 +15,13 @@ export interface IConvertOptions {
      */
     type?: IConvertTypeOption;
     /**
-     * Width of output image
+     * Width in pixel of output image
      * @defaultValue `800`
      */
     width?: number;
     /**
-     * Height of output image
-     * @defaultValue `600`
+     * Min-height in pixel of output image. Should be a number >= 100
+     * @defaultValue `100`
      */
     height?: number;
     /**
@@ -102,7 +102,7 @@ export interface IExtensionOptions {
     };
     /**
      * Provide a boolean value of a configuration object.
-     * * Available options: https://docs.mathjax.org/en/latest/options/index.html
+     * Available options: https://docs.mathjax.org/en/latest/options/index.html
      * @link https://github.com/mathjax/MathJax
      * @defaultValue `true`
      */
