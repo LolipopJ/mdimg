@@ -24,7 +24,7 @@ const mdimg = async ({
   outputFilename,
   type = "png",
   width = 800,
-  height = 600,
+  height = 100,
   encoding = "binary",
   quality = 100,
   htmlText,
@@ -160,12 +160,13 @@ const mdimg = async ({
   _result.html = _html;
 
   // Launch headless browser to render HTML
+  const _minHeight = Math.max(height, 100);
   const _browser = await puppeteer.launch({
     defaultViewport: {
       width,
-      height,
+      height: _minHeight,
     },
-    args: [`--window-size=${width},${height}`],
+    args: [`--window-size=${width},${_minHeight}`],
     ...puppeteerProps,
   });
 

@@ -15,7 +15,7 @@ Rendering results:
 | MacOS                                                                           | Windows                                                                        | HTML Template | CSS Template | Notes                                             |
 | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------- | ------------ | ------------------------------------------------- |
 | <img alt="default preview" src="./docs/darwin/default.png" height="150">        | <img alt="default preview" src="./docs/win32/default.png" height="150">        | `default`     | `default`    |
-| <img alt="empty preview" src="./docs/darwin/empty.png" height="150">            | <img alt="empty preview" src="./docs/win32/empty.png" height="150">            | `default`     | `empty`      | Not using any CSS presets                         |
+| <img alt="empty preview" src="./docs/darwin/empty.png" height="150">            | <img alt="empty preview" src="./docs/win32/empty.png" height="150">            | `default`     | `empty`      | Only use base stylesheets                         |
 | <img alt="github preview" src="./docs/darwin/github.png" height="150">          | <img alt="github preview" src="./docs/win32/github.png" height="150">          | `default`     | `github`     |
 | <img alt="github dark preview" src="./docs/darwin/githubDark.png" height="150"> | <img alt="github dark preview" src="./docs/win32/githubDark.png" height="150"> | `default`     | `githubDark` | Should be used with `theme: "dark"`               |
 | <img alt="words preview" src="./docs/darwin/words.png" height="150">            | <img alt="words preview" src="./docs/win32/words.png" height="150">            | `words`       | `words`      | It is recommended to use with **plain text only** |
@@ -107,14 +107,15 @@ Here are all available options:
 | inputFilename  | `String`                         | `undefined`                                  | Read Markdown or HTML text from a file                                                                                                                                                                                |
 | outputFilename | `String`                         | `./mdimg_output/mdimg_${new Date()}.${type}` | Output binary image filename. Available file extensions: `jpeg`, `png`, `webp`. Available when `encoding` option is `binary`                                                                                          |
 | type           | `"jpeg" \| "png" \| "webp"`      | `png`                                        | File type of the image. Type will be inferred from `outputFilename` if specified                                                                                                                                      |
-| width          | `Number`                         | `800`                                        | Width of output image                                                                                                                                                                                                 |
+| width          | `Number`                         | `800`                                        | Width in pixel of output image                                                                                                                                                                                        |
+| height         | `Number`                         | `100`                                        | Min-height in pixel of output image. No less than `100`                                                                                                                                                               |
 | encoding       | `"base64" \| "binary" \| "blob"` | `binary`                                     | Encode type of output image                                                                                                                                                                                           |
 | quality        | `Number`                         | `100`                                        | Quality of the image, between 0-100. **Not applicable** to `png` image                                                                                                                                                |
 | htmlText       | `String`                         | `undefined`                                  | HTML rendering text                                                                                                                                                                                                   |
 | cssText        | `String`                         | `undefined`                                  | CSS rendering text                                                                                                                                                                                                    |
 | htmlTemplate   | `String`                         | `default`                                    | HTML rendering template. Available presets can be found in [`template/html`](./template/html/). If ends with `.html`, the mdimg will try to read local file. This option **has no effect** if `htmlText` is specified |
 | cssTemplate    | `String`                         | `default`                                    | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). If ends with `.css`, the mdimg will try to read local file. This option **has no effect** if `cssText` is specified      |
-| theme          | `String`                         | `light`                                      | Rendering color theme, will impact styles of code block and so on                                                                                                                                                     |
+| theme          | `light` \| `dark`                | `light`                                      | Rendering color theme, will impact styles of code block and so on                                                                                                                                                     |
 | extensions     | `Boolean \| IExtensionOptions`   | `true`                                       | Configurations for [extensions](#extensions)                                                                                                                                                                          |
 | log            | `Boolean`                        | `false`                                      | Print execution logs via stderr                                                                                                                                                                                       |
 | debug          | `Boolean`                        | `false`                                      | Whether to keep temporary HTML file after rendering                                                                                                                                                                   |
@@ -165,7 +166,7 @@ The simplest example:
 </div>
 ```
 
-The mdimg will put the parsed HTML content in the element which `class="markdown-body"` (elements inside will be replaced), and finally generate the image for the whole element which `id="mdimg-body"`.
+The mdimg will put the parsed HTML content in the element which `class="markdown-body"` (elements inside will be **replaced**), and finally generate the image for the whole element which `id="mdimg-body"`.
 
 ### CSS Template
 
@@ -247,7 +248,7 @@ mdimg --extensions false # disable all extensions
 
 ### Extended Syntaxes
 
-Some extended syntaxes, such as LaTeX, cannot be parsed by pure marked correctly. To solve this problem, the mdimg introduces some third-party libraries to enhance rendering capabilities. Below are introduced libraries:
+Some extended syntaxes, such as LaTeX, can't be parsed by pure marked correctly. To solve this problem, the mdimg introduces some third-party libraries to enhance rendering capabilities. Below are introduced libraries:
 
 #### [MathJax](https://github.com/mathjax/MathJax)
 
