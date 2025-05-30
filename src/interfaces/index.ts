@@ -8,7 +8,7 @@ export interface IConvertOptions {
   /** @deprecated: rename to `inputFilename` */
   mdFile?: string;
   /** Output binary image filename. File type can be `jpeg`, `png` or `webp`. Available when `encoding: "binary"` */
-  outputFilename?: string;
+  outputFilename?: import("puppeteer").ScreenshotOptions["path"];
   /**
    * File type of output image. Type will be inferred from `outputFilename` if set
    * @defaultValue `png`
