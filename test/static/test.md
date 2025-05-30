@@ -1,22 +1,12 @@
-<img alt="marked-logo" src="./marked-logo-black.svg" style="float: right;">
+# Mdimg - Covert Markdown or HTML to image
 
-# Marked - Markdown Parser
+## Marked
+
+<img alt="marked-logo" src="./marked-logo-black.svg" style="width: 120px; float: right;">
 
 > Source: https://github.com/markedjs/marked/blob/master/docs/demo/initial.md
 
 [Marked] lets you convert [Markdown] into HTML. Markdown is a simple text format whose goal is to be very easy to read and write, even when not converted to HTML. This demo page will let you type anything you like and see how it gets converted. Live. No more waiting around.
-
-## How To Use The Demo
-
-1. Type in stuff on the left.
-2. See the live updates on the right.
-
-That's it. Pretty simple. There's also a drop-down option in the upper right to switch between various views:
-
-- **Preview:** A live display of the generated HTML as it would render in a browser.
-- **HTML Source:** The generated HTML before your browser makes it pretty.
-- **Lexer Data:** What [marked] uses internally, in case you like gory stuff like this.
-- **Quick Reference:** A brief run-down of how to format things using markdown.
 
 ## Why Markdown?
 
@@ -37,6 +27,16 @@ Ready to start writing? Either start changing stuff on the left or
 [markdown]: http://daringfireball.net/projects/markdown/
 
 ## Code Block
+
+> Source: https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Headings_and_paragraphs
+
+```html
+<h1>This is a top level heading</h1>
+
+<span style="font-size: 32px; margin: 21px 0; display: block;">
+  Is this a top level heading?
+</span>
+```
 
 > Source: https://www.typescriptlang.org/
 
