@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import puppeteer from "puppeteer";
+import puppeteer, { type ScreenshotOptions } from "puppeteer";
 
 import type {
   IConvertEncodingOption,
@@ -97,7 +97,7 @@ const mdimg = async ({
   }
 
   // Resolve output filename
-  let _output = "";
+  let _output: ScreenshotOptions["path"];
   if (_saveToDisk) {
     if (outputFilename) {
       // Check validation of output filename
@@ -109,7 +109,10 @@ const mdimg = async ({
 
       if (_outputFilenameArrLength <= 1) {
         // Output file type is not specified
-        _output = path.resolve(_outputFilePath, `${_outputFilename}.${_type}`);
+        _output = path.resolve(
+          _outputFilePath,
+          `${_outputFilename}.${_type}`,
+        ) as ScreenshotOptions["path"];
       } else {
         const _outputFileType = _outputFilenameArr[
           _outputFilenameArrLength - 1
@@ -118,7 +121,7 @@ const mdimg = async ({
         if (_outputFileTypes.includes(_outputFileType)) {
           // Option type is overridden
           _type = _outputFileType;
-          _output = path.resolve(outputFilename);
+          _output = path.resolve(outputFilename) as ScreenshotOptions["path"];
         } else {
           // Output file type is wrongly specified
           if (log) {
@@ -129,14 +132,14 @@ const mdimg = async ({
           _output = path.resolve(
             _outputFilePath,
             `${_outputFilename}.${_type}`,
-          );
+          ) as ScreenshotOptions["path"];
         }
       }
     } else {
       _output = path.resolve(
         "mdimg_output",
         generateImageDefaultFilename(_type),
-      );
+      ) as ScreenshotOptions["path"];
     }
   }
 
@@ -220,7 +223,7 @@ const mdimg = async ({
     if (_encoding === "binary" || _encoding === "blob") {
       if (_saveToDisk) {
         // Create empty output file
-        createEmptyFile(_output);
+        createEmptyFile(String(_output));
       }
 
       // Generate output image
