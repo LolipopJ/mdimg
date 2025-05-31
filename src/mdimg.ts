@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import puppeteer, { type ScreenshotOptions } from "puppeteer";
+import puppeteer from "puppeteer";
 
 import type {
   IConvertEncodingOption,
@@ -97,7 +97,7 @@ const mdimg = async ({
   }
 
   // Resolve output filename
-  let _output: ScreenshotOptions["path"];
+  let _output: IConvertOptions["outputFilename"];
   if (_saveToDisk) {
     if (outputFilename) {
       // Check validation of output filename
@@ -112,7 +112,7 @@ const mdimg = async ({
         _output = path.resolve(
           _outputFilePath,
           `${_outputFilename}.${_type}`,
-        ) as ScreenshotOptions["path"];
+        ) as IConvertOptions["outputFilename"];
       } else {
         const _outputFileType = _outputFilenameArr[
           _outputFilenameArrLength - 1
@@ -121,7 +121,9 @@ const mdimg = async ({
         if (_outputFileTypes.includes(_outputFileType)) {
           // Option type is overridden
           _type = _outputFileType;
-          _output = path.resolve(outputFilename) as ScreenshotOptions["path"];
+          _output = path.resolve(
+            outputFilename,
+          ) as IConvertOptions["outputFilename"];
         } else {
           // Output file type is wrongly specified
           if (log) {
@@ -132,14 +134,14 @@ const mdimg = async ({
           _output = path.resolve(
             _outputFilePath,
             `${_outputFilename}.${_type}`,
-          ) as ScreenshotOptions["path"];
+          ) as IConvertOptions["outputFilename"];
         }
       }
     } else {
       _output = path.resolve(
         "mdimg_output",
         generateImageDefaultFilename(_type),
-      ) as ScreenshotOptions["path"];
+      ) as IConvertOptions["outputFilename"];
     }
   }
 
