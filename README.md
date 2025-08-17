@@ -12,13 +12,13 @@ First, the script calls [marked](https://github.com/markedjs/marked) to parse Ma
 
 Rendering results:
 
-| MacOS                                                                           | Windows                                                                        | HTML Template | CSS Template | Notes                                             |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------- | ------------ | ------------------------------------------------- |
-| <img alt="default preview" src="./docs/darwin/default.png" height="150">        | <img alt="default preview" src="./docs/win32/default.png" height="150">        | `default`     | `default`    |
-| <img alt="empty preview" src="./docs/darwin/empty.png" height="150">            | <img alt="empty preview" src="./docs/win32/empty.png" height="150">            | `default`     | `empty`      | Only use base stylesheets                         |
-| <img alt="github preview" src="./docs/darwin/github.png" height="150">          | <img alt="github preview" src="./docs/win32/github.png" height="150">          | `default`     | `github`     |
-| <img alt="github dark preview" src="./docs/darwin/githubDark.png" height="150"> | <img alt="github dark preview" src="./docs/win32/githubDark.png" height="150"> | `default`     | `githubDark` | Should be used with `theme: "dark"`               |
-| <img alt="words preview" src="./docs/darwin/words.png" height="150">            | <img alt="words preview" src="./docs/win32/words.png" height="150">            | `words`       | `words`      | It is recommended to use with **plain text only** |
+| Linux                                                                          | MacOS                                                                           | Windows                                                                        | HTML Template | CSS Template | Notes                                             |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------- | ------------ | ------------------------------------------------- |
+| <img alt="default preview" src="./docs/linux/default.png" height="150">        | <img alt="default preview" src="./docs/darwin/default.png" height="150">        | <img alt="default preview" src="./docs/win32/default.png" height="150">        | `default`     | `default`    |
+| <img alt="empty preview" src="./docs/linux/empty.png" height="150">            | <img alt="empty preview" src="./docs/darwin/empty.png" height="150">            | <img alt="empty preview" src="./docs/win32/empty.png" height="150">            | `default`     | `empty`      | Only use base stylesheets                         |
+| <img alt="github preview" src="./docs/linux/github.png" height="150">          | <img alt="github preview" src="./docs/darwin/github.png" height="150">          | <img alt="github preview" src="./docs/win32/github.png" height="150">          | `default`     | `github`     |
+| <img alt="github dark preview" src="./docs/linux/githubDark.png" height="150"> | <img alt="github dark preview" src="./docs/darwin/githubDark.png" height="150"> | <img alt="github dark preview" src="./docs/win32/githubDark.png" height="150"> | `default`     | `githubDark` | Should be used with `theme: "dark"`               |
+| <img alt="words preview" src="./docs/linux/words.png" height="150">            | <img alt="words preview" src="./docs/darwin/words.png" height="150">            | <img alt="words preview" src="./docs/win32/words.png" height="150">            | `words`       | `words`      | It is recommended to use with **plain text only** |
 
 ## Requirements
 
