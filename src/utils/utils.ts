@@ -10,9 +10,7 @@ export const createEmptyFile = (filename: string) => {
     fs.mkdirSync(_filePath, { recursive: true });
     fs.writeFileSync(filename, "");
   } catch (error: unknown) {
-    throw new Error(
-      `Error: create new file ${filename} failed.\n${String(error)}\n`,
-    );
+    throw new Error(`create new file ${filename} failed.\n${String(error)}\n`);
   }
 };
 

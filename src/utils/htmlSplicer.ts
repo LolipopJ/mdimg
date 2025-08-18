@@ -96,28 +96,45 @@ ${_cssSource}
         },
         highlightJs,
       );
+
+      const themeText = fs.readFileSync(
+        path.resolve(
+          `${__dirname}/../static/highlightjs/cdn-release@11/build/styles/${highlightJsOptions.theme}.min.css`,
+        ),
+      );
+      const highlightScriptText = fs.readFileSync(
+        path.resolve(
+          `${__dirname}/../static/highlightjs/cdn-release@11/build/highlight.min.js`,
+        ),
+      );
+
       $("head").append(`
 <!-- highlight.js -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/${highlightJsOptions.theme}.min.css">
-<script id="Highlight.js-script" defer="defer" type="text/javascript" src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
-<script type="text/javascript">
-  document.getElementById("Highlight.js-script").onload = function () {
-    hljs.configure(${JSON.stringify(highlightJsOptions)});
-    hljs.highlightAll();
-  }
+<style>${themeText}</style>
+<script>${highlightScriptText}</script>
+<script>
+  hljs.configure(${JSON.stringify(highlightJsOptions)});
+  hljs.highlightAll();
 </script>
 `);
     }
+
     if (mathJax !== false) {
       const mathJaxOptions = Object.assign({}, mathJax);
+
+      const mathJaxScriptText = fs.readFileSync(
+        path.resolve(`${__dirname}/../static/mathjax@3/es5/tex-mml-chtml.js`),
+      );
+
       $("head").append(`
 <!-- MathJax -->
-<script id="MathJax-script" defer="defer" type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>${mathJaxScriptText}</script>
 <script>
   MathJax = ${JSON.stringify(mathJaxOptions)}
 </script>
 `);
     }
+
     if (mermaid !== false) {
       const mermaidOptions = Object.assign(
         {
@@ -126,10 +143,11 @@ ${_cssSource}
         },
         mermaid,
       );
+
       $("head").append(`
 <!-- Mermaid -->
-<script id="Mermaid-script" type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+<script type="module">
+  import mermaid from 'https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize(${JSON.stringify(mermaidOptions)});
 </script>
 `);
