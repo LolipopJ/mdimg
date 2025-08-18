@@ -36,7 +36,7 @@ test("CLI: with template text", async () => {
   const htmlText =
     '<div id="mdimg-body"><div class="markdown-body"></div></div><script>MathJax = { tex: { inlineMath: [["$", "$"], ["\\\\(", "\\\\)"]] }}</script>';
   const cssText =
-    '@import "https://cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"; .markdown-body { padding: 6rem 4rem; }';
+    '@import "https://unpkg.com/normalize.css/normalize.css"; .markdown-body { padding: 6rem 4rem; }';
 
   expect(() =>
     execSync(

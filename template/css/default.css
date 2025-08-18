@@ -1,4 +1,4 @@
-@import "https://cdn.jsdelivr.net/npm/normalize.css/normalize.min.css";
+@import "../../static/normalize.css@8/normalize.min.css";
 #mdimg-body {
   min-height: 100vh;
 }

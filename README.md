@@ -195,7 +195,7 @@ CLI:
 mdimg --html path/to/custom.html --css path/to/custom.css
 
 # use text directly
-mdimg --htmlText '<div id="mdimg-body"><div class="markdown-body"></div></div>' --cssText '@import "https://cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"; .markdown-body { padding: 6rem 4rem; }'
+mdimg --htmlText '<div id="mdimg-body"><div class="markdown-body"></div></div>' --cssText '@import "https://unpkg.com/normalize.css/normalize.css"; .markdown-body { padding: 6rem 4rem; }'
 ```
 
 Or in Node.js project:
@@ -212,7 +212,7 @@ await mdimg({
   htmlText: `<div id="mdimg-body">
   <div class="markdown-body"></div>
 </div>`,
-  cssText: `@import "https://cdn.jsdelivr.net/npm/normalize.css/normalize.min.css";
+  cssText: `@import "https://unpkg.com/normalize.css/normalize.css";
 .markdown-body {
   padding: 6rem 4rem;
 }`,
