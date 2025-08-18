@@ -62,10 +62,10 @@ const mdimg = async ({
           );
         }
       } else {
-        throw new Error("Error: input is not a file.\n");
+        throw new Error("input is not a file.\n");
       }
     } else {
-      throw new Error(`Error: input file ${_inputFilePath} is not exists.\n`);
+      throw new Error(`input file ${_inputFilePath} is not exists.\n`);
     }
   } else if (_inputText) {
     _input = _inputText;
@@ -74,7 +74,7 @@ const mdimg = async ({
       process.stderr.write(`Info: start to convert text to an image...\n`);
     }
   } else {
-    throw new Error("Error: text or file is required to be converted.\n");
+    throw new Error("text or file is required to be converted.\n");
   }
 
   // Resolve encoding
@@ -83,7 +83,7 @@ const mdimg = async ({
   if (!_encodingTypes.includes(_encoding)) {
     // Params encoding is not valid
     throw new Error(
-      `Error: encoding type ${_encoding} is not supported. Valid types: ${_encodingTypes.join(", ")}.\n`,
+      `encoding type ${_encoding} is not supported. Valid types: ${_encodingTypes.join(", ")}.\n`,
     );
   }
 
@@ -92,7 +92,7 @@ const mdimg = async ({
   if (!_outputFileTypes.includes(_type)) {
     // Params encoding is not valid
     throw new Error(
-      `Error: output file type ${_type} is not supported. Valid types: ${_outputFileTypes.join(", ")}.\n`,
+      `output file type ${_type} is not supported. Valid types: ${_outputFileTypes.join(", ")}.\n`,
     );
   }
 
@@ -218,7 +218,7 @@ const mdimg = async ({
     const _body = await _page.$("#mdimg-body");
     if (!_body) {
       throw new Error(
-        `Error: missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.\n`,
+        `missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.\n`,
       );
     }
 
@@ -237,7 +237,7 @@ const mdimg = async ({
       });
       if (log) {
         process.stderr.write(
-          `Info: convert to image${_saveToDisk ? ` and saved as ${_output}` : ""} successfully!\n`,
+          `Success: convert to image${_saveToDisk ? ` and saved as ${_output}` : ""} successfully!\n`,
         );
       }
 
@@ -252,7 +252,7 @@ const mdimg = async ({
       });
       if (log) {
         process.stderr.write(
-          `Info: convert to BASE64 encoded string successfully!\n`,
+          `Success: convert to BASE64 encoded string successfully!\n`,
         );
       }
 
