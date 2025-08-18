@@ -109,8 +109,12 @@ ${_cssSource}
       );
 
       $("head").append(`
-<!-- highlight.js -->
+<!-- highlight.js styles -->
 <style>${themeText}</style>
+`);
+
+      $("body").append(`
+<!-- highlight.js -->
 <script>${highlightScriptText}</script>
 <script>
   hljs.configure(${JSON.stringify(highlightJsOptions)});
@@ -127,11 +131,15 @@ ${_cssSource}
       );
 
       $("head").append(`
-<!-- MathJax -->
-<script>${mathJaxScriptText}</script>
+<!-- MathJax options -->
 <script>
   MathJax = ${JSON.stringify(mathJaxOptions)}
 </script>
+`);
+
+      $("body").append(`
+<!-- MathJax -->
+<script>${mathJaxScriptText}</script>
 `);
     }
 
@@ -144,7 +152,7 @@ ${_cssSource}
         mermaid,
       );
 
-      $("head").append(`
+      $("body").append(`
 <!-- Mermaid -->
 <script type="module">
   import mermaid from 'https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs';
