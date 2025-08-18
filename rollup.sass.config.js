@@ -23,6 +23,7 @@ const getSassTasks = () => {
           output: (styles) => {
             fs.writeFileSync(`${cssPath}/${templateName}.css`, styles);
           },
+          outputStyle: "compressed",
         }),
       ],
     };
