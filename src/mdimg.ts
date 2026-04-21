@@ -47,7 +47,7 @@ const mdimg = async ({
   };
 
   // Resolve input file or text
-  let _input = "";
+  let _input: string;
   const _inputFilename = inputFilename || mdFile;
   const _inputText = inputText || mdText;
   if (_inputFilename) {
@@ -259,7 +259,9 @@ const mdimg = async ({
       _result.data = _outputBase64String;
     }
   } catch (error: unknown) {
-    throw new Error(String(error));
+    throw new Error(String(error), {
+      cause: error,
+    });
   } finally {
     await cleanup();
   }

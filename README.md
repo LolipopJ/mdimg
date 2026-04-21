@@ -22,9 +22,7 @@ Rendering results:
 
 ## Requirements
 
-This tool requires a LTS Node version (v18.0.0+).
-
-If your node version is lower than 18, please use the legacy version [0.2.3](https://www.npmjs.com/package/mdimg/v/0.2.3).
+This tool requires a **LTS Node version (v20.0.0+)**.
 
 ## Installation
 
@@ -176,7 +174,7 @@ For further development, it is recommended that write `.scss` or `.sass` files i
 
 ```bash
 # Build .scss and .sass files
-yarn rollup:sass
+pnpm run rollup:sass
 ```
 
 CSS templates with the corresponding name will be generated in `template/css` directory.
@@ -342,32 +340,33 @@ sequenceDiagram
 ```bash
 git clone https://github.com/LolipopJ/mdimg.git
 cd mdimg
-yarn
+pnpm install
+npx puppeteer browsers install chrome
 ```
 
 ### Lint
 
 ```bash
 # Check lint rules
-yarn lint
+pnpm run lint
 # Check lint rules and fix resolvable errors
-yarn lint:fix
+pnpm run lint:fix
 ```
 
 ### Build
 
 ```bash
 # Build .js, .scss and .sass files
-yarn build
+pnpm run build
 ```
 
 ### Test
 
 ```bash
 # Build productions before testing
-yarn build
+pnpm run build
 # Run test cases
-yarn test
+pnpm run test
 ```
 
 ## Inspired by
