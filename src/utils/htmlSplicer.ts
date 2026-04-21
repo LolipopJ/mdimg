@@ -127,7 +127,7 @@ ${_cssSource}
       const mathJaxOptions = Object.assign({}, mathJax);
 
       const mathJaxScriptText = fs.readFileSync(
-        path.resolve(`${__dirname}/../static/mathjax@3/es5/tex-mml-chtml.js`),
+        path.resolve(`${__dirname}/../static/mathjax@4/tex-mml-chtml.min.js`),
       );
 
       $("head").append(`
@@ -152,11 +152,16 @@ ${_cssSource}
         mermaid,
       );
 
+      const mermaidScriptText = fs.readFileSync(
+        path.resolve(`${__dirname}/../static/mermaid@11/dist/mermaid.min.js`),
+      );
+
       $("body").append(`
 <!-- Mermaid -->
-<script type="module">
-  import mermaid from 'https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs';
+<script>
+  ${mermaidScriptText}
   mermaid.initialize(${JSON.stringify(mermaidOptions)});
+  mermaid.contentLoaded();
 </script>
 `);
     }
