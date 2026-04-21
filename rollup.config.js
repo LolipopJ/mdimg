@@ -8,16 +8,18 @@ import typescript from "rollup-plugin-typescript2";
 const externalModules = ["cheerio", "marked", "puppeteer"];
 
 const pluginsArray = [
-  license({
-    banner: `mdimg - convert markdown to image
-Copyright (c) 2022-${new Date().getFullYear()}, LolipopJ. (MIT Licensed)
-https://github.com/LolipopJ/mdimg`,
-  }),
   nodeResolve({ preferBuiltins: true }),
   typescript(),
   commonjs(),
   babel({ babelHelpers: "bundled" }),
   terser(),
+  license({
+    banner: `<%= pkg.name %> - convert markdown to image
+Generated: <%= moment().format('YYYY-MM-DD') %>
+Version: <%= pkg.version %>
+Homepage: <%= pkg.homepage %>
+Copyright (c) 2022-${new Date().getFullYear()}, LolipopJ. (MIT Licensed)`,
+  }),
 ];
 
 export default [
