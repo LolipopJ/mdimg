@@ -1,6 +1,8 @@
-import type { IConvertOptions } from "../interfaces";
-declare const spliceHtml: ({ renderedHtml, htmlText, cssText, htmlTemplate, cssTemplate, theme, extensions, log, }: Pick<IConvertOptions, "htmlText" | "cssText" | "htmlTemplate" | "cssTemplate" | "theme" | "extensions" | "log"> & {
+import type { IConvertOptions, IExtension } from "../interfaces";
+declare const spliceHtml: ({ renderedHtml, htmlText, cssText, htmlTemplate, cssTemplate, theme, resolvedExtensions, log, }: Pick<IConvertOptions, "htmlText" | "cssText" | "htmlTemplate" | "cssTemplate" | "theme" | "log"> & {
     /** HTML document parsed by Markdown source */
     renderedHtml: string;
-}) => string;
+    /** Fully resolved extension list (built-ins + plugin overrides) from PluginManager */
+    resolvedExtensions?: IExtension[];
+}) => Promise<string>;
 export { spliceHtml };

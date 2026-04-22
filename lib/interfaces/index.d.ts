@@ -58,6 +58,11 @@ export interface IConvertOptions {
      */
     extensions: boolean | IExtensionOptions;
     /**
+     * List of plugins to apply during the conversion pipeline.
+     * Each plugin may provide lifecycle hooks and/or custom extensions.
+     */
+    plugins?: IPlugin[];
+    /**
      * Show preset console log
      * @defaultValue `false`
      */
@@ -114,4 +119,62 @@ export interface IExtensionOptions {
      * @defaultValue `true`
      */
     mermaid?: boolean | Record<string, unknown>;
+    /**
+     * Suppress any registered extension (built-in or plugin-contributed) by setting its name to `false`.
+     * This is the single mechanism for opting out of a named extension at the call-site level.
+     * Plugin-contributed extensions receive their configuration at registration time (inside the plugin itself).
+     * @example `{ "mermaid": false, "myCustomExt": false }`
+     */
+    [name: string]: boolean | Record<string, unknown> | undefined;
+}
+/** Runtime context passed to an extension's `inject` method */
+export interface IExtensionContext {
+    /** Current rendering theme */
+    theme: "light" | "dark";
+}
+/** HTML fragments returned by an extension to be injected into the page */
+export interface IExtensionInjectResult {
+    /** HTML fragment appended to `<head>` */
+    head?: string;
+    /** HTML fragment appended to `<body>` */
+    body?: string;
+}
+/** Interface every extension (built-in or custom) must implement */
+export interface IExtension {
+    /** Unique name identifying this extension */
+    name: string;
+    /** Produce HTML/CSS/JS fragments to inject into the rendered page */
+    inject(context: IExtensionContext): IExtensionInjectResult | Promise<IExtensionInjectResult>;
+}
+/** Lifecycle hooks available in the conversion pipeline */
+export interface IHooks {
+    /**
+     * Transform the raw input text **before** Markdown parsing.
+     * Receives the original Markdown/HTML string and must return the (optionally modified) string.
+     */
+    beforeParse?: (text: string) => string | Promise<string>;
+    /**
+     * Transform the parsed HTML **after** Markdown parsing but before the HTML template is spliced.
+     * Receives the rendered HTML fragment and must return the (optionally modified) string.
+     */
+    afterParse?: (html: string) => string | Promise<string>;
+    /**
+     * Transform the final HTML document **after** template splicing and extension injection.
+     * Receives the complete HTML document string and must return the (optionally modified) string.
+     */
+    afterSplice?: (html: string) => string | Promise<string>;
+    /**
+     * Transform the conversion result **after** Puppeteer rendering.
+     * Receives the `IConvertResponse` and must return the (optionally modified) response.
+     */
+    afterRender?: (result: IConvertResponse) => IConvertResponse | Promise<IConvertResponse>;
+}
+/** A plugin bundles lifecycle hooks and/or custom extensions */
+export interface IPlugin {
+    /** Unique name identifying this plugin */
+    name: string;
+    /** Lifecycle hooks to tap into the conversion pipeline */
+    hooks?: IHooks;
+    /** Custom extensions to inject into every rendered page */
+    extensions?: IExtension[];
 }
