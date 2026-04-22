@@ -99,12 +99,12 @@ ${_cssSource}
 
       const themeText = fs.readFileSync(
         path.resolve(
-          `${__dirname}/../static/highlightjs/cdn-release@11/build/styles/${highlightJsOptions.theme}.min.css`,
+          `${__dirname}/../static/@highlightjs/cdn-assets@11.11.1/styles/${highlightJsOptions.theme}.min.css`,
         ),
       );
       const highlightScriptText = fs.readFileSync(
         path.resolve(
-          `${__dirname}/../static/highlightjs/cdn-release@11/build/highlight.min.js`,
+          `${__dirname}/../static/@highlightjs/cdn-assets@11.11.1/highlight.min.min.js`,
         ),
       );
 
@@ -127,7 +127,9 @@ ${_cssSource}
       const mathJaxOptions = Object.assign({}, mathJax);
 
       const mathJaxScriptText = fs.readFileSync(
-        path.resolve(`${__dirname}/../static/mathjax@4/tex-mml-chtml.min.js`),
+        path.resolve(
+          `${__dirname}/../static/mathjax@4.1.1/tex-mml-chtml.min.js`,
+        ),
       );
 
       $("head").append(`
@@ -153,7 +155,9 @@ ${_cssSource}
       );
 
       const mermaidScriptText = fs.readFileSync(
-        path.resolve(`${__dirname}/../static/mermaid@11/dist/mermaid.min.js`),
+        path.resolve(
+          `${__dirname}/../static/mermaid@11.14.0/dist/mermaid.min.min.js`,
+        ),
       );
 
       $("body").append(`
