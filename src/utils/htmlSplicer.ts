@@ -2,30 +2,26 @@ import cheerio from "cheerio";
 import fs from "fs";
 import path from "path";
 
-import type { IConvertOptions, IExtensionOptions } from "../interfaces";
+import type { IConvertOptions, IExtension } from "../interfaces";
 
-const spliceHtml = ({
+const spliceHtml = async ({
   renderedHtml,
   htmlText,
   cssText,
   htmlTemplate = "default",
   cssTemplate = "default",
   theme = "light",
-  extensions = true,
+  resolvedExtensions = [],
   log = false,
 }: Pick<
   IConvertOptions,
-  | "htmlText"
-  | "cssText"
-  | "htmlTemplate"
-  | "cssTemplate"
-  | "theme"
-  | "extensions"
-  | "log"
+  "htmlText" | "cssText" | "htmlTemplate" | "cssTemplate" | "theme" | "log"
 > & {
   /** HTML document parsed by Markdown source */
   renderedHtml: string;
-}) => {
+  /** Fully resolved extension list (built-ins + plugin overrides) from PluginManager */
+  resolvedExtensions?: IExtension[];
+}): Promise<string> => {
   let _htmlSource = htmlText;
   let _cssSource = cssText;
 
@@ -82,93 +78,12 @@ ${_cssSource}
 `);
   $(".markdown-body").html(renderedHtml);
 
-  if (extensions !== false) {
-    const _extensions = Object.assign(
-      { highlightJs: true, mathJax: true, mermaid: true } as IExtensionOptions,
-      extensions,
-    );
-    const { highlightJs, mathJax, mermaid } = _extensions;
+  const context = { theme };
 
-    if (highlightJs !== false) {
-      const highlightJsOptions = Object.assign(
-        {
-          theme: `atom-one-${theme}`,
-        },
-        highlightJs,
-      );
-
-      const themeText = fs.readFileSync(
-        path.resolve(
-          `${__dirname}/../static/@highlightjs/cdn-assets@11.11.1/styles/${highlightJsOptions.theme}.min.css`,
-        ),
-      );
-      const highlightScriptText = fs.readFileSync(
-        path.resolve(
-          `${__dirname}/../static/@highlightjs/cdn-assets@11.11.1/highlight.min.min.js`,
-        ),
-      );
-
-      $("head").append(`
-<!-- highlight.js styles -->
-<style>${themeText}</style>
-`);
-
-      $("body").append(`
-<!-- highlight.js -->
-<script>${highlightScriptText}</script>
-<script>
-  hljs.configure(${JSON.stringify(highlightJsOptions)});
-  hljs.highlightAll();
-</script>
-`);
-    }
-
-    if (mathJax !== false) {
-      const mathJaxOptions = Object.assign({}, mathJax);
-
-      const mathJaxScriptText = fs.readFileSync(
-        path.resolve(
-          `${__dirname}/../static/mathjax@4.1.1/tex-mml-chtml.min.js`,
-        ),
-      );
-
-      $("head").append(`
-<!-- MathJax options -->
-<script>
-  MathJax = ${JSON.stringify(mathJaxOptions)}
-</script>
-`);
-
-      $("body").append(`
-<!-- MathJax -->
-<script>${mathJaxScriptText}</script>
-`);
-    }
-
-    if (mermaid !== false) {
-      const mermaidOptions = Object.assign(
-        {
-          startOnLoad: true,
-          theme: theme === "dark" ? "dark" : undefined,
-        },
-        mermaid,
-      );
-
-      const mermaidScriptText = fs.readFileSync(
-        path.resolve(
-          `${__dirname}/../static/mermaid@11.14.0/dist/mermaid.min.min.js`,
-        ),
-      );
-
-      $("body").append(`
-<!-- Mermaid -->
-<script>
-  ${mermaidScriptText}
-  mermaid.initialize(${JSON.stringify(mermaidOptions)});
-  mermaid.contentLoaded();
-</script>
-`);
-    }
+  for (const ext of resolvedExtensions) {
+    const result = await ext.inject(context);
+    if (result.head) $("head").append(result.head);
+    if (result.body) $("body").append(result.body);
   }
 
   return $.html();

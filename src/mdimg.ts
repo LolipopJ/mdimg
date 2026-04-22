@@ -10,6 +10,7 @@ import type {
 } from "./interfaces";
 import { spliceHtml } from "./utils/htmlSplicer";
 import { parseMarkdown } from "./utils/mdParser";
+import { PluginManager } from "./utils/pluginManager";
 import {
   createEmptyFile,
   generateImageDefaultFilename,
@@ -33,6 +34,7 @@ const mdimg = async ({
   cssTemplate = "default",
   theme = "light",
   extensions = true,
+  plugins = [],
   log = false,
   debug = false,
   puppeteerProps = {},
@@ -152,16 +154,24 @@ const mdimg = async ({
   }
 
   // Parse markdown text to HTML
-  const _html = spliceHtml({
-    renderedHtml: await parseMarkdown(_input),
+  const _pluginManager = new PluginManager(extensions, plugins);
+
+  const _preprocessed = await _pluginManager.beforeParse(_input);
+  const _parsedHtml = await parseMarkdown(_preprocessed);
+  const _renderedHtml = await _pluginManager.afterParse(_parsedHtml);
+
+  const _splicedHtml = await spliceHtml({
+    renderedHtml: _renderedHtml,
     htmlText,
     cssText,
     htmlTemplate,
     cssTemplate,
-    extensions,
     theme,
+    resolvedExtensions: _pluginManager.getExtensions(),
     log,
   });
+
+  const _html = await _pluginManager.afterSplice(_splicedHtml);
   _result.html = _html;
 
   // Launch headless browser to render HTML
@@ -223,24 +233,12 @@ const mdimg = async ({
     }
 
     if (_encoding === "binary" || _encoding === "blob") {
-      if (_saveToDisk) {
-        // Create empty output file
-        createEmptyFile(String(_output));
-      }
-
-      // Generate output image
+      // Always screenshot to memory so afterRender can transform data before disk write
       const _outputBlob = await _body.screenshot({
-        path: _saveToDisk ? _output : undefined,
         type: _type,
         quality: _quality,
         encoding: "binary",
       });
-      if (log) {
-        process.stderr.write(
-          `Success: convert to image${_saveToDisk ? ` and saved as ${_output}` : ""} successfully!\n`,
-        );
-      }
-
       _result.data = _outputBlob;
       _result.path = _saveToDisk ? _output : undefined;
     } else if (_encoding === "base64") {
@@ -250,12 +248,6 @@ const mdimg = async ({
         quality: _quality,
         encoding: "base64",
       });
-      if (log) {
-        process.stderr.write(
-          `Success: convert to BASE64 encoded string successfully!\n`,
-        );
-      }
-
       _result.data = _outputBase64String;
     }
   } catch (error: unknown) {
@@ -266,7 +258,29 @@ const mdimg = async ({
     await cleanup();
   }
 
-  return _result;
+  // Run afterRender hook BEFORE disk write so the hook can affect the output file
+  const _finalResult = await _pluginManager.afterRender(_result);
+
+  if (_saveToDisk && _finalResult.path) {
+    createEmptyFile(String(_finalResult.path));
+    fs.writeFileSync(
+      String(_finalResult.path),
+      _finalResult.data as Uint8Array,
+    );
+    if (log) {
+      process.stderr.write(
+        `Success: convert to image and saved as ${_finalResult.path} successfully!\n`,
+      );
+    }
+  } else if (log) {
+    process.stderr.write(
+      _encoding === "base64"
+        ? `Success: convert to BASE64 encoded string successfully!\n`
+        : `Success: convert to image successfully!\n`,
+    );
+  }
+
+  return _finalResult;
 };
 
 export { mdimg as convert2img, mdimg };
