@@ -115,6 +115,7 @@ Here are all available options:
 | cssTemplate    | `String`                         | `default`                                    | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). If ends with `.css`, the mdimg will try to read local file. This option **has no effect** if `cssText` is specified      |
 | theme          | `light` \| `dark`                | `light`                                      | Rendering color theme, will impact styles of code block and so on                                                                                                                                                     |
 | extensions     | `Boolean \| IExtensionOptions`   | `true`                                       | Configurations for [extensions](#extensions)                                                                                                                                                                          |
+| plugins        | `IPlugin[]`                      | `[]`                                         | List of [plugins](#plugins) to apply during the conversion pipeline                                                                                                                                                   |
 | log            | `Boolean`                        | `false`                                      | Print execution logs via stderr                                                                                                                                                                                       |
 | debug          | `Boolean`                        | `false`                                      | Whether to keep temporary HTML file after rendering                                                                                                                                                                   |
 | puppeteerProps | `LaunchOptions`                  | `undefined`                                  | [Launch options](https://pptr.dev/api/puppeteer.puppeteerlaunchoptions) of Puppeteer                                                                                                                                  |
@@ -334,6 +335,134 @@ sequenceDiagram
 #### [Highlight.js](https://github.com/highlightjs/highlight.js)
 
 > Highlight.js is a syntax highlighter.
+
+## Plugins
+
+The plugin system lets you hook into every stage of the conversion pipeline and register custom extensions — all without modifying mdimg's source code.
+
+### Lifecycle Hooks
+
+A plugin can define any combination of the four lifecycle hooks:
+
+| Hook | When it runs | Signature |
+|------|-------------|----------|
+| `beforeParse` | Before Markdown is parsed | `(text: string) => string \| Promise<string>` |
+| `afterParse` | After Markdown → HTML fragment, before template splicing | `(html: string) => string \| Promise<string>` |
+| `afterSplice` | After the full HTML document is assembled | `(html: string) => string \| Promise<string>` |
+| `afterRender` | After Puppeteer renders, **before** the image is written to disk | `(result: IConvertResponse) => IConvertResponse \| Promise<IConvertResponse>` |
+
+Multiple plugins run in registration order.
+
+```ts
+import { mdimg } from "mdimg";
+import type { IPlugin } from "mdimg";
+
+const myPlugin: IPlugin = {
+  name: "myPlugin",
+  hooks: {
+    // Transform raw Markdown before parsing
+    beforeParse: (text) => text.replace(/\[\[(\w+)\]\]/g, "**$1**"),
+
+    // Modify the rendered HTML fragment
+    afterParse: (html) => `<div class="wrapper">${html}</div>`,
+
+    // Post-process the final HTML document
+    afterSplice: (html) => html.replace("</title>", " — my brand</title>"),
+
+    // Transform or inspect the output image bytes before they are saved
+    afterRender: async (result) => {
+      console.log(`Image size: ${result.data.length} bytes`);
+      return result;
+    },
+  },
+};
+
+await mdimg({
+  inputText: "# Hello [[World]]",
+  outputFilename: "output.png",
+  plugins: [myPlugin],
+});
+```
+
+### Custom Extensions
+
+A plugin can also contribute one or more **extensions** — each extension injects HTML fragments into the `<head>` or `<body>` of the rendered page.
+
+```ts
+import type { IPlugin, IExtension } from "mdimg";
+
+const fontExtension: IExtension = {
+  name: "googleFont",
+  inject({ theme }) {
+    const family = theme === "dark" ? "JetBrains+Mono" : "Inter";
+    return {
+      head: `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=${family}&display=swap">`,
+    };
+  },
+};
+
+const fontPlugin: IPlugin = {
+  name: "fontPlugin",
+  extensions: [fontExtension],
+};
+
+await mdimg({
+  inputText: "# Hello",
+  encoding: "base64",
+  plugins: [fontPlugin],
+});
+```
+
+### Overriding Built-in Extensions
+
+If a plugin extension has the **same `name`** as a built-in extension (`highlightJs`, `mathJax`, or `mermaid`), it **replaces** the built-in. This lets you fully control how a dependency is configured or injected.
+
+```ts
+import type { IPlugin } from "mdimg";
+
+// Replace built-in highlight.js with a custom CDN version
+const customHljsPlugin: IPlugin = {
+  name: "customHighlightJs",
+  extensions: [
+    {
+      name: "highlightJs", // same name → replaces the built-in
+      inject({ theme }) {
+        const cssHref =
+          theme === "dark"
+            ? "https://cdn.example.com/hljs/atom-one-dark.min.css"
+            : "https://cdn.example.com/hljs/atom-one-light.min.css";
+        return {
+          head: `<link rel="stylesheet" href="${cssHref}">`,
+          body: `<script src="https://cdn.example.com/hljs/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>`,
+        };
+      },
+    },
+  ],
+};
+
+await mdimg({
+  inputText: "# Hello",
+  encoding: "base64",
+  plugins: [customHljsPlugin],
+});
+```
+
+### Suppressing Extensions by Name
+
+Any extension — built-in or plugin-contributed — can be suppressed via the `extensions` option using its name as the key:
+
+```ts
+await mdimg({
+  inputText: "# Hello",
+  encoding: "base64",
+  // Disable mermaid and a plugin-contributed extension named "googleFont"
+  extensions: { mermaid: false, googleFont: false },
+  plugins: [fontPlugin],
+});
+```
+
+`extensions: false` still disables every extension globally.
 
 ## Development
 
