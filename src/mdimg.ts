@@ -7,7 +7,9 @@ import type {
   IConvertOptions,
   IConvertResponse,
   IConvertTypeOption,
+  IOutputProcessor,
 } from "./interfaces";
+import { createImageOutputProcessor } from "./output";
 import { spliceHtml } from "./utils/htmlSplicer";
 import { parseMarkdown } from "./utils/mdParser";
 import { PluginManager } from "./utils/pluginManager";
@@ -38,6 +40,7 @@ const mdimg = async ({
   log = false,
   debug = false,
   puppeteerProps = {},
+  outputProcessor,
 }: IConvertOptions): Promise<IConvertResponse> => {
   const _outputFileTypes: IConvertTypeOption[] = ["jpeg", "png", "webp"];
   const _encodingTypes: IConvertEncodingOption[] = ["base64", "binary", "blob"];
@@ -81,9 +84,12 @@ const mdimg = async ({
 
   // Resolve encoding
   const _encoding = encoding;
-  const _saveToDisk = _encoding === "binary";
-  if (!_encodingTypes.includes(_encoding)) {
-    // Params encoding is not valid
+  // Custom processors: disk write happens only when outputFilename is explicitly
+  // provided. Image processors: disk write only when encoding is "binary".
+  const _saveToDisk = outputProcessor
+    ? Boolean(outputFilename)
+    : _encoding === "binary";
+  if (!outputProcessor && !_encodingTypes.includes(_encoding)) {
     throw new Error(
       `encoding type ${_encoding} is not supported. Valid types: ${_encodingTypes.join(", ")}.\n`,
     );
@@ -91,8 +97,7 @@ const mdimg = async ({
 
   // Resolve output file type
   let _type = type;
-  if (!_outputFileTypes.includes(_type)) {
-    // Params encoding is not valid
+  if (!outputProcessor && !_outputFileTypes.includes(_type)) {
     throw new Error(
       `output file type ${_type} is not supported. Valid types: ${_outputFileTypes.join(", ")}.\n`,
     );
@@ -101,8 +106,14 @@ const mdimg = async ({
   // Resolve output filename
   let _output: IConvertOptions["outputFilename"];
   if (_saveToDisk) {
-    if (outputFilename) {
-      // Check validation of output filename
+    if (outputProcessor) {
+      // Custom processor: outputFilename must be explicit (_saveToDisk already
+      // ensured this). Resolve to an absolute path without extension validation.
+      _output = path.resolve(
+        outputFilename!,
+      ) as IConvertOptions["outputFilename"];
+    } else if (outputFilename) {
+      // Image output: extension-aware resolution.
       const _outputFilename = path.basename(outputFilename);
       const _outputFilePath = path.dirname(outputFilename);
 
@@ -147,11 +158,16 @@ const mdimg = async ({
     }
   }
 
-  // Resolve quality
+  // Resolve quality (used by the default image processor)
   let _quality;
   if (_type !== "png") {
     _quality = quality > 0 && quality <= 100 ? quality : 100;
   }
+
+  // Select the output processor: custom or default image processor.
+  const _processor: IOutputProcessor =
+    outputProcessor ?? createImageOutputProcessor(_type, _quality, _encoding);
+  const _requiresPage = _processor.requiresPage !== false;
 
   // Parse markdown text to HTML
   const _pluginManager = new PluginManager(extensions, plugins);
@@ -177,88 +193,88 @@ const mdimg = async ({
   const _html = await _pluginManager.afterSplice(_splicedHtml);
   _result.html = _html;
 
-  // Launch headless browser to render HTML
-  const _minHeight = Math.max(height, 100);
-  const _browser = await puppeteer.launch({
-    defaultViewport: {
-      width,
-      height: _minHeight,
-    },
-    args: [`--window-size=${width},${_minHeight}`],
-    ...puppeteerProps,
-  });
-
-  const _baseDirname = _inputFilename
-    ? path.dirname(path.resolve(_inputFilename))
-    : process.cwd();
-  const _tempLocalHtmlFile = path.resolve(
-    _baseDirname,
-    `.mdimg_temp_${new Date().getTime()}_${padStartWithZero(
-      Math.floor(Math.random() * 10000),
-      4,
-    )}.html`,
-  );
-  try {
-    fs.writeFileSync(_tempLocalHtmlFile, _html); // used to load local files
-  } catch (error) {
-    if (log) {
-      process.stderr.write(
-        `Warning: write temporary local HTML file failed, local files may not display correctly. ${error}\n`,
-      );
-    }
-  }
-  const _useLocalHtmlFileFlag = fs.existsSync(_tempLocalHtmlFile);
-
-  const cleanup = async () => {
-    if (_useLocalHtmlFileFlag && !debug) {
-      fs.rmSync(_tempLocalHtmlFile);
-    }
-    await _browser.close();
-  };
-
-  try {
-    const _page = await _browser.newPage();
-    if (_useLocalHtmlFileFlag) {
-      await _page.goto(`file://${_tempLocalHtmlFile}`, {
-        waitUntil: "networkidle0",
-      });
-    } else {
-      await _page.setContent(_html, {
-        waitUntil: "networkidle0",
-      });
-    }
-
-    const _body = await _page.$("#mdimg-body");
-    if (!_body) {
-      throw new Error(
-        `missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.\n`,
-      );
-    }
-
-    if (_encoding === "binary" || _encoding === "blob") {
-      // Always screenshot to memory so afterRender can transform data before disk write
-      const _outputBlob = await _body.screenshot({
-        type: _type,
-        quality: _quality,
-        encoding: "binary",
-      });
-      _result.data = _outputBlob;
-      _result.path = _saveToDisk ? _output : undefined;
-    } else if (_encoding === "base64") {
-      // Generate base64 encoded image
-      const _outputBase64String = await _body.screenshot({
-        type: _type,
-        quality: _quality,
-        encoding: "base64",
-      });
-      _result.data = _outputBase64String;
-    }
-  } catch (error: unknown) {
-    throw new Error(String(error), {
-      cause: error,
+  if (_requiresPage) {
+    // Launch headless browser to render HTML
+    const _minHeight = Math.max(height, 100);
+    const _browser = await puppeteer.launch({
+      defaultViewport: {
+        width,
+        height: _minHeight,
+      },
+      args: [`--window-size=${width},${_minHeight}`],
+      ...puppeteerProps,
     });
-  } finally {
-    await cleanup();
+
+    const _baseDirname = _inputFilename
+      ? path.dirname(path.resolve(_inputFilename))
+      : process.cwd();
+    const _tempLocalHtmlFile = path.resolve(
+      _baseDirname,
+      `.mdimg_temp_${new Date().getTime()}_${padStartWithZero(
+        Math.floor(Math.random() * 10000),
+        4,
+      )}.html`,
+    );
+    try {
+      fs.writeFileSync(_tempLocalHtmlFile, _html); // used to load local files
+    } catch (error) {
+      if (log) {
+        process.stderr.write(
+          `Warning: write temporary local HTML file failed, local files may not display correctly. ${error}\n`,
+        );
+      }
+    }
+    const _useLocalHtmlFileFlag = fs.existsSync(_tempLocalHtmlFile);
+
+    const cleanup = async () => {
+      if (_useLocalHtmlFileFlag && !debug) {
+        fs.rmSync(_tempLocalHtmlFile);
+      }
+      await _browser.close();
+    };
+
+    try {
+      const _page = await _browser.newPage();
+      if (_useLocalHtmlFileFlag) {
+        await _page.goto(`file://${_tempLocalHtmlFile}`, {
+          waitUntil: "networkidle0",
+        });
+      } else {
+        await _page.setContent(_html, {
+          waitUntil: "networkidle0",
+        });
+      }
+
+      const _body = await _page.$("#mdimg-body");
+      if (!_body) {
+        throw new Error(
+          `missing HTML element with id: mdimg-body.\nHTML template ${htmlTemplate} is not valid.\n`,
+        );
+      }
+
+      const _processResult = await _processor.process({
+        html: _html,
+        page: _page,
+        body: _body,
+        outputPath: _saveToDisk ? String(_output) : undefined,
+      });
+      _result.data = _processResult.data;
+      _result.path = _saveToDisk ? _output : undefined;
+    } catch (error: unknown) {
+      throw new Error(String(error), {
+        cause: error,
+      });
+    } finally {
+      await cleanup();
+    }
+  } else {
+    // No browser needed (e.g. HTML export with requiresPage: false)
+    const _processResult = await _processor.process({
+      html: _html,
+      outputPath: _saveToDisk ? String(_output) : undefined,
+    });
+    _result.data = _processResult.data;
+    _result.path = _saveToDisk ? _output : undefined;
   }
 
   // Run afterRender hook BEFORE disk write so the hook can affect the output file
@@ -266,10 +282,7 @@ const mdimg = async ({
 
   if (_saveToDisk && _finalResult.path) {
     createEmptyFile(String(_finalResult.path));
-    fs.writeFileSync(
-      String(_finalResult.path),
-      _finalResult.data as Uint8Array,
-    );
+    fs.writeFileSync(String(_finalResult.path), _finalResult.data);
     if (log) {
       process.stderr.write(
         `Success: convert to image and saved as ${_finalResult.path} successfully!\n`,
@@ -287,3 +300,8 @@ const mdimg = async ({
 };
 
 export { mdimg as convert2img, mdimg };
+export {
+  createHtmlOutputProcessor,
+  createImageOutputProcessor,
+  createPdfOutputProcessor,
+} from "./output";

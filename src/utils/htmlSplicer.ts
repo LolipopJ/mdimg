@@ -1,4 +1,4 @@
-import cheerio from "cheerio";
+import { load } from "cheerio";
 import fs from "fs";
 import path from "path";
 
@@ -67,7 +67,7 @@ const spliceHtml = async ({
     _cssSource = fs.readFileSync(_cssPath).toString();
   }
 
-  const $ = cheerio.load(_htmlSource);
+  const $ = load(_htmlSource);
   $("head").append(`
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">

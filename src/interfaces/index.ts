@@ -63,6 +63,28 @@ export interface IConvertOptions {
    */
   plugins?: IPlugin[];
   /**
+   * Custom output processor. Overrides the built-in Puppeteer screenshot logic.
+   *
+   * Use the built-in factories from `mdimg`:
+   * ```ts
+   * import { createPdfOutputProcessor, createHtmlOutputProcessor } from 'mdimg';
+   *
+   * // With explicit outputFilename → written to disk
+   * await mdimg({ outputProcessor: createPdfOutputProcessor(), outputFilename: 'out.pdf', ... });
+   *
+   * // Without outputFilename → result returned in-memory only (result.data)
+   * const { data } = await mdimg({ outputProcessor: createHtmlOutputProcessor(), ... });
+   * ```
+   *
+   * When not set, defaults to an image (PNG/JPEG/WebP) processor driven by the
+   * `type`, `encoding`, and `quality` options.
+   *
+   * **Disk-write semantics for custom processors**: a file is written **only**
+   * when `outputFilename` is explicitly provided. No default output path is
+   * generated for custom processors.
+   */
+  outputProcessor?: IOutputProcessor;
+  /**
    * Show preset console log
    * @defaultValue `false`
    */
@@ -97,6 +119,76 @@ export type IConvertTypeOption = NonNullable<
 export type IConvertEncodingOption = NonNullable<
   import("puppeteer").ScreenshotOptions["encoding"] | "blob"
 >;
+
+// ─── Output Processor ────────────────────────────────────────────────────────
+
+/**
+ * Runtime context supplied to `IOutputProcessor.process()`.
+ * Fields are populated based on whether the processor declares `requiresPage`.
+ */
+export interface IOutputProcessorContext {
+  /** Complete rendered HTML document (after all plugin hooks). */
+  html: string;
+  /**
+   * Active Puppeteer page.
+   * Present only when `IOutputProcessor.requiresPage !== false`.
+   */
+  page?: import("puppeteer").Page;
+  /**
+   * `ElementHandle` for the `#mdimg-body` element.
+   * Present only when `page` is present.
+   */
+  body?: import("puppeteer").ElementHandle;
+  /**
+   * Resolved absolute output file path.
+   * Present only when `outputFilename` was **explicitly provided** by the caller.
+   * The processor may use this as a hint but does **not** need to write the file;
+   * `mdimg` handles disk I/O after the processor returns.
+   * When absent, the processor result is returned in-memory only.
+   */
+  outputPath?: string;
+}
+
+/**
+ * Data payload returned by `IOutputProcessor.process()`.
+ * `mdimg` writes this to disk when an output filename was resolved.
+ */
+export interface IOutputProcessorResult {
+  /**
+   * Output payload.
+   * - `Uint8Array` for binary formats (images, PDF).
+   * - `string` for text formats (HTML, SVG).
+   */
+  data: Uint8Array | string;
+}
+
+/**
+ * An output processor transforms the rendered HTML (and optionally a live
+ * Puppeteer page) into a specific output format.
+ *
+ * Built-in factories (all exported from `mdimg`):
+ * - `createImageOutputProcessor()` — PNG / JPEG / WebP via Puppeteer screenshot (default)
+ * - `createPdfOutputProcessor()` — PDF via `page.pdf()`
+ * - `createHtmlOutputProcessor()` — raw HTML string, no browser required
+ *
+ * Custom processors can target any format — SVG, DOCX, plain text, etc.
+ */
+export interface IOutputProcessor {
+  /**
+   * Format identifier / typical file extension for this processor.
+   * Examples: `"pdf"`, `"svg"`, `"html"`, `"png"`.
+   */
+  format: string;
+  /**
+   * Whether this processor needs an active Puppeteer page in the context.
+   * Set to `false` for text-only formats (e.g. HTML export) to skip browser
+   * launch entirely and improve performance.
+   * @defaultValue `true`
+   */
+  requiresPage?: boolean;
+  /** Produce the output from the provided context. */
+  process(ctx: IOutputProcessorContext): Promise<IOutputProcessorResult>;
+}
 
 /**
  * All highlight.js theme names bundled with mdimg.
