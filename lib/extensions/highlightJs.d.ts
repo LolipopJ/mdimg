@@ -1,5 +1,5 @@
-import type { IExtension } from "../interfaces";
+import type { IExtension, IHighlightJsTheme } from "../interfaces";
 export declare const createHighlightJsExtension: (config: boolean | {
-    theme?: string;
+    theme?: IHighlightJsTheme;
     [key: string]: unknown;
 }) => IExtension;

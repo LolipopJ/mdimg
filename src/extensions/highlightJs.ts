@@ -5,16 +5,19 @@ import type {
   IExtension,
   IExtensionContext,
   IExtensionInjectResult,
+  IHighlightJsTheme,
 } from "../interfaces";
 
 export const createHighlightJsExtension = (
-  config: boolean | { theme?: string; [key: string]: unknown },
+  config: boolean | { theme?: IHighlightJsTheme; [key: string]: unknown },
 ): IExtension => ({
   name: "highlightJs",
 
   inject({ theme }: IExtensionContext): IExtensionInjectResult {
+    const defaultTheme: IHighlightJsTheme =
+      theme === "dark" ? "atom-one-dark" : "atom-one-light";
     const highlightJsOptions = Object.assign(
-      { theme: `atom-one-${theme}` },
+      { theme: defaultTheme },
       config === true ? {} : config,
     );
 
