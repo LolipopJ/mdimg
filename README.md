@@ -83,9 +83,11 @@ console.log(
 );
 ```
 
-Convert markdown text to blob:
+Get image data in-memory without saving to disk:
 
 ```js
+// encoding: "blob" returns a Uint8Array in memory and does NOT auto-save to disk.
+// Use this when you want to handle the image bytes yourself.
 const convertRes = await mdimg({
   inputText: "# Hello world",
   encoding: "blob",
@@ -114,7 +116,7 @@ Here are all available options:
 | htmlTemplate    | `String`                         | `default`       | HTML rendering template. Available presets can be found in [`template/html`](./template/html/). If ends with `.html`, the mdimg will try to read local file. This option **has no effect** if `htmlText` is specified                    |
 | cssTemplate     | `String`                         | `default`       | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). If ends with `.css`, the mdimg will try to read local file. This option **has no effect** if `cssText` is specified                         |
 | theme           | `light` \| `dark`                | `light`         | Rendering color theme, affects the default highlight.js theme and other dark/light-aware styles                                                                                                                                          |
-| extensions      | `Boolean \| IExtensionOptions`   | `true`          | Configurations for [extensions](#extensions)                                                                                                                                                                                             |
+| extensions      | `boolean \| IExtensionOptions`   | `true`          | Configurations for [extensions](#extensions)                                                                                                                                                                                             |
 | plugins         | `IPlugin[]`                      | `[]`            | List of [plugins](#plugins) to apply during the conversion pipeline                                                                                                                                                                      |
 | outputProcessor | `IOutputProcessor`               | image processor | Custom output processor. Overrides the built-in screenshot logic. See [Output Processors](#output-processors)                                                                                                                            |
 | log             | `Boolean`                        | `false`         | Print execution logs via stderr                                                                                                                                                                                                          |
@@ -123,11 +125,11 @@ Here are all available options:
 
 Returns: `Promise<object>`
 
-| Key  | Value Type               | Notes                                                                                                                                                                                                        |
-| ---- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| data | `string` \| `Uint8Array` | Image bytes (`encoding: "binary"` or `"blob"`) or BASE64 string (`encoding: "base64"`). When `outputProcessor` is set: `Uint8Array` for binary formats (image, PDF) or `string` for text formats (HTML, SVG) |
-| path | `string` \| `undefined`  | Path of output file. For image output: set when `encoding` is `"binary"`. For custom `outputProcessor`: set when `outputFilename` is explicitly provided; `undefined` otherwise                              |
-| html | `string`                 | Rendered HTML document                                                                                                                                                                                       |
+| Key  | Value Type               | Notes                                                                                                                                                                                                                        |
+| ---- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data | `string` \| `Uint8Array` | Image bytes as `Uint8Array` (`encoding: "binary"` or `"blob"`) or BASE64 string (`encoding: "base64"`). When `outputProcessor` is set: `Uint8Array` for binary formats (image, PDF) or `string` for text formats (HTML, SVG) |
+| path | `string` \| `undefined`  | Path of output file. For image output: set when `encoding` is `"binary"`. For custom `outputProcessor`: set when `outputFilename` is explicitly provided; `undefined` otherwise                                              |
+| html | `string`                 | Rendered HTML document                                                                                                                                                                                                       |
 
 ## Custom template
 
@@ -574,11 +576,11 @@ By default mdimg captures the rendered `#mdimg-body` element as a PNG / JPEG / W
 
 Three built-in processors are exported directly from `mdimg`:
 
-| Factory                                               | Format            | Requires browser | Description                                                   |
-| ----------------------------------------------------- | ----------------- | ---------------- | ------------------------------------------------------------- |
-| `createImageOutputProcessor(type, quality, encoding)` | PNG / JPEG / WebP | Yes              | Default when `outputProcessor` is not set                     |
-| `createPdfOutputProcessor(pdfOptions?)`               | PDF               | Yes              | Uses Puppeteer's `page.pdf()`                                 |
-| `createHtmlOutputProcessor()`                         | HTML              | **No**           | Returns the rendered HTML string; Puppeteer is never launched |
+| Factory                                               | Format            | Requires browser | Description                                                                                                          |
+| ----------------------------------------------------- | ----------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `createImageOutputProcessor(type, quality, encoding)` | PNG / JPEG / WebP | Yes              | Default when `outputProcessor` is not set. Typically not called directly — use `type`, `quality`, `encoding` options |
+| `createPdfOutputProcessor(pdfOptions?)`               | PDF               | Yes              | Uses Puppeteer's `page.pdf()`                                                                                        |
+| `createHtmlOutputProcessor()`                         | HTML              | **No**           | Returns the rendered HTML string; Puppeteer is never launched                                                        |
 
 ### Export to HTML
 

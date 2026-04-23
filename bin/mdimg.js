@@ -9,7 +9,6 @@ const pkg = require("../package.json");
 const _encodingTypes = ["base64", "binary", "blob"];
 const _outputFileTypes = ["jpeg", "png", "webp"];
 const _colorThemes = ["light", "dark"];
-const _booleanOptions = ["true", "false"];
 
 const program = new Command();
 
@@ -50,7 +49,7 @@ program
   )
   .addOption(
     new Option(
-      "-h, --height <pixel>",
+      "--height <pixel>",
       "The min-height in pixel of output image (>= 100)",
     ).default(100),
   )
@@ -107,9 +106,10 @@ program
       .default("light"),
   )
   .addOption(
-    new Option("--extensions <enabled>", "Whether to enable extensions")
-      .choices(_booleanOptions)
-      .default("true"),
+    new Option(
+      "--extensions <enabled>",
+      "Whether to enable extensions. Can be 'true', 'false', or a JSON object to configure individual extensions (highlightJs, mathJax, mermaid)",
+    ).default("true"),
   )
   .addOption(
     new Option(
@@ -139,6 +139,7 @@ const {
   quality,
   encoding,
   width,
+  height,
   template,
   htmlText,
   html,
@@ -148,6 +149,19 @@ const {
   theme,
   debug,
 } = program.opts();
+
+function parseExtensions(value) {
+  if (value === "false") return false;
+  if (value === "true") return true;
+  try {
+    return JSON.parse(value);
+  } catch {
+    process.stderr.write(
+      `Invalid --extensions value: "${value}". Expected 'true', 'false', or a JSON object.\n`,
+    );
+    process.exit(1);
+  }
+}
 
 if (!text && !input) {
   program.help();
@@ -160,13 +174,14 @@ mdimg({
   outputFilename: output,
   type,
   width: Number(width),
+  height: Number(height),
   encoding,
   quality: Number(quality),
   htmlText,
   cssText,
   htmlTemplate: html || template,
   cssTemplate: css || template,
-  extensions: extensions !== "false",
+  extensions: parseExtensions(extensions),
   theme,
   log: encoding === "binary",
   debug: !!debug,
