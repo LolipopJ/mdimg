@@ -281,3 +281,126 @@ test("PLUGIN: extensions[name]=true does NOT suppress a plugin-contributed exten
   expect(injected).toHaveLength(1);
   expect(result.html).toContain("<!-- should-appear -->");
 });
+
+// ── markedExtensions: tokenizer, renderer priority, suppression ───────────────
+
+/**
+ * Reusable MarkedExtension that recognises ::text:: as an underline token.
+ * Used across all three markedExtensions tests to keep fixtures consistent.
+ */
+const underlineMarkedExt = {
+  extensions: [
+    {
+      name: "underline",
+      level: "inline",
+      start(src) {
+        return src.indexOf("::");
+      },
+      tokenizer(src) {
+        const match = src.match(/^::([^:]+)::/);
+        if (match) {
+          return { type: "underline", raw: match[0], text: match[1] };
+        }
+      },
+      renderer(token) {
+        return `<u>${token.text}</u>`;
+      },
+    },
+  ],
+};
+
+test("PLUGIN: markedExtensions tokenizer produces custom HTML from custom syntax", async () => {
+  const result = await mdimg({
+    inputText: "Hello ::world::",
+    encoding: "base64",
+    extensions: false,
+    plugins: [
+      {
+        name: "underlinePlugin",
+        markedExtensions: [underlineMarkedExt],
+      },
+    ],
+  });
+
+  // Custom tokenizer ran: ::world:: → <u>world</u>
+  expect(result.html).toContain("<u>world</u>");
+});
+
+test("PLUGIN: markedExtensions renderer override takes priority over built-in code renderer", async () => {
+  const result = await mdimg({
+    inputText: "```js\nconsole.log('hi');\n```",
+    encoding: "base64",
+    extensions: false,
+    plugins: [
+      {
+        name: "codePlugin",
+        markedExtensions: [
+          {
+            renderer: {
+              code({ text }) {
+                return `<div class="custom-code">${text}</div>`;
+              },
+            },
+          },
+        ],
+      },
+    ],
+  });
+
+  // Plugin renderer took priority — custom wrapper present
+  expect(result.html).toContain('<div class="custom-code">');
+  // Built-in renderer markup must NOT appear
+  expect(result.html).not.toContain('<pre><code class="language-');
+});
+
+test("PLUGIN: extensions[pluginName]=false also suppresses markedExtensions from that plugin", async () => {
+  const result = await mdimg({
+    inputText: "Hello ::world::",
+    encoding: "base64",
+    // Suppress the whole plugin by its name
+    extensions: { underlinePlugin: false },
+    plugins: [
+      {
+        name: "underlinePlugin",
+        markedExtensions: [underlineMarkedExt],
+      },
+    ],
+  });
+
+  // Plugin was suppressed — custom tokenizer must NOT have run
+  expect(result.html).not.toContain("<u>world</u>");
+  // "::world::" falls through as plain text
+  expect(result.html).toContain("::world::");
+});
+
+test("PLUGIN: extensions[extensionName]=false suppresses markedExtensions of the owning plugin even when extensionName !== pluginName", async () => {
+  // This covers the semantic gap: a plugin whose name differs from the
+  // IExtension it registers. Suppressing by extension name must also stop
+  // the plugin's markedExtensions so no half-enabled state is possible.
+  const result = await mdimg({
+    inputText: "Hello ::world::",
+    encoding: "base64",
+    // Suppress by EXTENSION name ("underlineExt"), NOT by plugin name ("mixedPlugin")
+    extensions: { underlineExt: false },
+    plugins: [
+      {
+        name: "mixedPlugin", // ← deliberately different from extension name
+        extensions: [
+          {
+            name: "underlineExt", // ← the IExtension has a different name
+            inject() {
+              return { head: "<!-- underline-css -->" };
+            },
+          },
+        ],
+        markedExtensions: [underlineMarkedExt],
+      },
+    ],
+  });
+
+  // IExtension injection was suppressed
+  expect(result.html).not.toContain("<!-- underline-css -->");
+  // markedExtensions must also be suppressed — tokenizer must NOT have run
+  expect(result.html).not.toContain("<u>world</u>");
+  expect(result.html).toContain("::world::");
+});

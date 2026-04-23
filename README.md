@@ -413,6 +413,83 @@ await mdimg({
 });
 ```
 
+### Custom Markdown Syntax
+
+A plugin can expose the full [marked extensions API](https://marked.js.org/using_pro#extensions) through the `markedExtensions` field. This lets you add **custom block/inline syntax**, **override renderers**, or **attach `walkTokens` logic** — all scoped to a single `mdimg` call with no global side-effects.
+
+Each item in `markedExtensions` is passed to `marked.use()` in registration order on a fresh `Marked` instance. Plugin-provided extensions are applied **after** mdimg's built-in code renderer, so they take precedence (custom `code` renderers will override the default mermaid handling).
+
+#### Example: custom inline syntax
+
+The following plugin renders `:wave:` as an emoji span:
+
+```ts
+import type { IPlugin } from "mdimg";
+import type { MarkedExtension } from "marked";
+
+const emojiExtension: MarkedExtension = {
+  extensions: [
+    {
+      name: "emoji",
+      level: "inline",
+      start(src) {
+        return src.indexOf(":");
+      },
+      tokenizer(src) {
+        const match = src.match(/^:([a-z_]+):/);
+        if (match) {
+          return { type: "emoji", raw: match[0], name: match[1] };
+        }
+      },
+      renderer(token) {
+        const map: Record<string, string> = { wave: "👋", fire: "🔥", star: "⭐" };
+        return `<span class="emoji">${map[token.name] ?? token.raw}</span>`;
+      },
+    },
+  ],
+};
+
+const emojiPlugin: IPlugin = {
+  name: "emojiPlugin",
+  markedExtensions: [emojiExtension],
+};
+
+await mdimg({
+  inputText: "# Hello :wave:",
+  encoding: "base64",
+  plugins: [emojiPlugin],
+});
+```
+
+#### Example: custom renderer override
+
+Override the default link renderer to open all links in a new tab:
+
+```ts
+import type { IPlugin } from "mdimg";
+import type { MarkedExtension } from "marked";
+
+const externalLinksExtension: MarkedExtension = {
+  renderer: {
+    link({ href, title, text }) {
+      const titleAttr = title ? ` title="${title}"` : "";
+      return `<a href="${href}"${titleAttr} target="_blank" rel="noopener noreferrer">${text}</a>`;
+    },
+  },
+};
+
+const externalLinksPlugin: IPlugin = {
+  name: "externalLinksPlugin",
+  markedExtensions: [externalLinksExtension],
+};
+
+await mdimg({
+  inputText: "[GitHub](https://github.com)",
+  encoding: "base64",
+  plugins: [externalLinksPlugin],
+});
+```
+
 ### Overriding Built-in Extensions
 
 If a plugin extension has the **same `name`** as a built-in extension (`highlightJs`, `mathJax`, or `mermaid`), it **replaces** the built-in. This lets you fully control how a dependency is configured or injected.
@@ -450,7 +527,7 @@ await mdimg({
 
 ### Suppressing Extensions by Name
 
-Any extension — built-in or plugin-contributed — can be suppressed via the `extensions` option using its name as the key:
+Any extension — built-in or plugin-contributed — can be suppressed via the `extensions` option using its name as the key. Suppression is **complete**: it disables both HTML injection **and** the `markedExtensions` of the plugin that owns the extension, so no half-enabled state (parsing active, resources absent) is possible.
 
 ```ts
 await mdimg({
@@ -459,6 +536,17 @@ await mdimg({
   // Disable mermaid and a plugin-contributed extension named "googleFont"
   extensions: { mermaid: false, googleFont: false },
   plugins: [fontPlugin],
+});
+```
+
+You can also suppress by **plugin name** to disable every `IExtension` the plugin registered together with its `markedExtensions` in one key — useful when the plugin name differs from the individual extension names:
+
+```ts
+await mdimg({
+  inputText: "# Hello",
+  encoding: "base64",
+  extensions: { myPlugin: false }, // disables all of myPlugin's IExtensions + markedExtensions
+  plugins: [myPlugin],
 });
 ```
 
@@ -487,6 +575,8 @@ pnpm run lint:fix
 ```bash
 # Build .js, .scss and .sass files
 pnpm run build
+# Generate preview images in `docs` directory
+pnpm run preview
 ```
 
 ### Test

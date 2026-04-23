@@ -157,7 +157,10 @@ const mdimg = async ({
   const _pluginManager = new PluginManager(extensions, plugins);
 
   const _preprocessed = await _pluginManager.beforeParse(_input);
-  const _parsedHtml = await parseMarkdown(_preprocessed);
+  const _parsedHtml = await parseMarkdown(
+    _preprocessed,
+    _pluginManager.getMarkedExtensions(),
+  );
   const _renderedHtml = await _pluginManager.afterParse(_parsedHtml);
 
   const _splicedHtml = await spliceHtml({

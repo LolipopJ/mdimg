@@ -120,10 +120,24 @@ export interface IExtensionOptions {
      */
     mermaid?: boolean | Record<string, unknown>;
     /**
-     * Suppress any registered extension (built-in or plugin-contributed) by setting its name to `false`.
-     * This is the single mechanism for opting out of a named extension at the call-site level.
-     * Plugin-contributed extensions receive their configuration at registration time (inside the plugin itself).
-     * @example `{ "mermaid": false, "myCustomExt": false }`
+     * Suppress any extension (built-in or plugin-contributed) or entire plugin
+     * by setting its name to `false`.
+     *
+     * **By extension name** — removes that `IExtension` from injection AND suppresses
+     * `markedExtensions` of the plugin that owns it, preventing a half-enabled
+     * state where resources are gone but custom parsing still runs:
+     * ```ts
+     * extensions: { mermaid: false, myExt: false }
+     * ```
+     *
+     * **By plugin name** — suppresses all `IExtension` entries the plugin registered
+     * AND its `markedExtensions` in a single key:
+     * ```ts
+     * extensions: { myPlugin: false }
+     * ```
+     *
+     * Both forms reach the same result for a plugin that contributes both
+     * injection and custom parsing.
      */
     [name: string]: boolean | Record<string, unknown> | undefined;
 }
@@ -177,4 +191,12 @@ export interface IPlugin {
     hooks?: IHooks;
     /** Custom extensions to inject into every rendered page */
     extensions?: IExtension[];
+    /**
+     * Custom marked extensions applied during Markdown parsing.
+     * Each item is passed to `marked.use()` in registration order, allowing
+     * you to add custom syntax (block/inline rules), override renderers, or
+     * attach `walkTokens` logic.
+     * @see https://marked.js.org/using_pro#extensions
+     */
+    markedExtensions?: import("marked").MarkedExtension[];
 }
