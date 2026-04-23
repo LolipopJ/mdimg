@@ -99,34 +99,35 @@ When using `mdimg()` method, you must specify either `inputFilename` (input file
 
 Here are all available options:
 
-| Argument       | Type                             | Default                                      | Notes                                                                                                                                                                                                                 |
-| -------------- | -------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| inputText      | `String`                         | `undefined`                                  | Input Markdown or HTML text directly. This option **has no effect** if `inputFilename` is specified                                                                                                                   |
-| inputFilename  | `String`                         | `undefined`                                  | Read Markdown or HTML text from a file                                                                                                                                                                                |
-| outputFilename | `String`                         | `./mdimg_output/mdimg_${new Date()}.${type}` | Output binary image filename. Available file extensions: `jpeg`, `png`, `webp`. Available when `encoding` option is `binary`                                                                                          |
-| type           | `"jpeg" \| "png" \| "webp"`      | `png`                                        | File type of the image. Type will be inferred from `outputFilename` if specified                                                                                                                                      |
-| width          | `Number`                         | `800`                                        | Width in pixel of output image                                                                                                                                                                                        |
-| height         | `Number`                         | `100`                                        | Min-height in pixel of output image. No less than `100`                                                                                                                                                               |
-| encoding       | `"base64" \| "binary" \| "blob"` | `binary`                                     | Encode type of output image                                                                                                                                                                                           |
-| quality        | `Number`                         | `100`                                        | Quality of the image, between 0-100. **Not applicable** to `png` image                                                                                                                                                |
-| htmlText       | `String`                         | `undefined`                                  | HTML rendering text                                                                                                                                                                                                   |
-| cssText        | `String`                         | `undefined`                                  | CSS rendering text                                                                                                                                                                                                    |
-| htmlTemplate   | `String`                         | `default`                                    | HTML rendering template. Available presets can be found in [`template/html`](./template/html/). If ends with `.html`, the mdimg will try to read local file. This option **has no effect** if `htmlText` is specified |
-| cssTemplate    | `String`                         | `default`                                    | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). If ends with `.css`, the mdimg will try to read local file. This option **has no effect** if `cssText` is specified      |
-| theme          | `light` \| `dark`                | `light`                                      | Rendering color theme, will impact styles of code block and so on                                                                                                                                                     |
-| extensions     | `Boolean \| IExtensionOptions`   | `true`                                       | Configurations for [extensions](#extensions)                                                                                                                                                                          |
-| plugins        | `IPlugin[]`                      | `[]`                                         | List of [plugins](#plugins) to apply during the conversion pipeline                                                                                                                                                   |
-| log            | `Boolean`                        | `false`                                      | Print execution logs via stderr                                                                                                                                                                                       |
-| debug          | `Boolean`                        | `false`                                      | Whether to keep temporary HTML file after rendering                                                                                                                                                                   |
-| puppeteerProps | `LaunchOptions`                  | `undefined`                                  | [Launch options](https://pptr.dev/api/puppeteer.puppeteerlaunchoptions) of Puppeteer                                                                                                                                  |
+| Argument        | Type                             | Default         | Notes                                                                                                                                                                                                                                    |
+| --------------- | -------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| inputText       | `String`                         | `undefined`     | Input Markdown or HTML text directly. This option **has no effect** if `inputFilename` is specified                                                                                                                                      |
+| inputFilename   | `String`                         | `undefined`     | Read Markdown or HTML text from a file                                                                                                                                                                                                   |
+| outputFilename  | `String`                         | See notes       | Output file path. For the default image processor: auto-generates `./mdimg_output/mdimg_${new Date()}.${type}` when omitted. For a custom `outputProcessor`: written to disk **only** when explicitly provided (no default is generated) |
+| type            | `"jpeg" \| "png" \| "webp"`      | `png`           | File type of the image. Type will be inferred from `outputFilename` if specified. Ignored when `outputProcessor` is set                                                                                                                  |
+| width           | `Number`                         | `800`           | Width in pixel of output image                                                                                                                                                                                                           |
+| height          | `Number`                         | `100`           | Min-height in pixel of output image. No less than `100`                                                                                                                                                                                  |
+| encoding        | `"base64" \| "binary" \| "blob"` | `binary`        | Encode type of output image. Ignored when `outputProcessor` is set                                                                                                                                                                       |
+| quality         | `Number`                         | `100`           | Quality of the image, between 0-100. **Not applicable** to `png` image. Ignored when `outputProcessor` is set                                                                                                                            |
+| htmlText        | `String`                         | `undefined`     | HTML rendering text                                                                                                                                                                                                                      |
+| cssText         | `String`                         | `undefined`     | CSS rendering text                                                                                                                                                                                                                       |
+| htmlTemplate    | `String`                         | `default`       | HTML rendering template. Available presets can be found in [`template/html`](./template/html/). If ends with `.html`, the mdimg will try to read local file. This option **has no effect** if `htmlText` is specified                    |
+| cssTemplate     | `String`                         | `default`       | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). If ends with `.css`, the mdimg will try to read local file. This option **has no effect** if `cssText` is specified                         |
+| theme           | `light` \| `dark`                | `light`         | Rendering color theme, affects the default highlight.js theme and other dark/light-aware styles                                                                                                                                          |
+| extensions      | `Boolean \| IExtensionOptions`   | `true`          | Configurations for [extensions](#extensions)                                                                                                                                                                                             |
+| plugins         | `IPlugin[]`                      | `[]`            | List of [plugins](#plugins) to apply during the conversion pipeline                                                                                                                                                                      |
+| outputProcessor | `IOutputProcessor`               | image processor | Custom output processor. Overrides the built-in screenshot logic. See [Output Processors](#output-processors)                                                                                                                            |
+| log             | `Boolean`                        | `false`         | Print execution logs via stderr                                                                                                                                                                                                          |
+| debug           | `Boolean`                        | `false`         | Whether to keep temporary HTML file after rendering                                                                                                                                                                                      |
+| puppeteerProps  | `LaunchOptions`                  | `undefined`     | [Launch options](https://pptr.dev/api/puppeteer.puppeteerlaunchoptions) of Puppeteer. Ignored when `outputProcessor` sets `requiresPage: false`                                                                                          |
 
 Returns: `Promise<object>`
 
-| Key  | Value Type               | Notes                                                                                                                    |
-| ---- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
-| data | `string` \| `Uint8Array` | BASE64 encoded string (`encoding` is `base64`) or Uint8Array blob (`encoding` is `binary` or `blob`) of the output image |
-| path | `string`                 | Path of output image. Available when `encoding` is `binary`                                                              |
-| html | `string`                 | Rendered HTML document                                                                                                   |
+| Key  | Value Type               | Notes                                                                                                                                                                                                        |
+| ---- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| data | `string` \| `Uint8Array` | Image bytes (`encoding: "binary"` or `"blob"`) or BASE64 string (`encoding: "base64"`). When `outputProcessor` is set: `Uint8Array` for binary formats (image, PDF) or `string` for text formats (HTML, SVG) |
+| path | `string` \| `undefined`  | Path of output file. For image output: set when `encoding` is `"binary"`. For custom `outputProcessor`: set when `outputFilename` is explicitly provided; `undefined` otherwise                              |
+| html | `string`                 | Rendered HTML document                                                                                                                                                                                       |
 
 ## Custom template
 
@@ -336,6 +337,21 @@ sequenceDiagram
 
 > Highlight.js is a syntax highlighter.
 
+By default the theme is chosen automatically based on the global `theme` option (`atom-one-light` for `light`, `atom-one-dark` for `dark`). You can override it independently by setting `extensions.highlightJs.theme` to any of the [bundled theme names](https://highlightjs.org/demo):
+
+```ts
+await mdimg({
+  theme: "light",           // global page theme
+  extensions: {
+    highlightJs: {
+      theme: "github-dark", // highlight.js theme, independent of global theme
+    },
+  },
+});
+```
+
+> **Tip:** All bundled theme names are exported as the `IHighlightJsTheme` union type — your IDE will autocomplete the full list, including `base16/` variants.
+
 ## Plugins
 
 The plugin system lets you hook into every stage of the conversion pipeline and register custom extensions — all without modifying mdimg's source code.
@@ -344,11 +360,11 @@ The plugin system lets you hook into every stage of the conversion pipeline and 
 
 A plugin can define any combination of the four lifecycle hooks:
 
-| Hook | When it runs | Signature |
-|------|-------------|----------|
-| `beforeParse` | Before Markdown is parsed | `(text: string) => string \| Promise<string>` |
-| `afterParse` | After Markdown → HTML fragment, before template splicing | `(html: string) => string \| Promise<string>` |
-| `afterSplice` | After the full HTML document is assembled | `(html: string) => string \| Promise<string>` |
+| Hook          | When it runs                                                     | Signature                                                                     |
+| ------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `beforeParse` | Before Markdown is parsed                                        | `(text: string) => string \| Promise<string>`                                 |
+| `afterParse`  | After Markdown → HTML fragment, before template splicing         | `(html: string) => string \| Promise<string>`                                 |
+| `afterSplice` | After the full HTML document is assembled                        | `(html: string) => string \| Promise<string>`                                 |
 | `afterRender` | After Puppeteer renders, **before** the image is written to disk | `(result: IConvertResponse) => IConvertResponse \| Promise<IConvertResponse>` |
 
 Multiple plugins run in registration order.
@@ -551,6 +567,89 @@ await mdimg({
 ```
 
 `extensions: false` still disables every extension globally.
+
+## Output Processors
+
+By default mdimg captures the rendered `#mdimg-body` element as a PNG / JPEG / WebP screenshot via Puppeteer. You can replace this with any **output processor** by passing `outputProcessor` — a custom object that transforms the rendered HTML (and optionally a live Puppeteer page) into whatever format you need.
+
+Three built-in processors are exported directly from `mdimg`:
+
+| Factory                                               | Format            | Requires browser | Description                                                   |
+| ----------------------------------------------------- | ----------------- | ---------------- | ------------------------------------------------------------- |
+| `createImageOutputProcessor(type, quality, encoding)` | PNG / JPEG / WebP | Yes              | Default when `outputProcessor` is not set                     |
+| `createPdfOutputProcessor(pdfOptions?)`               | PDF               | Yes              | Uses Puppeteer's `page.pdf()`                                 |
+| `createHtmlOutputProcessor()`                         | HTML              | **No**           | Returns the rendered HTML string; Puppeteer is never launched |
+
+### Export to HTML
+
+`createHtmlOutputProcessor` sets `requiresPage: false`, so Puppeteer is never launched — making it the fastest option when you only need the rendered HTML document.
+
+```ts
+import { mdimg, createHtmlOutputProcessor } from "mdimg";
+
+// In-memory only (no outputFilename)
+const { data } = await mdimg({
+  inputText: "# Hello",
+  outputProcessor: createHtmlOutputProcessor(),
+});
+// data is the full HTML string
+
+// Write to disk
+await mdimg({
+  inputText: "# Hello",
+  outputFilename: "output.html",
+  outputProcessor: createHtmlOutputProcessor(),
+});
+```
+
+### Export to PDF
+
+```ts
+import { mdimg, createPdfOutputProcessor } from "mdimg";
+
+await mdimg({
+  inputFilename: "path/to/input.md",
+  outputFilename: "output.pdf",
+  outputProcessor: createPdfOutputProcessor({
+    printBackground: true,
+    format: "A4",
+  }),
+});
+```
+
+`pdfOptions` accepts any [Puppeteer `PDFOptions`](https://pptr.dev/api/puppeteer.pdfoptions) except `path` (managed by mdimg).
+
+### Disk-write semantics
+
+Unlike the default image processor (which auto-generates a path when `outputFilename` is omitted), **custom processors write to disk only when `outputFilename` is explicitly provided**. When omitted, the result is returned in `result.data` in-memory only.
+
+### Custom processor
+
+Implement the `IOutputProcessor` interface to support any format:
+
+```ts
+import { mdimg } from "mdimg";
+import type { IOutputProcessor } from "mdimg";
+
+const svgProcessor: IOutputProcessor = {
+  format: "svg",
+  requiresPage: true,
+  async process({ page }) {
+    const svg = await page!.evaluate(
+      () => document.querySelector("svg")?.outerHTML ?? "",
+    );
+    return { data: svg };
+  },
+};
+
+await mdimg({
+  inputText: "# Hello",
+  outputFilename: "chart.svg",
+  outputProcessor: svgProcessor,
+});
+```
+
+Setting `requiresPage: false` skips browser launch entirely; the `process` context then receives only `{ html, outputPath }`.
 
 ## Development
 
