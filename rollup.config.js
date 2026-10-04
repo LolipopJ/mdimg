@@ -9,16 +9,15 @@ const externalModules = ["cheerio", "marked", "puppeteer"];
 
 const pluginsArray = [
   nodeResolve({ preferBuiltins: true }),
-  typescript(),
+  typescript({ clean: true }),
   commonjs(),
   babel({ babelHelpers: "bundled" }),
   terser(),
   license({
     banner: `<%= pkg.name %> - convert markdown to image
-Generated: <%= moment().format('YYYY-MM-DD') %>
 Version: <%= pkg.version %>
 Homepage: <%= pkg.homepage %>
-Copyright (c) 2022-${new Date().getFullYear()}, LolipopJ. (MIT Licensed)`,
+Copyright (c) 2022, LolipopJ. (MIT Licensed)`,
   }),
 ];
 

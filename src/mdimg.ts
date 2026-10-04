@@ -241,7 +241,7 @@ const mdimg = async ({
       const _page = await _browser.newPage();
       if (_useLocalHtmlFileFlag) {
         await _page.goto(`file://${_tempLocalHtmlFile}`, {
-          waitUntil: "load",
+          waitUntil: "networkidle0",
         });
       } else {
         await _page.setContent(_html, {

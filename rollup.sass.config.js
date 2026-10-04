@@ -20,6 +20,7 @@ const getSassTasks = () => {
       input: `${scssPath}/${templateName}.scss`,
       plugins: [
         scss({
+          failOnError: true,
           output: (styles) => {
             fs.writeFileSync(`${cssPath}/${templateName}.css`, styles);
           },

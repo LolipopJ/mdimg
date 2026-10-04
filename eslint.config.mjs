@@ -11,6 +11,7 @@ export default defineConfig(
       ".*/",
       "docs/",
       "lib/",
+      "mdimg_output/",
       "node_modules/",
       "static/**/*",
       "template/css/",

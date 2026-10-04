@@ -673,12 +673,26 @@ pnpm run lint:fix
 
 ### Build
 
+Contributor builds and CI use Node 24.19.0 and pnpm 11.25.0. The package runtime
+requirement remains Node >=22.12.0.
+
 ```bash
-# Build .js, .scss and .sass files
+# Clean lib/ and template/css/, then rebuild JS, declarations and CSS
 pnpm run build
+# Fail if checked-in generated files differ from a clean rebuild
+pnpm run build:check
 # Generate preview images in `docs` directory
 pnpm run preview
 ```
+
+The build banner is independent of the build date. Sass errors fail the build.
+`pnpm pack` and `npm pack` run lint, source type checking, a clean build, tests
+(excluding preview generation), and tarball consumer checks before packing.
+Any failure stops packaging. Consumer checks install a temporary tarball with
+install scripts disabled and execute CJS/ESM HTML conversion. ESM uses explicit
+HTML/CSS with built-in extensions disabled until default resource loading is
+fixed; this check does not establish browser rendering or offline support.
+Built browser launch arguments retain `--no-sandbox` and caller-provided args.
 
 ### Test
 
