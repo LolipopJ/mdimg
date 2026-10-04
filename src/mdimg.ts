@@ -201,8 +201,12 @@ const mdimg = async ({
         width,
         height: _minHeight,
       },
-      args: [`--window-size=${width},${_minHeight}`],
       ...puppeteerProps,
+      args: [
+        `--window-size=${width},${_minHeight}`,
+        "--no-sandbox",
+        ...(puppeteerProps.args || []),
+      ],
     });
 
     const _baseDirname = _inputFilename
@@ -241,7 +245,7 @@ const mdimg = async ({
         });
       } else {
         await _page.setContent(_html, {
-          waitUntil: "networkidle0",
+          waitUntil: "load",
         });
       }
 

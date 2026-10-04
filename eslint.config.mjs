@@ -1,11 +1,11 @@
-import babelParser from "@babel/eslint-parser";
 import eslint from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
-export default tseslint.config(
+export default defineConfig(
   {
     ignores: [
       ".*/",
@@ -16,18 +16,14 @@ export default tseslint.config(
       "template/css/",
     ],
   },
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    files: ["**/*.js", "**/*.ts"],
+    files: ["**/*.js", "**/*.mjs", "**/*.ts"],
     languageOptions: {
       globals: {
         ...globals.node,
       },
-    },
-  },
-  {
-    files: ["src/**/*.ts"],
-    languageOptions: {
-      parser: babelParser,
     },
   },
   {
@@ -39,7 +35,5 @@ export default tseslint.config(
       "simple-import-sort/exports": "error",
     },
   },
-  eslint.configs.recommended,
-  ...tseslint.configs.recommended,
   eslintPluginPrettierRecommended,
 );
