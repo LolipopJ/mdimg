@@ -201,8 +201,12 @@ const mdimg = async ({
         width,
         height: _minHeight,
       },
-      args: [`--window-size=${width},${_minHeight}`],
       ...puppeteerProps,
+      args: [
+        `--window-size=${width},${_minHeight}`,
+        "--no-sandbox",
+        ...(puppeteerProps.args || []),
+      ],
     });
 
     const _baseDirname = _inputFilename
@@ -237,11 +241,11 @@ const mdimg = async ({
       const _page = await _browser.newPage();
       if (_useLocalHtmlFileFlag) {
         await _page.goto(`file://${_tempLocalHtmlFile}`, {
-          waitUntil: "networkidle0",
+          waitUntil: "load",
         });
       } else {
         await _page.setContent(_html, {
-          waitUntil: "networkidle0",
+          waitUntil: "load",
         });
       }
 

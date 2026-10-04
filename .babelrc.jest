@@ -2,7 +2,7 @@
   "presets": [
     [
       "@babel/preset-env",
-      { "bugfixes": true, "modules": "commonjs", "targets": { "node": "20.0.0" } }
+      { "modules": "commonjs", "targets": { "node": "22.12.0" } }
     ]
   ]
 }

@@ -22,7 +22,7 @@ Rendering results:
 
 ## Requirements
 
-This tool requires a **LTS Node version (v20.0.0+)**.
+This tool requires a **LTS Node version (v22.12.0+)**.
 
 ## Installation
 
