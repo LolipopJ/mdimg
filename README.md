@@ -676,7 +676,7 @@ pnpm run lint:fix
 ```bash
 # Build .js, .scss and .sass files
 pnpm run build
-# Generate preview images in `docs` directory
+# Generate preview images in `docs/<platform>` with a standalone script
 pnpm run preview
 ```
 
@@ -688,6 +688,10 @@ pnpm run build
 # Run test cases
 pnpm run test
 ```
+
+Tests use a fresh temporary directory for each case and clean it up afterward.
+They decode images to check their format, dimensions and rendered pixels, parse
+PDF text and page sizes, and check converted HTML content.
 
 ## Inspired by
 

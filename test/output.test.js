@@ -1,240 +1,188 @@
 /* eslint-disable @typescript-eslint/no-require-imports, no-undef */
 
-const { mdimg } = require("../lib/mdimg.js");
+const { execFileSync } = require("child_process");
+const { readFileSync, readdirSync } = require("fs");
+const { resolve } = require("path");
 const {
+  mdimg,
   createHtmlOutputProcessor,
   createPdfOutputProcessor,
   createImageOutputProcessor,
 } = require("../lib/mdimg.js");
-const { resolve } = require("path");
-const { existsSync, readFileSync } = require("fs");
+const {
+  expectMarkdown,
+  expectPdf,
+  useImageAssertions,
+} = require("./helpers/assertions");
+const { useWorkspace } = require("./helpers/workspace");
 
-const inputFilenameTest = resolve(__dirname, "./static/test.md");
-const outputDir = resolve(__dirname, "../mdimg_output");
-const defaultOptions = {
-  inputFilename: inputFilenameTest,
+const workspace = useWorkspace();
+const expectImage = useImageAssertions();
+const options = () => ({
+  inputFilename: workspace.inputFilename,
   extensions: false,
-};
-
-// ─── createHtmlOutputProcessor ───────────────────────────────────────────────
-
-test("OUTPUT: createHtmlOutputProcessor returns HTML string in-memory without outputFilename", async () => {
-  const res = await mdimg({
-    ...defaultOptions,
-    outputProcessor: createHtmlOutputProcessor(),
-  });
-
-  // data must be a non-empty HTML string containing the mdimg body element
-  expect(typeof res.data).toBe("string");
-  expect(res.data).toContain('id="mdimg-body"');
-
-  // no disk write when outputFilename is omitted
-  expect(res.path).toBeUndefined();
 });
 
-test("OUTPUT: createHtmlOutputProcessor writes file when outputFilename is given", async () => {
-  const outputFilename = resolve(outputDir, "test-output-processor.html");
+test("OUTPUT: HTML processor returns the converted document without disk output", async () => {
+  const result = await mdimg({
+    ...options(),
+    outputProcessor: createHtmlOutputProcessor(),
+  });
+  expect(result.data).toBe(result.html);
+  expectMarkdown(result.data);
+  expect(result.path).toBeUndefined();
+  expect(readdirSync(workspace.dir)).toEqual(["input.md"]);
+});
 
-  const res = await mdimg({
-    ...defaultOptions,
+test("OUTPUT: HTML processor writes the converted document to disk", async () => {
+  const outputFilename = resolve(workspace.dir, "nested", "result.html");
+  const result = await mdimg({
+    ...options(),
     outputFilename,
     outputProcessor: createHtmlOutputProcessor(),
   });
-
-  expect(res.path).toBe(outputFilename);
-  expect(existsSync(outputFilename)).toBe(true);
-
-  const written = readFileSync(outputFilename, "utf8");
-  expect(written).toContain('id="mdimg-body"');
+  expect(result.path).toBe(outputFilename);
+  const onDisk = readFileSync(outputFilename, "utf8");
+  expect(onDisk).toBe(result.data);
+  expectMarkdown(onDisk);
 });
 
-test("OUTPUT: createHtmlOutputProcessor does not launch browser (requiresPage: false)", () => {
-  expect(createHtmlOutputProcessor().requiresPage).toBe(false);
-});
+test.each([false, true])(
+  "OUTPUT: PDF processor generates readable text and page dimensions (disk=%s)",
+  async (saveToDisk) => {
+    const outputFilename = saveToDisk
+      ? resolve(workspace.dir, "result.pdf")
+      : undefined;
+    const result = await mdimg({
+      ...options(),
+      cssText: "body { margin: 0; } h1 { margin: 0; }",
+      outputFilename,
+      outputProcessor: createPdfOutputProcessor({
+        width: "4in",
+        height: "3in",
+        printBackground: true,
+      }),
+    });
+    expect(result.data).toBeInstanceOf(Uint8Array);
+    expect(result.path).toBe(outputFilename);
+    expectMarkdown(result.html);
+    const data = saveToDisk ? readFileSync(outputFilename) : result.data;
+    expect(Buffer.from(data)).toEqual(Buffer.from(result.data));
+    expectPdf(data);
+    if (!saveToDisk) expect(readdirSync(workspace.dir)).toEqual(["input.md"]);
+  },
+);
 
-// ─── createPdfOutputProcessor ────────────────────────────────────────────────
+test.each([
+  ["png", "binary"],
+  ["png", "base64"],
+  ["jpeg", "binary"],
+  ["webp", "binary"],
+])(
+  "OUTPUT: image processor returns a readable %s in %s",
+  async (format, encoding) => {
+    const result = await mdimg({
+      ...options(),
+      outputProcessor: createImageOutputProcessor(
+        format,
+        format === "png" ? undefined : 80,
+        encoding,
+      ),
+    });
+    const data =
+      encoding === "base64" ? Buffer.from(result.data, "base64") : result.data;
+    if (encoding === "base64") {
+      expect(typeof result.data).toBe("string");
+      expect(result.data).toMatch(/^[A-Za-z0-9+/]+={0,2}$/);
+    } else expect(result.data).toBeInstanceOf(Uint8Array);
+    expect(result.path).toBeUndefined();
+    expectMarkdown(result.html);
+    await expectImage(data, format);
+    expect(readdirSync(workspace.dir)).toEqual(["input.md"]);
+  },
+);
 
-test("OUTPUT: createPdfOutputProcessor returns Uint8Array in-memory without outputFilename", async () => {
-  const res = await mdimg({
-    ...defaultOptions,
-    outputProcessor: createPdfOutputProcessor(),
-  });
+test.each(["png", "jpeg", "webp"])(
+  "OUTPUT: image processor writes the returned %s bytes to disk",
+  async (format) => {
+    const outputFilename = resolve(workspace.dir, `result.${format}`);
+    const result = await mdimg({
+      ...options(),
+      outputFilename,
+      outputProcessor: createImageOutputProcessor(
+        format,
+        format === "png" ? undefined : 80,
+        "binary",
+      ),
+    });
+    expect(result.path).toBe(outputFilename);
+    const onDisk = readFileSync(outputFilename);
+    expect(onDisk).toEqual(Buffer.from(result.data));
+    expectMarkdown(result.html);
+    await expectImage(onDisk, format);
+  },
+);
 
-  expect(res.data).toBeInstanceOf(Uint8Array);
-  expect(res.data.length).toBeGreaterThan(0);
-  expect(res.path).toBeUndefined();
-});
-
-test("OUTPUT: createPdfOutputProcessor writes file when outputFilename is given", async () => {
-  const outputFilename = resolve(outputDir, "test-output-processor.pdf");
-
-  const res = await mdimg({
-    ...defaultOptions,
+test("OUTPUT: custom processor can inspect the rendered page and body", async () => {
+  const outputFilename = resolve(workspace.dir, "custom.txt");
+  const result = await mdimg({
+    ...options(),
     outputFilename,
-    outputProcessor: createPdfOutputProcessor({ printBackground: true }),
-  });
-
-  expect(res.path).toBe(outputFilename);
-  expect(existsSync(outputFilename)).toBe(true);
-
-  // PDF magic bytes: %PDF
-  const header = readFileSync(outputFilename, { encoding: "utf8" }).slice(0, 4);
-  expect(header).toBe("%PDF");
-});
-
-test("OUTPUT: createPdfOutputProcessor requires a browser page (requiresPage !== false)", () => {
-  expect(createPdfOutputProcessor().requiresPage).not.toBe(false);
-});
-
-// ─── createImageOutputProcessor ──────────────────────────────────────────────
-
-test("OUTPUT: createImageOutputProcessor returns Uint8Array for binary encoding (default)", async () => {
-  const res = await mdimg({
-    ...defaultOptions,
-    outputProcessor: createImageOutputProcessor("png", undefined, "binary"),
-  });
-
-  expect(res.data).toBeInstanceOf(Uint8Array);
-  expect(res.data.length).toBeGreaterThan(0);
-  expect(res.path).toBeUndefined();
-});
-
-test("OUTPUT: createImageOutputProcessor returns base64 string for base64 encoding", async () => {
-  const res = await mdimg({
-    ...defaultOptions,
-    outputProcessor: createImageOutputProcessor("png", undefined, "base64"),
-  });
-
-  expect(typeof res.data).toBe("string");
-  // base64 string should be non-empty and decodable
-  expect(res.data.length).toBeGreaterThan(0);
-  expect(() => Buffer.from(res.data, "base64")).not.toThrow();
-});
-
-test("OUTPUT: createImageOutputProcessor writes PNG to disk when outputFilename is given", async () => {
-  const outputFilename = resolve(outputDir, "test-image-processor.png");
-
-  const res = await mdimg({
-    ...defaultOptions,
-    outputFilename,
-    outputProcessor: createImageOutputProcessor("png", undefined, "binary"),
-  });
-
-  expect(res.path).toBe(outputFilename);
-  expect(existsSync(outputFilename)).toBe(true);
-
-  // PNG magic bytes: \x89PNG
-  const header = readFileSync(outputFilename).slice(0, 4);
-  expect(header[0]).toBe(0x89);
-  expect(header.slice(1, 4).toString()).toBe("PNG");
-});
-
-test("OUTPUT: createImageOutputProcessor writes JPEG to disk when outputFilename is given", async () => {
-  const outputFilename = resolve(outputDir, "test-image-processor.jpg");
-
-  const res = await mdimg({
-    ...defaultOptions,
-    outputFilename,
-    outputProcessor: createImageOutputProcessor("jpeg", 80, "binary"),
-  });
-
-  expect(res.path).toBe(outputFilename);
-  expect(existsSync(outputFilename)).toBe(true);
-
-  // JPEG magic bytes: FF D8
-  const header = readFileSync(outputFilename).slice(0, 2);
-  expect(header[0]).toBe(0xff);
-  expect(header[1]).toBe(0xd8);
-});
-
-test("OUTPUT: createImageOutputProcessor requires a browser page (requiresPage !== false)", () => {
-  expect(
-    createImageOutputProcessor("png", undefined, "binary").requiresPage,
-  ).not.toBe(false);
-});
-
-test("OUTPUT: createImageOutputProcessor format matches the type argument", () => {
-  expect(createImageOutputProcessor("png", undefined, "binary").format).toBe(
-    "png",
-  );
-  expect(createImageOutputProcessor("jpeg", 80, "binary").format).toBe("jpeg");
-  expect(createImageOutputProcessor("webp", 90, "base64").format).toBe("webp");
-});
-
-// ─── Custom IOutputProcessor ─────────────────────────────────────────────────
-
-test("OUTPUT: custom processor receives html, page, body and outputPath", async () => {
-  const capturedCtx = {};
-
-  const customProcessor = {
-    format: "txt",
-    requiresPage: true,
-    async process(ctx) {
-      Object.assign(capturedCtx, ctx);
-      return { data: "custom" };
+    outputProcessor: {
+      format: "txt",
+      async process({ html, page, body, outputPath }) {
+        expectMarkdown(html);
+        expect(outputPath).toBe(outputFilename);
+        expect(await page.$eval("h1", (element) => element.textContent)).toBe(
+          "Hello",
+        );
+        return { data: await body.evaluate((element) => element.textContent) };
+      },
     },
-  };
-
-  const outputFilename = resolve(outputDir, "test-custom-processor.txt");
-
-  await mdimg({
-    ...defaultOptions,
-    outputFilename,
-    outputProcessor: customProcessor,
   });
-
-  expect(typeof capturedCtx.html).toBe("string");
-  expect(capturedCtx.html).toContain('id="mdimg-body"');
-  expect(capturedCtx.page).toBeDefined();
-  expect(capturedCtx.body).toBeDefined();
-  expect(capturedCtx.outputPath).toBe(outputFilename);
+  expect(result.data).toContain("Hello");
+  expect(result.data).toContain("This is a test document.");
+  expect(readFileSync(outputFilename, "utf8")).toBe(result.data);
 });
 
-test("OUTPUT: custom processor without outputFilename receives no outputPath", async () => {
-  let receivedOutputPath;
-
-  const customProcessor = {
-    format: "txt",
-    requiresPage: false,
-    async process(ctx) {
-      receivedOutputPath = ctx.outputPath;
-      return { data: "hello" };
+test("OUTPUT: custom processor without a page receives HTML and no browser handles", async () => {
+  const result = await mdimg({
+    ...options(),
+    outputProcessor: {
+      format: "txt",
+      requiresPage: false,
+      async process({ html, page, body, outputPath }) {
+        expectMarkdown(html);
+        expect(page).toBeUndefined();
+        expect(body).toBeUndefined();
+        expect(outputPath).toBeUndefined();
+        return { data: "hello" };
+      },
     },
-  };
-
-  const res = await mdimg({
-    ...defaultOptions,
-    outputProcessor: customProcessor,
   });
-
-  expect(receivedOutputPath).toBeUndefined();
-  expect(res.path).toBeUndefined();
-  expect(res.data).toBe("hello");
+  expect(result.path).toBeUndefined();
+  expect(result.data).toBe("hello");
+  expect(readdirSync(workspace.dir)).toEqual(["input.md"]);
 });
 
-// ─── ESM smoke test ───────────────────────────────────────────────────────────
-
-test("ESM: mdimg.mjs exports core functions without throwing", () => {
-  const { execFileSync } = require("child_process");
-  const { resolve } = require("path");
-
+test("ESM: public exports convert Markdown to HTML", () => {
   const script = [
     "import { mdimg, createHtmlOutputProcessor, createPdfOutputProcessor, createImageOutputProcessor } from './lib/mdimg.mjs';",
-    "if (typeof mdimg !== 'function') throw new Error('mdimg not exported');",
-    "if (typeof createHtmlOutputProcessor !== 'function') throw new Error('createHtmlOutputProcessor not exported');",
-    "if (typeof createPdfOutputProcessor !== 'function') throw new Error('createPdfOutputProcessor not exported');",
-    "if (typeof createImageOutputProcessor !== 'function') throw new Error('createImageOutputProcessor not exported');",
-    "process.stdout.write('ok');",
+    "if (typeof createPdfOutputProcessor !== 'function' || typeof createImageOutputProcessor !== 'function') throw new Error('missing exports');",
+    "const result = await mdimg({ inputText: '# Hello\\n\\nThis is a **test** document.\\n\\n```js\\nconsole.log(\"hi\");\\n```', extensions: false, outputProcessor: createHtmlOutputProcessor() });",
+    "process.stdout.write(JSON.stringify(result));",
   ].join("\n");
-
-  const result = execFileSync(
-    process.execPath,
-    ["--input-type=module", "--eval", script],
-    {
+  const result = JSON.parse(
+    execFileSync(process.execPath, ["--input-type=module", "--eval", script], {
       cwd: resolve(__dirname, ".."),
       encoding: "utf8",
-    },
+      stdio: ["ignore", "pipe", "pipe"],
+      timeout: 10000,
+    }),
   );
-
-  expect(result.trim()).toBe("ok");
+  expect(result.data).toBe(result.html);
+  expect(result.data).toContain("<h1>Hello</h1>");
+  expect(result.data).toContain("<strong>test</strong>");
+  expect(result.data).toContain('console.log("hi");');
+  expect(result.path).toBeUndefined();
 });

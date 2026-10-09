@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-require-imports, no-undef */
 
-const { mdimg } = require("../lib/mdimg.js");
+const { mdimg, createHtmlOutputProcessor } = require("../lib/mdimg.js");
 const { resolve } = require("path");
 const { readFileSync, existsSync } = require("fs");
+const { useWorkspace } = require("./helpers/workspace");
+const { useImageAssertions } = require("./helpers/assertions");
+const workspace = useWorkspace();
+const expectImage = useImageAssertions();
 
 const inputText =
   "# Hello\n\nThis is a **test** document.\n\n```js\nconsole.log('hi');\n```\n";
-const outputDir = resolve(__dirname, "../mdimg_output");
 
 // ── Hook ordering ─────────────────────────────────────────────────────────────
 
@@ -15,7 +18,7 @@ test("PLUGIN: beforeParse hook is called with raw input and can transform it", a
 
   const result = await mdimg({
     inputText,
-    encoding: "base64",
+    outputProcessor: createHtmlOutputProcessor(),
     extensions: false,
     plugins: [
       {
@@ -40,7 +43,7 @@ test("PLUGIN: hooks run in registration order across multiple plugins", async ()
 
   await mdimg({
     inputText,
-    encoding: "base64",
+    outputProcessor: createHtmlOutputProcessor(),
     extensions: false,
     plugins: [
       {
@@ -97,7 +100,7 @@ test("PLUGIN: plugin extension with same name replaces built-in (no duplicate)",
 
   const result = await mdimg({
     inputText,
-    encoding: "base64",
+    outputProcessor: createHtmlOutputProcessor(),
     extensions: { highlightJs: true, mathJax: false, mermaid: false },
     plugins: [
       {
@@ -128,7 +131,7 @@ test("PLUGIN: plugin extension with unique name is added alongside built-ins", a
 
   const result = await mdimg({
     inputText,
-    encoding: "base64",
+    outputProcessor: createHtmlOutputProcessor(),
     extensions: { highlightJs: false, mathJax: false, mermaid: false },
     plugins: [
       {
@@ -153,11 +156,11 @@ test("PLUGIN: plugin extension with unique name is added alongside built-ins", a
 // ── afterRender binary semantics ─────────────────────────────────────────────
 
 test("PLUGIN: afterRender receives Uint8Array data before disk write (binary)", async () => {
-  const outputFilename = resolve(outputDir, "test-plugin-afterrender.png");
+  const outputFilename = resolve(workspace.dir, "test-plugin-afterrender.png");
   let hookData = null;
 
   const result = await mdimg({
-    inputText,
+    inputFilename: workspace.inputFilename,
     outputFilename,
     extensions: false,
     plugins: [
@@ -165,6 +168,7 @@ test("PLUGIN: afterRender receives Uint8Array data before disk write (binary)", 
         name: "capturePlugin",
         hooks: {
           afterRender: (res) => {
+            expect(existsSync(outputFilename)).toBe(false);
             hookData = res.data;
             return res;
           },
@@ -181,17 +185,18 @@ test("PLUGIN: afterRender receives Uint8Array data before disk write (binary)", 
   // File on disk must match what the hook saw / returned
   const onDisk = readFileSync(outputFilename);
   expect(Buffer.from(hookData).equals(onDisk)).toBe(true);
+  await expectImage(onDisk, "png");
 });
 
 test("PLUGIN: afterRender data transform propagates to the output file on disk", async () => {
   const outputFilename = resolve(
-    outputDir,
+    workspace.dir,
     "test-plugin-afterrender-transform.png",
   );
   let originalByteLength = 0;
 
-  await mdimg({
-    inputText,
+  const result = await mdimg({
+    inputFilename: workspace.inputFilename,
     outputFilename,
     extensions: false,
     plugins: [
@@ -199,6 +204,7 @@ test("PLUGIN: afterRender data transform propagates to the output file on disk",
         name: "transformPlugin",
         hooks: {
           afterRender: (res) => {
+            expect(existsSync(outputFilename)).toBe(false);
             originalByteLength = res.data.length;
             // Keep only the first 4 bytes (PNG magic) to make the result trivially verifiable
             return { ...res, data: res.data.slice(0, 4) };
@@ -212,6 +218,8 @@ test("PLUGIN: afterRender data transform propagates to the output file on disk",
   expect(originalByteLength).toBeGreaterThan(4);
   // Disk file reflects the hook's transformation, not the original screenshot
   expect(onDisk.length).toBe(4);
+  expect(onDisk).toEqual(Buffer.from([0x89, 0x50, 0x4e, 0x47]));
+  expect(onDisk).toEqual(Buffer.from(result.data));
 });
 
 // ── extensions config suppression gate ───────────────────────────────────────
@@ -221,7 +229,7 @@ test("PLUGIN: extensions[name]=false suppresses a plugin-contributed extension",
 
   const result = await mdimg({
     inputText,
-    encoding: "base64",
+    outputProcessor: createHtmlOutputProcessor(),
     // Suppress the plugin extension by its name via the extensions config
     extensions: {
       highlightJs: false,
@@ -255,7 +263,7 @@ test("PLUGIN: extensions[name]=true does NOT suppress a plugin-contributed exten
 
   const result = await mdimg({
     inputText,
-    encoding: "base64",
+    outputProcessor: createHtmlOutputProcessor(),
     extensions: {
       highlightJs: false,
       mathJax: false,
@@ -312,7 +320,7 @@ const underlineMarkedExt = {
 test("PLUGIN: markedExtensions tokenizer produces custom HTML from custom syntax", async () => {
   const result = await mdimg({
     inputText: "Hello ::world::",
-    encoding: "base64",
+    outputProcessor: createHtmlOutputProcessor(),
     extensions: false,
     plugins: [
       {
@@ -329,7 +337,7 @@ test("PLUGIN: markedExtensions tokenizer produces custom HTML from custom syntax
 test("PLUGIN: markedExtensions renderer override takes priority over built-in code renderer", async () => {
   const result = await mdimg({
     inputText: "```js\nconsole.log('hi');\n```",
-    encoding: "base64",
+    outputProcessor: createHtmlOutputProcessor(),
     extensions: false,
     plugins: [
       {
@@ -356,7 +364,7 @@ test("PLUGIN: markedExtensions renderer override takes priority over built-in co
 test("PLUGIN: extensions[pluginName]=false also suppresses markedExtensions from that plugin", async () => {
   const result = await mdimg({
     inputText: "Hello ::world::",
-    encoding: "base64",
+    outputProcessor: createHtmlOutputProcessor(),
     // Suppress the whole plugin by its name
     extensions: { underlinePlugin: false },
     plugins: [
@@ -379,7 +387,7 @@ test("PLUGIN: extensions[extensionName]=false suppresses markedExtensions of the
   // the plugin's markedExtensions so no half-enabled state is possible.
   const result = await mdimg({
     inputText: "Hello ::world::",
-    encoding: "base64",
+    outputProcessor: createHtmlOutputProcessor(),
     // Suppress by EXTENSION name ("underlineExt"), NOT by plugin name ("mixedPlugin")
     extensions: { underlineExt: false },
     plugins: [

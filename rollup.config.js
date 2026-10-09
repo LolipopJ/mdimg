@@ -37,6 +37,7 @@ export default [
     output: {
       file: "lib/mdimg.mjs",
       format: "esm",
+      intro: "const __dirname = import.meta.dirname;",
     },
     external: externalModules,
     plugins: pluginsArray,

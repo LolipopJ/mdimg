@@ -192,4 +192,5 @@ mdimg({
   })
   .catch((err) => {
     process.stderr.write(String(err));
+    process.exitCode = 1;
   });
