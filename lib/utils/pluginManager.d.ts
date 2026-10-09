@@ -26,7 +26,7 @@ export declare class PluginManager {
      * the half-enabled state where resources are gone but syntax still transforms.
      */
     private readonly suppressedPluginNames;
-    constructor(extensions: IConvertOptions["extensions"], plugins?: IPlugin[]);
+    constructor(extensions: NonNullable<IConvertOptions["extensions"]>, plugins?: IPlugin[]);
     /** Run `beforeParse` hooks in registration order. */
     beforeParse(text: string): Promise<string>;
     /** Run `afterParse` hooks in registration order. */

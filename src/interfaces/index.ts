@@ -56,7 +56,7 @@ export interface IConvertOptions {
   /**
    * Configuration for third-party extensions
    */
-  extensions: boolean | IExtensionOptions;
+  extensions?: boolean | IExtensionOptions;
   /**
    * List of plugins to apply during the conversion pipeline.
    * Each plugin may provide lifecycle hooks and/or custom extensions.

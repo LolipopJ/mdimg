@@ -58,7 +58,7 @@ You can always call `mdimg -h` to get complete help.
 
 ### In Node.js project
 
-Import mdimg to your project:
+ES modules and CommonJS are supported, Import mdimg to your project:
 
 ```js
 import { mdimg } from "mdimg";

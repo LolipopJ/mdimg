@@ -36,7 +36,7 @@ export class PluginManager {
   private readonly suppressedPluginNames: Set<string>;
 
   constructor(
-    extensions: IConvertOptions["extensions"],
+    extensions: NonNullable<IConvertOptions["extensions"]>,
     plugins: IPlugin[] = [],
   ) {
     this.plugins = plugins;

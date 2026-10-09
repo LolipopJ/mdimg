@@ -14,6 +14,19 @@
   },
   "main": "lib/mdimg.js",
   "module": "lib/mdimg.mjs",
+  "types": "lib/mdimg.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/mdimg.d.mts",
+        "default": "./lib/mdimg.mjs"
+      },
+      "require": {
+        "types": "./lib/mdimg.d.ts",
+        "default": "./lib/mdimg.js"
+      }
+    }
+  },
   "bin": {
     "mdimg": "bin/mdimg.js"
   },

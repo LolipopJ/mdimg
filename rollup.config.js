@@ -1,3 +1,5 @@
+import { rmSync } from "node:fs";
+
 import babel from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
@@ -30,7 +32,15 @@ export default [
       exports: "auto",
     },
     external: externalModules,
-    plugins: pluginsArray,
+    plugins: [
+      {
+        name: "clean-output",
+        buildStart() {
+          rmSync("lib", { recursive: true, force: true });
+        },
+      },
+      ...pluginsArray,
+    ],
   },
   {
     input: "src/mdimg.ts",
@@ -40,6 +50,18 @@ export default [
       intro: "const __dirname = import.meta.dirname;",
     },
     external: externalModules,
-    plugins: pluginsArray,
+    plugins: [
+      ...pluginsArray,
+      {
+        name: "esm-declarations",
+        generateBundle() {
+          this.emitFile({
+            type: "asset",
+            fileName: "mdimg.d.mts",
+            source: 'export * from "./mdimg.js";\n',
+          });
+        },
+      },
+    ],
   },
 ];
