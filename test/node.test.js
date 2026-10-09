@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, no-undef */
 
+const { execFileSync } = require("child_process");
 const { readFileSync, readdirSync, writeFileSync } = require("fs");
 const { resolve } = require("path");
 const { mdimg, createImageOutputProcessor } = require("../lib/mdimg.js");
@@ -171,6 +172,42 @@ test("NODE: invalid HTML rejects without leaving temporary HTML or output files"
     }),
   ).rejects.toThrow(/missing HTML element with id: mdimg-body/);
   expect(readdirSync(workspace.dir)).toEqual(["input.md"]);
+});
+
+test("NODE: default filenames remain unique in the same millisecond", async () => {
+  const script = [
+    `const { mdimg } = require(${JSON.stringify(resolve(__dirname, "../lib/mdimg.js"))});`,
+    "const RealDate = Date;",
+    "global.Date = class extends RealDate { constructor(...args) { super(...(args.length ? args : ['2026-10-09T00:00:00.000Z'])); } };",
+    "(async () => {",
+    `const convert = () => mdimg(${JSON.stringify(options())});`,
+    "const results = await Promise.all([convert(), convert()]);",
+    "process.stdout.write(JSON.stringify(results.map(({ data, path }) => ({ data: Array.from(data), path }))));",
+    "})();",
+  ].join("\n");
+  const results = JSON.parse(
+    execFileSync(process.execPath, ["--eval", script], {
+      cwd: workspace.dir,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+      timeout: 30000,
+    }),
+  );
+
+  expect(results[0].path).not.toBe(results[1].path);
+  for (const result of results) {
+    expect(result.path).toMatch(
+      /mdimg_\d{4}(?:_\d{2}){5}_\d{3}_[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}\.png$/,
+    );
+    const data = Buffer.from(result.data);
+    expect(readFileSync(result.path)).toEqual(data);
+    await expectImage(data, "png");
+  }
+  expect(readdirSync(resolve(workspace.dir, "mdimg_output"))).toHaveLength(2);
+  expect(readdirSync(workspace.dir).sort()).toEqual([
+    "input.md",
+    "mdimg_output",
+  ]);
 });
 
 test.each([

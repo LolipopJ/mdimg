@@ -7,7 +7,10 @@ export interface IConvertOptions {
   mdText?: string;
   /** @deprecated: rename to `inputFilename` */
   mdFile?: string;
-  /** Output binary image filename. File type can be `jpeg`, `png` or `webp`. Available when `encoding: "binary"` */
+  /**
+   * Output binary image filename. File type can be `jpeg`, `png` or `webp`. Available when `encoding: "binary"`.
+   * Existing files are overwritten only after the new output is fully written.
+   */
   outputFilename?: import("puppeteer").ScreenshotOptions["path"];
   /**
    * File type of output image. Type will be inferred from `outputFilename` if set

@@ -14,9 +14,9 @@ import { parseMarkdown } from "./utils/mdParser";
 import { normalizeOptions } from "./utils/normalizeOptions";
 import { PluginManager } from "./utils/pluginManager";
 import {
-  createEmptyFile,
   generateImageDefaultFilename,
   padStartWithZero,
+  writeFileSafely,
 } from "./utils/utils";
 
 const mdimg = async (options: IConvertOptions): Promise<IConvertResponse> => {
@@ -268,8 +268,7 @@ const mdimg = async (options: IConvertOptions): Promise<IConvertResponse> => {
   const _finalResult = await _pluginManager.afterRender(_result);
 
   if (_saveToDisk && _finalResult.path) {
-    createEmptyFile(String(_finalResult.path));
-    fs.writeFileSync(String(_finalResult.path), _finalResult.data);
+    writeFileSafely(String(_finalResult.path), _finalResult.data);
     if (log) {
       process.stderr.write(
         `Success: convert to image and saved as ${_finalResult.path} successfully!\n`,
