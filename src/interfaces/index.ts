@@ -1,5 +1,5 @@
 export interface IConvertOptions {
-  /** Markdown or HTML text. This option has no effect if `inputFilename` is specified */
+  /** Markdown or HTML text. Empty text requires a file. Ignored if `inputFilename` is specified. */
   inputText?: string;
   /** Filename of source Markdown or HTML */
   inputFilename?: string;
@@ -15,12 +15,12 @@ export interface IConvertOptions {
    */
   type?: IConvertTypeOption;
   /**
-   * Width in pixel of output image
+   * Width in pixel of output image. Must be a positive finite safe integer.
    * @defaultValue `800`
    */
   width?: number;
   /**
-   * Min-height in pixel of output image. Should be a number >= 100
+   * Min-height in pixel of output image. Must be a finite safe integer >= 100.
    * @defaultValue `100`
    */
   height?: number;
@@ -30,13 +30,13 @@ export interface IConvertOptions {
    */
   encoding?: IConvertEncodingOption;
   /**
-   * Quality of the image, between 0-100. Not applicable to `png` images.
+   * Integer quality of the image, between 0-100 inclusive. Not applicable to `png` images.
    * @defaultValue `100`
    */
   quality?: import("puppeteer").ScreenshotOptions["quality"];
   /** HTML rendering text */
   htmlText?: string;
-  /** CSS rendering text */
+  /** CSS rendering text. An empty string overrides the preset with no styles. */
   cssText?: string;
   /**
    * HTML rendering template. This option has no effect if `htmlText` is specified

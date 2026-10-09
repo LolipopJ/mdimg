@@ -25,7 +25,7 @@ const spliceHtml = async ({
   let _htmlSource = htmlText;
   let _cssSource = cssText;
 
-  if (!_htmlSource) {
+  if (_htmlSource === undefined) {
     let _htmlPath = path.resolve(
       htmlTemplate.endsWith(".html")
         ? htmlTemplate
@@ -46,7 +46,7 @@ const spliceHtml = async ({
     _htmlSource = fs.readFileSync(_htmlPath).toString();
   }
 
-  if (!_cssSource) {
+  if (_cssSource === undefined) {
     let _cssPath = path.resolve(
       cssTemplate.endsWith(".css")
         ? cssTemplate

@@ -13,7 +13,7 @@ import type {
  * This is the default processor used when no `outputProcessor` is specified.
  *
  * @param type     Image format (`"png"`, `"jpeg"`, or `"webp"`).
- * @param quality  JPEG/WebP quality (1–100). Ignored for PNG.
+ * @param quality  JPEG/WebP quality (0–100). Ignored for PNG.
  * @param encoding `"binary"` (default) or `"base64"`.
  */
 export const createImageOutputProcessor = (

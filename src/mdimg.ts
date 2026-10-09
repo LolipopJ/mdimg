@@ -3,7 +3,6 @@ import path from "path";
 import puppeteer from "puppeteer";
 
 import type {
-  IConvertEncodingOption,
   IConvertOptions,
   IConvertResponse,
   IConvertTypeOption,
@@ -12,6 +11,7 @@ import type {
 import { createImageOutputProcessor } from "./output";
 import { spliceHtml } from "./utils/htmlSplicer";
 import { parseMarkdown } from "./utils/mdParser";
+import { normalizeOptions } from "./utils/normalizeOptions";
 import { PluginManager } from "./utils/pluginManager";
 import {
   createEmptyFile,
@@ -19,31 +19,29 @@ import {
   padStartWithZero,
 } from "./utils/utils";
 
-const mdimg = async ({
-  inputText,
-  inputFilename,
-  mdText,
-  mdFile,
-  outputFilename,
-  type = "png",
-  width = 800,
-  height = 100,
-  encoding = "binary",
-  quality = 100,
-  htmlText,
-  cssText,
-  htmlTemplate = "default",
-  cssTemplate = "default",
-  theme = "light",
-  extensions = true,
-  plugins = [],
-  log = false,
-  debug = false,
-  puppeteerProps = {},
-  outputProcessor,
-}: IConvertOptions): Promise<IConvertResponse> => {
+const mdimg = async (options: IConvertOptions): Promise<IConvertResponse> => {
+  const {
+    inputText,
+    inputFilename,
+    outputFilename,
+    type,
+    width,
+    height,
+    encoding,
+    quality,
+    htmlText,
+    cssText,
+    htmlTemplate,
+    cssTemplate,
+    theme,
+    extensions,
+    plugins,
+    log,
+    debug,
+    puppeteerProps,
+    outputProcessor,
+  } = normalizeOptions(options);
   const _outputFileTypes: IConvertTypeOption[] = ["jpeg", "png", "webp"];
-  const _encodingTypes: IConvertEncodingOption[] = ["base64", "binary", "blob"];
 
   const _result: IConvertResponse = {
     html: "",
@@ -53,9 +51,8 @@ const mdimg = async ({
 
   // Resolve input file or text
   let _input: string;
-  const _inputFilename = inputFilename || mdFile;
-  const _inputText = inputText || mdText;
-  if (_inputFilename) {
+  const _inputFilename = inputFilename;
+  if (_inputFilename !== undefined) {
     const _inputFilePath = path.resolve(_inputFilename);
     if (fs.existsSync(_inputFilePath)) {
       if (fs.statSync(_inputFilePath).isFile()) {
@@ -72,8 +69,8 @@ const mdimg = async ({
     } else {
       throw new Error(`input file ${_inputFilePath} is not exists.\n`);
     }
-  } else if (_inputText) {
-    _input = _inputText;
+  } else if (inputText !== undefined) {
+    _input = inputText;
 
     if (log) {
       process.stderr.write(`Info: start to convert text to an image...\n`);
@@ -89,19 +86,9 @@ const mdimg = async ({
   const _saveToDisk = outputProcessor
     ? Boolean(outputFilename)
     : _encoding === "binary";
-  if (!outputProcessor && !_encodingTypes.includes(_encoding)) {
-    throw new Error(
-      `encoding type ${_encoding} is not supported. Valid types: ${_encodingTypes.join(", ")}.\n`,
-    );
-  }
 
   // Resolve output file type
   let _type = type;
-  if (!outputProcessor && !_outputFileTypes.includes(_type)) {
-    throw new Error(
-      `output file type ${_type} is not supported. Valid types: ${_outputFileTypes.join(", ")}.\n`,
-    );
-  }
 
   // Resolve output filename
   let _output: IConvertOptions["outputFilename"];
@@ -159,10 +146,7 @@ const mdimg = async ({
   }
 
   // Resolve quality (used by the default image processor)
-  let _quality;
-  if (_type !== "png") {
-    _quality = quality > 0 && quality <= 100 ? quality : 100;
-  }
+  const _quality = _type === "png" ? undefined : quality;
 
   // Select the output processor: custom or default image processor.
   const _processor: IOutputProcessor =
@@ -195,17 +179,16 @@ const mdimg = async ({
 
   if (_requiresPage) {
     // Launch headless browser to render HTML
-    const _minHeight = Math.max(height, 100);
     const _browser = await puppeteer.launch({
       defaultViewport: {
         width,
-        height: _minHeight,
+        height,
       },
       ...puppeteerProps,
       args: [
-        `--window-size=${width},${_minHeight}`,
+        `--window-size=${width},${height}`,
         "--no-sandbox",
-        ...(puppeteerProps.args || []),
+        ...(puppeteerProps.args ?? []),
       ],
     });
 

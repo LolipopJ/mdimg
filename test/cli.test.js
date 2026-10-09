@@ -102,3 +102,64 @@ test("CLI: conversion failures return a nonzero exit code and no image", () => {
   expect(result.stderr).toContain("input file");
   expect(readdirSync(workspace.dir)).toEqual(["input.md"]);
 });
+
+test.each(["--help", "-h", "--version"])(
+  "CLI: explicitly requested %s exits successfully",
+  (flag) => {
+    const result = spawnSync(process.execPath, [cliFilename, flag], {
+      encoding: "utf8",
+      timeout: 30000,
+    });
+    expect(result.error).toBeUndefined();
+    expect(result.status).toBe(0);
+    expect(result.stdout.length).toBeGreaterThan(0);
+    expect(result.stderr).toBe("");
+  },
+);
+
+test.each([
+  [[], /text or file is required/],
+  [["-t", ""], /text or file is required/],
+  [["-i", ""], /inputFilename/],
+  [["-t", "# Hello", "-w", "abc"], /width/],
+  [["-t", "# Hello", "-w", "NaN"], /width/],
+  [["-t", "# Hello", "-w", "Infinity"], /width/],
+  [["-t", "# Hello", "-w", "0"], /width/],
+  [["-t", "# Hello", "-w", "1.5"], /width/],
+  [["-t", "# Hello", "-w", ""], /width/],
+  [["-t", "# Hello", "-w", " "], /width/],
+  [["-t", "# Hello", "--height", "99"], /height/],
+  [["-t", "# Hello", "-q", "101"], /quality/],
+  [["-t", "# Hello", "-q", ""], /quality/],
+  [["-t", "# Hello", "--theme", "sepia"], /theme/],
+  [["-t", "# Hello", "--type", "gif"], /type/],
+  [["-t", "# Hello", "-e", "hex"], /encoding/],
+  [["-t", "# Hello", "--extensions", "null"], /extensions/],
+  [["-t", "# Hello", "--extensions", "[]"], /extensions/],
+  [["-t", "# Hello", "--extensions", "123"], /extensions/],
+  [["-t", "# Hello", "--extensions", '{"mermaid":null}'], /extensions/],
+  [["-t", "# Hello", "--extensions", "{"], /extensions/],
+  [["-t", "# Hello", "--html", ""], /htmlTemplate/],
+  [["-t", "# Hello", "--template", ""], /Template/],
+  [["--unknown"], /unknown option/],
+  [["--width"], /argument missing/],
+])("CLI: invalid arguments %j fail with diagnostics only", (args, error) => {
+  const result = spawnSync(process.execPath, [cliFilename, ...args], {
+    cwd: workspace.dir,
+    encoding: "utf8",
+    timeout: 30000,
+  });
+  expect(result.error).toBeUndefined();
+  expect(result.status).toBe(1);
+  expect(result.stdout).toBe("");
+  expect(result.stderr).toMatch(error);
+  expect(readdirSync(workspace.dir)).toEqual(["input.md"]);
+});
+
+test("CLI: zero JPEG quality stays lower than quality 100", async () => {
+  const args = [...inputArgs(), "--type", "jpeg", "-e", "blob", "-w", "320"];
+  const low = runCli([...args, "-q", "0"]);
+  const high = runCli([...args, "-q", "100"]);
+  expect(low.length).toBeLessThan(high.length);
+  await expectImage(low, "jpeg", { width: 320 });
+});
