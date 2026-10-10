@@ -11,6 +11,7 @@ const expectImage = useImageAssertions();
 
 const inputText =
   "# Hello\n\nThis is a **test** document.\n\n```js\nconsole.log('hi');\n```\n";
+const builtinsDisabled = { highlightJs: false, mathJax: false, mermaid: false };
 
 // ── Hook ordering ─────────────────────────────────────────────────────────────
 
@@ -39,45 +40,65 @@ test("PLUGIN: beforeParse hook is called with raw input and can transform it", a
   expect(result.html).not.toMatch(/<h1[^>]*>Hello/);
 });
 
-test("PLUGIN: hooks run in registration order across multiple plugins", async () => {
+test("PLUGIN: async hooks pass transformed values in registration order across all four stages", async () => {
   const order = [];
+  const outputFilename = resolve(workspace.dir, "async-hooks.html");
 
-  await mdimg({
-    inputText,
+  const result = await mdimg({
+    inputText: "# original",
+    outputFilename,
     outputProcessor: createHtmlOutputProcessor(),
-    extensions: false,
+    extensions: builtinsDisabled,
     plugins: [
       {
         name: "pluginA",
         hooks: {
-          beforeParse: (text) => {
+          beforeParse: async (text) => {
             order.push("A:beforeParse");
-            return text;
+            expect(text).toBe("# original");
+            return text.replace("original", "parsed-A");
           },
-          afterParse: (html) => {
+          afterParse: async (html) => {
             order.push("A:afterParse");
-            return html;
+            expect(html).toContain("<h1>parsed-A-B</h1>");
+            return html.replace("parsed-A-B", "html-A");
           },
-          afterSplice: (html) => {
+          afterSplice: async (html) => {
             order.push("A:afterSplice");
-            return html;
+            expect(html).toContain("<h1>html-A-B</h1>");
+            return html.replace("html-A-B", "spliced-A");
+          },
+          afterRender: async (result) => {
+            order.push("A:afterRender");
+            expect(existsSync(outputFilename)).toBe(false);
+            expect(result.data).toContain("<h1>spliced-A-B</h1>");
+            return { ...result, data: "rendered-A" };
           },
         },
       },
       {
         name: "pluginB",
         hooks: {
-          beforeParse: (text) => {
+          beforeParse: async (text) => {
             order.push("B:beforeParse");
-            return text;
+            expect(text).toBe("# parsed-A");
+            return `${text}-B`;
           },
-          afterParse: (html) => {
+          afterParse: async (html) => {
             order.push("B:afterParse");
-            return html;
+            expect(html).toContain("<h1>html-A</h1>");
+            return html.replace("html-A", "html-A-B");
           },
-          afterSplice: (html) => {
+          afterSplice: async (html) => {
             order.push("B:afterSplice");
-            return html;
+            expect(html).toContain("<h1>spliced-A</h1>");
+            return html.replace("spliced-A", "spliced-A-B");
+          },
+          afterRender: async (result) => {
+            order.push("B:afterRender");
+            expect(existsSync(outputFilename)).toBe(false);
+            expect(result.data).toBe("rendered-A");
+            return { ...result, data: `${result.data}-B` };
           },
         },
       },
@@ -91,8 +112,83 @@ test("PLUGIN: hooks run in registration order across multiple plugins", async ()
     "B:afterParse",
     "A:afterSplice",
     "B:afterSplice",
+    "A:afterRender",
+    "B:afterRender",
   ]);
+  expect(result.html).toContain("<h1>spliced-A-B</h1>");
+  expect(result.data).toBe("rendered-A-B");
+  expect(result.path).toBe(outputFilename);
+  expect(readFileSync(outputFilename, "utf8")).toBe("rendered-A-B");
 });
+
+test.each([
+  ["beforeParse", ["A:beforeParse"]],
+  ["afterParse", ["A:beforeParse", "B:beforeParse", "A:afterParse"]],
+  [
+    "afterSplice",
+    [
+      "A:beforeParse",
+      "B:beforeParse",
+      "A:afterParse",
+      "B:afterParse",
+      "A:afterSplice",
+    ],
+  ],
+  [
+    "afterRender",
+    [
+      "A:beforeParse",
+      "B:beforeParse",
+      "A:afterParse",
+      "B:afterParse",
+      "A:afterSplice",
+      "B:afterSplice",
+      "process",
+      "A:afterRender",
+    ],
+  ],
+])(
+  "PLUGIN: async %s rejection stops subsequent hooks and disk write",
+  async (stage, expectedOrder) => {
+    const order = [];
+    const failure = new Error(`hook-failure:${stage}`);
+    const outputFilename = resolve(workspace.dir, "rejected.html");
+    const plugins = ["A", "B"].map((name) => ({
+      name,
+      hooks: Object.fromEntries(
+        ["beforeParse", "afterParse", "afterSplice", "afterRender"].map(
+          (hook) => [
+            hook,
+            async (value) => {
+              order.push(`${name}:${hook}`);
+              if (name === "A" && hook === stage) throw failure;
+              return value;
+            },
+          ],
+        ),
+      ),
+    }));
+
+    await expect(
+      mdimg({
+        inputText,
+        outputFilename,
+        extensions: builtinsDisabled,
+        plugins,
+        outputProcessor: {
+          format: "html",
+          requiresPage: false,
+          process: ({ html }) => {
+            order.push("process");
+            return { data: html };
+          },
+        },
+      }),
+    ).rejects.toBe(failure);
+    expect(order).toEqual(expectedOrder);
+    expect(existsSync(outputFilename)).toBe(false);
+  },
+);
 
 // ── Extension name-based registry (dedup / override) ─────────────────────────
 
@@ -124,7 +220,8 @@ test("PLUGIN: plugin extension with same name replaces built-in (no duplicate)",
   // Custom output is present
   expect(result.html).toContain("<!-- custom-highlightJs-override -->");
   // Built-in highlight.js must NOT be present
-  expect(result.html).not.toContain("hljs.highlightAll()");
+  expect(result.html).not.toContain("<!-- highlight.js -->");
+  expect(result.html).not.toMatch(/name:\s*["']highlightJs["']/);
 });
 
 test("PLUGIN: plugin extension with unique name is added alongside built-ins", async () => {
@@ -132,8 +229,24 @@ test("PLUGIN: plugin extension with unique name is added alongside built-ins", a
 
   const result = await mdimg({
     inputText,
-    outputProcessor: createHtmlOutputProcessor(),
-    extensions: { highlightJs: false, mathJax: false, mermaid: false },
+    outputProcessor: {
+      format: "html",
+      async process({ html, page }) {
+        expect(
+          await page.$eval("pre code", (code) =>
+            code.classList.contains("hljs"),
+          ),
+        ).toBe(true);
+        expect(
+          await page.$eval("pre code .hljs-string", (node) => node.textContent),
+        ).toBe("'hi'");
+        expect(
+          await page.$eval("#custom-extension", (node) => node.textContent),
+        ).toBe("plugin active");
+        return { data: html };
+      },
+    },
+    extensions: { highlightJs: true, mathJax: false, mermaid: false },
     plugins: [
       {
         name: "addPlugin",
@@ -142,7 +255,10 @@ test("PLUGIN: plugin extension with unique name is added alongside built-ins", a
             name: "customExt",
             inject() {
               injected.push("customExt");
-              return { head: "<!-- custom-ext -->" };
+              return {
+                head: "<!-- custom-ext -->",
+                body: '<span id="custom-extension">plugin active</span>',
+              };
             },
           },
         ],
@@ -152,6 +268,7 @@ test("PLUGIN: plugin extension with unique name is added alongside built-ins", a
 
   expect(injected).toHaveLength(1);
   expect(result.html).toContain("<!-- custom-ext -->");
+  expect(result.html).toContain("<!-- highlight.js -->");
 });
 
 // ── afterRender binary semantics ─────────────────────────────────────────────
@@ -318,11 +435,119 @@ const underlineMarkedExt = {
   ],
 };
 
+function createMultiExtensionPlugin() {
+  return {
+    name: "multiExtensionPlugin",
+    extensions: ["firstExt", "secondExt"].map((name) => ({
+      name,
+      inject: jest.fn(() => ({ head: `<!-- ${name} -->` })),
+    })),
+    markedExtensions: [underlineMarkedExt],
+  };
+}
+
+test.each([
+  ["global disable suppresses injection and marked extensions", false],
+  [
+    "plugin name disables all owned extensions",
+    {
+      highlightJs: false,
+      mathJax: false,
+      mermaid: false,
+      multiExtensionPlugin: false,
+    },
+  ],
+])("PLUGIN: %s", async (_name, extensions) => {
+  const plugin = createMultiExtensionPlugin();
+  const { html } = await mdimg({
+    inputText: "Hello ::world::",
+    outputProcessor: createHtmlOutputProcessor(),
+    extensions,
+    plugins: [plugin],
+  });
+
+  for (const extension of plugin.extensions) {
+    expect(extension.inject).not.toHaveBeenCalled();
+    expect(html).not.toContain(`<!-- ${extension.name} -->`);
+  }
+  expect(html).toContain("Hello ::world::");
+  expect(html).not.toContain("<u>world</u>");
+});
+
+test("PLUGIN: active plugin injects all owned extensions and parses custom syntax", async () => {
+  const plugin = createMultiExtensionPlugin();
+  const { html } = await mdimg({
+    inputText: "Hello ::world::",
+    outputProcessor: createHtmlOutputProcessor(),
+    extensions: builtinsDisabled,
+    plugins: [plugin],
+  });
+
+  for (const extension of plugin.extensions) {
+    expect(extension.inject).toHaveBeenCalledTimes(1);
+    expect(html).toContain(`<!-- ${extension.name} -->`);
+  }
+  expect(html).toContain("Hello <u>world</u>");
+});
+
+test("PLUGIN: disabling an earlier plugin preserves an extension replaced by another plugin", async () => {
+  const inactiveInject = jest.fn(() => ({ head: "<!-- inactive-owner -->" }));
+  const activeInject = jest.fn(() => ({ head: "<!-- active-owner -->" }));
+  const { html } = await mdimg({
+    inputText: "Hello ::world::",
+    outputProcessor: createHtmlOutputProcessor(),
+    extensions: { ...builtinsDisabled, inactivePlugin: false },
+    plugins: [
+      {
+        name: "inactivePlugin",
+        extensions: [{ name: "sharedExt", inject: inactiveInject }],
+      },
+      {
+        name: "activePlugin",
+        extensions: [{ name: "sharedExt", inject: activeInject }],
+        markedExtensions: [underlineMarkedExt],
+      },
+    ],
+  });
+
+  expect(inactiveInject).not.toHaveBeenCalled();
+  expect(activeInject).toHaveBeenCalledTimes(1);
+  expect(html).not.toContain("<!-- inactive-owner -->");
+  expect(html).toContain("<!-- active-owner -->");
+  expect(html).toContain("Hello <u>world</u>");
+});
+
+test.each(["sequential", "concurrent"])(
+  "PLUGIN: marked extensions stay isolated between %s calls",
+  async (mode) => {
+    const options = {
+      inputText: "Hello ::world::",
+      outputProcessor: createHtmlOutputProcessor(),
+      extensions: builtinsDisabled,
+    };
+    const pluginOptions = {
+      ...options,
+      plugins: [
+        { name: "underlinePlugin", markedExtensions: [underlineMarkedExt] },
+      ],
+    };
+    const results =
+      mode === "concurrent"
+        ? await Promise.all([mdimg(pluginOptions), mdimg(options)])
+        : [await mdimg(pluginOptions), await mdimg(options)];
+
+    expect(results[0].html).toContain("Hello <u>world</u>");
+    expect(results[0].html).not.toContain("::world::");
+    expect(results[1].html).toContain("Hello ::world::");
+    expect(results[1].html).not.toContain("<u>world</u>");
+  },
+);
+
 test("PLUGIN: markedExtensions tokenizer produces custom HTML from custom syntax", async () => {
   const result = await mdimg({
     inputText: "Hello ::world::",
     outputProcessor: createHtmlOutputProcessor(),
-    extensions: false,
+    extensions: builtinsDisabled,
     plugins: [
       {
         name: "underlinePlugin",
@@ -339,7 +564,7 @@ test("PLUGIN: markedExtensions renderer override takes priority over built-in co
   const result = await mdimg({
     inputText: "```js\nconsole.log('hi');\n```",
     outputProcessor: createHtmlOutputProcessor(),
-    extensions: false,
+    extensions: builtinsDisabled,
     plugins: [
       {
         name: "codePlugin",

@@ -25,6 +25,7 @@ export class PluginManager {
    *
    * A plugin enters this set when ANY of the following are suppressed via the
    * `extensions` config:
+   *   - all extensions globally (`extensions = false`), or
    *   - the plugin's own name (`extensions[pluginName] = false`), or
    *   - the name of any `IExtension` the plugin owns
    *     (`extensions[extensionName] = false`).
@@ -43,6 +44,13 @@ export class PluginManager {
     this.extensionRegistry = new Map();
     this.suppressedPluginNames = new Set();
 
+    if (extensions === false) {
+      for (const plugin of plugins) {
+        this.suppressedPluginNames.add(plugin.name);
+      }
+      return;
+    }
+
     // Seed with built-in extensions (lower priority)
     for (const ext of createBuiltinExtensions(extensions)) {
       this.extensionRegistry.set(ext.name, ext);
@@ -56,13 +64,14 @@ export class PluginManager {
     }
 
     // Apply suppression: any extension whose name is set to `false` in the
-    // extensions config object is removed from the registry.
+    // extensions config object is removed from the registry. A plugin name
+    // removes every extension it currently owns.
     //
     // markedExtensions suppression: a plugin is added to suppressedPluginNames
     // when EITHER its own name OR the name of any IExtension it owns is
     // suppressed. This ensures there is no half-enabled state regardless of
     // whether the caller uses the plugin name or the extension name as the key.
-    if (extensions !== true && extensions !== false) {
+    if (extensions !== true) {
       // Build reverse map: IExtension name → plugin that registered it.
       // Only the last plugin to register a given name is tracked (mirrors the
       // registry's last-writer-wins dedup behaviour).
@@ -81,6 +90,11 @@ export class PluginManager {
           // Path 1: name matches a plugin name directly.
           if (pluginNameSet.has(name)) {
             this.suppressedPluginNames.add(name);
+            for (const [extName, plugin] of extNameToPlugin) {
+              if (plugin.name === name) {
+                this.extensionRegistry.delete(extName);
+              }
+            }
           }
 
           // Path 2: name matches an IExtension owned by a plugin.
@@ -144,9 +158,8 @@ export class PluginManager {
 
   /**
    * Return all marked extensions declared by plugins, in registration order.
-   * Plugins whose name appears in `suppressedPluginNames` (i.e. suppressed via
-   * `extensions[pluginName] = false`) are excluded so that their tokenizers and
-   * renderers do not participate in parsing when the plugin is disabled.
+   * Suppressed plugins are excluded so that their tokenizers and renderers
+   * do not participate in parsing when their extensions are disabled.
    */
   getMarkedExtensions(): MarkedExtension[] {
     return this.plugins

@@ -646,7 +646,7 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
       [
         "script-execution-failure",
         {
-          extensions: false,
+          extensions: { highlightJs: false, mathJax: false, mermaid: false },
           plugins: [
             {
               name: "broken-script",
