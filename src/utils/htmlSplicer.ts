@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 
 import type { IConvertOptions, IExtension } from "../interfaces";
+import { inlineScript, readAsset } from "./assets";
 
 const spliceHtml = async ({
   renderedHtml,
@@ -68,6 +69,7 @@ const spliceHtml = async ({
   }
 
   const $ = load(_htmlSource);
+  $("head").prepend(inlineScript(readAsset("page-ready.js")));
   $("head").append(`
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">

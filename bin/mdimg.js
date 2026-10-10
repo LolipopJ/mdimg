@@ -95,8 +95,8 @@ program
   )
   .addOption(
     new Option(
-      "--extensions <enabled>",
-      "Whether to enable extensions. Can be 'true', 'false', or a JSON object to configure individual extensions (highlightJs, mathJax, mermaid)",
+      "--extensions <options>",
+      "Extension configurations. Can be 'true', 'false', or a JSON object to configure individual extensions (highlightJs, mathJax, mermaid)",
     ),
   )
   .addOption(

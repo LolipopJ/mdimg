@@ -1,3 +1,5 @@
+/// <reference types="node" preserve="true" />
+
 export interface IConvertOptions {
   /** Markdown or HTML text. Empty text requires a file. Ignored if `inputFilename` is specified. */
   inputText?: string;
@@ -195,7 +197,7 @@ export interface IOutputProcessor {
 
 /**
  * All highlight.js theme names bundled with mdimg.
- * Top-level themes come from `@highlightjs/cdn-assets/styles/*.min.css`;
+ * Top-level themes come from `highlight.js/styles/*.css`;
  * base16 variants are prefixed with `base16/`.
  * @see https://highlightjs.org/demo
  */
@@ -224,6 +226,7 @@ export type IHighlightJsTheme =
   | "default"
   | "devibeans"
   | "docco"
+  | "equinox"
   | "far"
   | "felipec"
   | "foundation"
@@ -278,6 +281,7 @@ export type IHighlightJsTheme =
   | "tomorrow-night-blue"
   | "tomorrow-night-bright"
   | "vs"
+  | "vs-dark"
   | "vs2015"
   | "xcode"
   | "xt256"

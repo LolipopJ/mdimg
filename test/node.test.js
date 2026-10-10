@@ -3,7 +3,8 @@
 const { execFileSync } = require("child_process");
 const { readFileSync, readdirSync, writeFileSync } = require("fs");
 const { resolve } = require("path");
-const { mdimg, createImageOutputProcessor } = require("../lib/mdimg.js");
+const { mdimg, createImageOutputProcessor } =
+  requirePackage(__filename)("../lib/mdimg.js");
 const { expectMarkdown, useImageAssertions } = require("./helpers/assertions");
 const { useWorkspace } = require("./helpers/workspace");
 

@@ -8,7 +8,7 @@ const {
   createHtmlOutputProcessor,
   createPdfOutputProcessor,
   createImageOutputProcessor,
-} = require("../lib/mdimg.js");
+} = requirePackage(__filename)("../lib/mdimg.js");
 const {
   expectMarkdown,
   expectPdf,

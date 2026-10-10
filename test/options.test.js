@@ -2,8 +2,9 @@
 
 const { readFileSync, readdirSync, writeFileSync } = require("fs");
 const { resolve } = require("path");
-const puppeteer = require("puppeteer").default;
-const { mdimg, createHtmlOutputProcessor } = require("../lib/mdimg.js");
+const puppeteer = requirePackage(__filename)("puppeteer").default;
+const { mdimg, createHtmlOutputProcessor } =
+  requirePackage(__filename)("../lib/mdimg.js");
 const { useWorkspace } = require("./helpers/workspace");
 
 const workspace = useWorkspace();

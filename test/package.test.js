@@ -89,7 +89,7 @@ test.each([
         html: result.html.includes('<h1>Packed consumer</h1>'),
         data: result.data === result.html,
         styles: result.html.includes('highlight.js styles'),
-        math: result.html.includes('MathJax options'),
+        math: result.html.includes('__mdimgMathJax'),
         mermaid: result.html.includes('mermaid.initialize'),
       }));
     })();`,

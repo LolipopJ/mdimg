@@ -1,11 +1,9 @@
-import fs from "fs";
-import path from "path";
-
 import type {
   IExtension,
   IExtensionContext,
   IExtensionInjectResult,
 } from "../interfaces";
+import { inlineScript, readAsset, serializeForScript } from "../utils/assets";
 
 export const createMermaidExtension = (
   config: boolean | Record<string, unknown>,
@@ -15,26 +13,27 @@ export const createMermaidExtension = (
   inject({ theme }: IExtensionContext): IExtensionInjectResult {
     const mermaidOptions = Object.assign(
       {
-        startOnLoad: true,
         theme: theme === "dark" ? "dark" : undefined,
       },
       config === true ? {} : config,
+      { startOnLoad: false },
     );
-
-    const mermaidScriptText = fs.readFileSync(
-      path.resolve(
-        `${__dirname}/../static/mermaid@11.14.0/dist/mermaid.min.min.js`,
-      ),
-    );
+    const mermaidScriptText = readAsset("mermaid.js");
+    const layouts = JSON.parse(readAsset("mermaid-layouts.json"));
 
     return {
+      head: `<style>${readAsset("katex.css")}</style>`,
       body: `
 <!-- Mermaid -->
-<script>
-  ${mermaidScriptText}
-  mermaid.initialize(${JSON.stringify(mermaidOptions)});
-  mermaid.contentLoaded();
-</script>
+${inlineScript(mermaidScriptText)}
+${inlineScript(readAsset("mermaid-adapter.js"))}
+${inlineScript(`
+  mermaid.startOnLoad = false;
+  mermaid.initialize(${serializeForScript(mermaidOptions)});
+  window.__mdimgTasks.push({ name: "mermaid", run: () =>
+    globalThis.__mdimgMermaid(${serializeForScript(layouts)})
+  });
+`)}
 `,
     };
   },

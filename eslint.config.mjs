@@ -7,14 +7,7 @@ import tseslint from "typescript-eslint";
 
 export default defineConfig(
   {
-    ignores: [
-      ".*/",
-      "docs/",
-      "lib/",
-      "node_modules/",
-      "static/**/*",
-      "template/css/",
-    ],
+    ignores: [".*/", "docs/", "lib/", "node_modules/", "template/css/"],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,

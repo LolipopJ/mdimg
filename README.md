@@ -10,7 +10,8 @@ First, the script calls [marked](https://github.com/markedjs/marked) to parse Ma
 
 ## Preview
 
-Rendering results:
+> [!NOTE]
+> Rendering results may differ from the preview images below depending on the actual host environment.
 
 | Linux                                                                          | MacOS                                                                           | Windows                                                                        | HTML Template | CSS Template | Notes                                             |
 | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------- | ------------ | ------------------------------------------------- |
@@ -99,29 +100,34 @@ const convertRes = await mdimg({
 
 When using `mdimg()` method, you must specify either `inputFilename` (input file) or `inputText` (directly input text).
 
+Library loading, typesetting, diagram rendering, fonts and images share a
+readiness promise. Image/PDF output waits for it; exported HTML runs the same
+initialization and reports failures in the browser console, including a
+30-second timeout.
+
 Here are all available options:
 
-| Argument        | Type                             | Default         | Notes                                                                                                                                                                                                                                    |
-| --------------- | -------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| inputText       | `String`                         | `undefined`     | Input Markdown or HTML text directly. This option **has no effect** if `inputFilename` is specified                                                                                                                                      |
-| inputFilename   | `String`                         | `undefined`     | Read Markdown or HTML text from a file                                                                                                                                                                                                   |
+| Argument        | Type                             | Default         | Notes                                                                                                                                                                                                                                         |
+| --------------- | -------------------------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| inputText       | `String`                         | `undefined`     | Input Markdown or HTML text directly. This option **has no effect** if `inputFilename` is specified                                                                                                                                           |
+| inputFilename   | `String`                         | `undefined`     | Read Markdown or HTML text from a file                                                                                                                                                                                                        |
 | outputFilename  | `String`                         | See notes       | Output file path. For the default image processor: auto-generates `./mdimg_output/mdimg_<timestamp>_<UUID>.${type}` when omitted. For a custom `outputProcessor`: written to disk **only** when explicitly provided (no default is generated) |
-| type            | `"jpeg" \| "png" \| "webp"`      | `png`           | File type of the image. Type will be inferred from `outputFilename` if specified. Ignored when `outputProcessor` is set                                                                                                                  |
-| width           | `Number`                         | `800`           | Width in pixel of output image                                                                                                                                                                                                           |
-| height          | `Number`                         | `100`           | Min-height in pixel of output image. No less than `100`                                                                                                                                                                                  |
-| encoding        | `"base64" \| "binary" \| "blob"` | `binary`        | Encode type of output image. Ignored when `outputProcessor` is set                                                                                                                                                                       |
-| quality         | `Number`                         | `100`           | Quality of the image, between 0-100. **Not applicable** to `png` image. Ignored when `outputProcessor` is set                                                                                                                            |
-| htmlText        | `String`                         | `undefined`     | HTML rendering text                                                                                                                                                                                                                      |
-| cssText         | `String`                         | `undefined`     | CSS rendering text                                                                                                                                                                                                                       |
-| htmlTemplate    | `String`                         | `default`       | HTML rendering template. Available presets can be found in [`template/html`](./template/html/). If ends with `.html`, the mdimg will try to read local file. This option **has no effect** if `htmlText` is specified                    |
-| cssTemplate     | `String`                         | `default`       | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). If ends with `.css`, the mdimg will try to read local file. This option **has no effect** if `cssText` is specified                         |
-| theme           | `light` \| `dark`                | `light`         | Rendering color theme, affects the default highlight.js theme and other dark/light-aware styles                                                                                                                                          |
-| extensions      | `boolean \| IExtensionOptions`   | `true`          | Configurations for [extensions](#extensions)                                                                                                                                                                                             |
-| plugins         | `IPlugin[]`                      | `[]`            | List of [plugins](#plugins) to apply during the conversion pipeline                                                                                                                                                                      |
-| outputProcessor | `IOutputProcessor`               | image processor | Custom output processor. Overrides the built-in screenshot logic. See [Output Processors](#output-processors)                                                                                                                            |
-| log             | `Boolean`                        | `false`         | Print execution logs via stderr                                                                                                                                                                                                          |
-| debug           | `Boolean`                        | `false`         | Whether to keep temporary HTML file after rendering                                                                                                                                                                                      |
-| puppeteerProps  | `LaunchOptions`                  | `undefined`     | [Launch options](https://pptr.dev/api/puppeteer.puppeteerlaunchoptions) of Puppeteer. Ignored when `outputProcessor` sets `requiresPage: false`                                                                                          |
+| type            | `"jpeg" \| "png" \| "webp"`      | `png`           | File type of the image. Type will be inferred from `outputFilename` if specified. Ignored when `outputProcessor` is set                                                                                                                       |
+| width           | `Number`                         | `800`           | Width in pixel of output image                                                                                                                                                                                                                |
+| height          | `Number`                         | `100`           | Min-height in pixel of output image. No less than `100`                                                                                                                                                                                       |
+| encoding        | `"base64" \| "binary" \| "blob"` | `binary`        | Encode type of output image. Ignored when `outputProcessor` is set                                                                                                                                                                            |
+| quality         | `Number`                         | `100`           | Quality of the image, between 0-100. **Not applicable** to `png` image. Ignored when `outputProcessor` is set                                                                                                                                 |
+| htmlText        | `String`                         | `undefined`     | HTML rendering text                                                                                                                                                                                                                           |
+| cssText         | `String`                         | `undefined`     | CSS rendering text                                                                                                                                                                                                                            |
+| htmlTemplate    | `String`                         | `default`       | HTML rendering template. Available presets can be found in [`template/html`](./template/html/). If ends with `.html`, the mdimg will try to read local file. This option **has no effect** if `htmlText` is specified                         |
+| cssTemplate     | `String`                         | `default`       | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). If ends with `.css`, the mdimg will try to read local file. This option **has no effect** if `cssText` is specified                              |
+| theme           | `light` \| `dark`                | `light`         | Rendering color theme, affects the default highlight.js theme and other dark/light-aware styles                                                                                                                                               |
+| extensions      | `boolean \| IExtensionOptions`   | `true`          | Configurations for [extensions](#extensions)                                                                                                                                                                                                  |
+| plugins         | `IPlugin[]`                      | `[]`            | List of [plugins](#plugins) to apply during the conversion pipeline                                                                                                                                                                           |
+| outputProcessor | `IOutputProcessor`               | image processor | Custom output processor. Overrides the built-in screenshot logic. See [Output Processors](#output-processors)                                                                                                                                 |
+| log             | `Boolean`                        | `false`         | Print execution logs via stderr                                                                                                                                                                                                               |
+| debug           | `Boolean`                        | `false`         | Whether to keep temporary HTML file after rendering                                                                                                                                                                                           |
+| puppeteerProps  | `LaunchOptions`                  | `undefined`     | [Launch options](https://pptr.dev/api/puppeteer.puppeteerlaunchoptions) of Puppeteer. Ignored when `outputProcessor` sets `requiresPage: false`                                                                                               |
 
 Returns: `Promise<object>`
 
@@ -214,8 +220,7 @@ await mdimg({
   htmlText: `<div id="mdimg-body">
   <div class="markdown-body"></div>
 </div>`,
-  cssText: `@import "https://unpkg.com/normalize.css/normalize.css";
-.markdown-body {
+  cssText: `.markdown-body {
   padding: 6rem 4rem;
 }`,
 });
@@ -223,29 +228,31 @@ await mdimg({
 
 ## Extensions
 
-Extensions are default enabled. You can easily configuration them in Node.js:
+The mdimg has build-in extensions, and they are default enabled. You can easily configuration them in Node.js:
 
 ```ts
 await mdimg({
-  extensions: false, // disable all extensions
+  extensions: false, // disable all extensions, use marked to parse document only
 });
 
 await mdimg({
   extensions: {
-    highlightJs: false, // disable highlight.js
+    highlightJs: false, // disable certain extension, e.g. highlight.js
     mathJax: {
       // further configuration for MathJax
       // ...
     },
-    mermaid: true, // enable mermaid (by default)
+    mermaid: true, // as all extensions are default enabled, nothing will change
   },
 });
 ```
 
-In CLI, you can only enable or disable extensions globally:
+In CLI, you can also configuration extensions by passing a JSON object:
 
 ```bash
-mdimg --extensions false # disable all extensions
+mdimg --extensions false
+
+mdimg --extensions '{"highlightJs": false}'
 ```
 
 ### Extended Syntaxes
@@ -255,6 +262,12 @@ Some extended syntaxes, such as LaTeX, can't be parsed by pure marked correctly.
 #### [MathJax](https://github.com/mathjax/MathJax)
 
 > MathJax is an open-source JavaScript display engine for **LaTeX**, **MathML**, and **AsciiMath** notation.
+
+MathJax uses SVG with formula-local glyph references and the bundled NewCM
+font. CHTML settings, custom font/loading paths, unpackaged fonts and the
+optional speech engine are rejected. Mermaid uses native MathML by default;
+`legacyMathML` and `forceLegacyMathML` use embedded KaTeX CSS/fonts. Unknown
+layouts, external icon packs and remote diagram images/styles fail explicitly.
 
 ⚠️ The single dollar sign `$` is **not enabled by default** to render inline LaTeX. Because It is used too frequently in normal text, so if you want to use it for math delimiters, you must specify it explicitly. In Node.js project:
 
@@ -273,28 +286,11 @@ await mdimg({
 });
 ```
 
-CLI doesn't support to configuration extensions, so you need to override MathJax options in HTML template directly:
-
-```html
-<!-- path/to/template.html -->
-<div id="mdimg-body">
-  <div class="markdown-body"></div>
-</div>
-
-<script>
-  MathJax = {
-    tex: {
-      inlineMath: [
-        ["$", "$"],
-        ["\\(", "\\)"],
-      ],
-    },
-  };
-</script>
-```
+Pass MathJax configuration through `extensions.mathJax`. The CLI accepts the
+same extension options as JSON:
 
 ```bash
-mdimg --html path/to/template.html
+mdimg -i input.md --extensions '{"mathJax":{"tex":{"inlineMath":[["$","$"]]}}}'
 ```
 
 ⚠️ Due to the [parse behaviors](https://andrzejq.github.io/markdown-mathjax/editor/md-mhj.html) between marked and MathJax: "\\" before any ASCII punctuation character is backslash escape, so "\\\\" (or "\\,") should be written as "\\\\\\\\" (or "\\\\,"). You need to manually replace characters or **wrap the LaTeX code in a `<div>` block**. Example:
@@ -343,7 +339,7 @@ By default the theme is chosen automatically based on the global `theme` option 
 
 ```ts
 await mdimg({
-  theme: "light",           // global page theme
+  theme: "light", // global page theme
   extensions: {
     highlightJs: {
       theme: "github-dark", // highlight.js theme, independent of global theme
@@ -460,7 +456,11 @@ const emojiExtension: MarkedExtension = {
         }
       },
       renderer(token) {
-        const map: Record<string, string> = { wave: "👋", fire: "🔥", star: "⭐" };
+        const map: Record<string, string> = {
+          wave: "👋",
+          fire: "🔥",
+          star: "⭐",
+        };
         return `<span class="emoji">${map[token.name] ?? token.raw}</span>`;
       },
     },
@@ -513,22 +513,25 @@ await mdimg({
 If a plugin extension has the **same `name`** as a built-in extension (`highlightJs`, `mathJax`, or `mermaid`), it **replaces** the built-in. This lets you fully control how a dependency is configured or injected.
 
 ```ts
+import { readFileSync } from "node:fs";
 import type { IPlugin } from "mdimg";
 
-// Replace built-in highlight.js with a custom CDN version
+// Supply a self-contained local bundle and theme.
+const customScript = readFileSync("./custom-highlight.js", "utf8").replace(
+  /<\/script/gi,
+  "<\\/script",
+);
 const customHljsPlugin: IPlugin = {
   name: "customHighlightJs",
   extensions: [
     {
       name: "highlightJs", // same name → replaces the built-in
       inject({ theme }) {
-        const cssHref =
-          theme === "dark"
-            ? "https://cdn.example.com/hljs/atom-one-dark.min.css"
-            : "https://cdn.example.com/hljs/atom-one-light.min.css";
+        const cssFile =
+          theme === "dark" ? "./custom-dark.css" : "./custom-light.css";
         return {
-          head: `<link rel="stylesheet" href="${cssHref}">`,
-          body: `<script src="https://cdn.example.com/hljs/highlight.min.js"></script>
+          head: `<style>${readFileSync(cssFile, "utf8")}</style>`,
+          body: `<script>${customScript}</script>
 <script>hljs.highlightAll();</script>`,
         };
       },
@@ -683,11 +686,16 @@ pnpm run preview
 ### Test
 
 ```bash
-# Build productions before testing
-pnpm run build
-# Run test cases
+# Run test cases after building
 pnpm run test
+# Run consumer check before publishing
+pnpm run test:consumer
 ```
+
+Consumer tests run separately from the default suite. They build and install the
+npm tarball in an isolated production-only project, then check its API, CLI,
+public types, and offline rendering with the current Node.js and Node.js 22.12.0.
+You can set `MDIMG_NODE22` to a preinstalled Node.js 22.12.0 executable when needed.
 
 Tests use a fresh temporary directory for each case and clean it up afterward.
 They decode images to check their format, dimensions and rendered pixels, parse

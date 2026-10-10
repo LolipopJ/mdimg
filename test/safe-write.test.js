@@ -2,7 +2,7 @@
 
 const fs = require("fs");
 const { dirname, resolve } = require("path");
-const { mdimg } = require("../lib/mdimg.js");
+const { mdimg } = requirePackage(__filename)("../lib/mdimg.js");
 const { useWorkspace } = require("./helpers/workspace");
 
 const workspace = useWorkspace();

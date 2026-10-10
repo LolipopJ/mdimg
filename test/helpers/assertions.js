@@ -3,7 +3,7 @@
 const { load } = require("cheerio");
 const { execFileSync } = require("child_process");
 const { resolve } = require("path");
-const puppeteer = require("puppeteer");
+const puppeteer = requirePackage(__filename)("puppeteer");
 
 function expectMarkdown(html) {
   const $ = load(html);

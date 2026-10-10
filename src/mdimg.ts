@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import puppeteer from "puppeteer";
+import { pathToFileURL } from "url";
 
 import type {
   IConvertOptions,
@@ -214,23 +215,65 @@ const mdimg = async (options: IConvertOptions): Promise<IConvertResponse> => {
     const _useLocalHtmlFileFlag = fs.existsSync(_tempLocalHtmlFile);
 
     const cleanup = async () => {
-      if (_useLocalHtmlFileFlag && !debug) {
-        fs.rmSync(_tempLocalHtmlFile);
+      try {
+        if (_useLocalHtmlFileFlag && !debug) {
+          fs.unlinkSync(_tempLocalHtmlFile);
+        }
+      } finally {
+        await _browser.close();
       }
-      await _browser.close();
     };
 
     try {
       const _page = await _browser.newPage();
+      let rejectPageFailure!: (error: Error) => void;
+      const pageFailure = new Promise<never>((_, reject) => {
+        rejectPageFailure = reject;
+      });
+      pageFailure.catch(() => {});
+      _page.on("pageerror", (error) => {
+        rejectPageFailure(new Error(`mdimg page script: ${String(error)}`));
+      });
       if (_useLocalHtmlFileFlag) {
-        await _page.goto(`file://${_tempLocalHtmlFile}`, {
-          waitUntil: "networkidle0",
-        });
+        await Promise.race([
+          _page.goto(pathToFileURL(_tempLocalHtmlFile).href, {
+            waitUntil: "load",
+          }),
+          pageFailure,
+        ]);
       } else {
-        await _page.setContent(_html, {
-          waitUntil: "load",
-        });
+        await Promise.race([
+          _page.setContent(_html, { waitUntil: "load" }),
+          pageFailure,
+        ]);
       }
+
+      await Promise.race([
+        _page.evaluate(async () => {
+          const page = globalThis as unknown as {
+            __mdimgReady?: Promise<void>;
+            __mdimgError?: string;
+          };
+          if (page.__mdimgError) throw new Error(page.__mdimgError);
+          if (
+            !page.__mdimgReady ||
+            typeof page.__mdimgReady.then !== "function"
+          ) {
+            throw new Error("mdimg: missing page readiness Promise");
+          }
+          await Promise.race([
+            page.__mdimgReady,
+            new Promise<never>((_, reject) => {
+              setTimeout(
+                () =>
+                  reject(new Error("mdimg: page readiness timeout (30000ms)")),
+                30000,
+              );
+            }),
+          ]);
+        }),
+        pageFailure,
+      ]);
 
       const _body = await _page.$("#mdimg-body");
       if (!_body) {

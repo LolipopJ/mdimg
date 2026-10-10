@@ -1,5 +1,3 @@
-import { rmSync } from "node:fs";
-
 import babel from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
@@ -30,17 +28,10 @@ export default [
       file: "lib/mdimg.js",
       format: "cjs",
       exports: "auto",
+      interop: "auto",
     },
     external: externalModules,
-    plugins: [
-      {
-        name: "clean-output",
-        buildStart() {
-          rmSync("lib", { recursive: true, force: true });
-        },
-      },
-      ...pluginsArray,
-    ],
+    plugins: [...pluginsArray],
   },
   {
     input: "src/mdimg.ts",

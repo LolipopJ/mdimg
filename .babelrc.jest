@@ -1,8 +1,0 @@
-{
-  "presets": [
-    [
-      "@babel/preset-env",
-      { "modules": "commonjs", "targets": { "node": "22.12.0" } }
-    ]
-  ]
-}

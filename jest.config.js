@@ -1,7 +1,5 @@
 module.exports = {
-  testEnvironment: "node",
-  transform: {
-    "^.+\\.jsx?$": ["babel-jest", { configFile: "./.babelrc.jest" }],
-  },
-  transformIgnorePatterns: [],
+  testEnvironment: "<rootDir>/test/helpers/package-environment.js",
+  testPathIgnorePatterns: ["/consumer\\.test\\.js$"],
+  transform: {},
 };

@@ -1,12 +1,10 @@
-import fs from "fs";
-import path from "path";
-
 import type {
   IExtension,
   IExtensionContext,
   IExtensionInjectResult,
   IHighlightJsTheme,
 } from "../interfaces";
+import { inlineScript, readAsset, serializeForScript } from "../utils/assets";
 
 export const createHighlightJsExtension = (
   config: boolean | { theme?: IHighlightJsTheme; [key: string]: unknown },
@@ -21,16 +19,21 @@ export const createHighlightJsExtension = (
       config === true ? {} : config,
     );
 
-    const themeText = fs.readFileSync(
-      path.resolve(
-        `${__dirname}/../static/@highlightjs/cdn-assets@11.11.1/styles/${highlightJsOptions.theme}.min.css`,
-      ),
-    );
-    const highlightScriptText = fs.readFileSync(
-      path.resolve(
-        `${__dirname}/../static/@highlightjs/cdn-assets@11.11.1/highlight.min.min.js`,
-      ),
-    );
+    const selectedTheme = highlightJsOptions.theme;
+    if (!/^(base16\/)?[a-z0-9][a-z0-9-]*$/.test(selectedTheme)) {
+      throw new Error(`highlightJs: unknown theme ${selectedTheme}`);
+    }
+    let themeText: string;
+    try {
+      themeText = readAsset(`highlight/styles/${selectedTheme}.css`);
+    } catch (error) {
+      throw new Error(`highlightJs: unknown theme ${selectedTheme}`, {
+        cause: error,
+      });
+    }
+    const highlightScriptText = readAsset("highlight.js");
+    const options: Record<string, unknown> = { ...highlightJsOptions };
+    delete options.theme;
 
     return {
       head: `
@@ -39,11 +42,13 @@ export const createHighlightJsExtension = (
 `,
       body: `
 <!-- highlight.js -->
-<script>${highlightScriptText}</script>
-<script>
-  hljs.configure(${JSON.stringify(highlightJsOptions)});
-  hljs.highlightAll();
-</script>
+${inlineScript(highlightScriptText)}
+${inlineScript(`
+  window.__mdimgTasks.push({ name: "highlightJs", run: () => {
+    hljs.configure(${serializeForScript(options)});
+    document.querySelectorAll('pre code').forEach(code => hljs.highlightElement(code));
+  }});
+`)}
 `,
     };
   },

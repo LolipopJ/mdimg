@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports, no-undef */
 
-const { mdimg, createHtmlOutputProcessor } = require("../lib/mdimg.js");
+const { mdimg, createHtmlOutputProcessor } =
+  requirePackage(__filename)("../lib/mdimg.js");
 const { resolve } = require("path");
 const { readFileSync, existsSync } = require("fs");
 const { useWorkspace } = require("./helpers/workspace");

@@ -1,6 +1,9 @@
 import fs from "fs";
+import { createRequire } from "module";
 import path from "path";
 import scss from "rollup-plugin-scss";
+
+const requirePackage = createRequire(path.resolve(__dirname, "package.json"));
 
 const getSassTasks = () => {
   const cssPath = path.resolve(__dirname, "template/css");
@@ -21,6 +24,14 @@ const getSassTasks = () => {
       plugins: [
         scss({
           failOnError: true,
+          importer(url) {
+            if (/^(normalize\.css|github-markdown-css)\//.test(url)) {
+              return {
+                contents: fs.readFileSync(requirePackage.resolve(url), "utf8"),
+              };
+            }
+            return null;
+          },
           output: (styles) => {
             fs.writeFileSync(`${cssPath}/${templateName}.css`, styles);
           },

@@ -1,3 +1,6 @@
-node_modules/
+.serena/
 mdimg_output/
+node_modules/
+
+tsconfig.tsbuildinfo
 **/*/.*.html
