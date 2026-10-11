@@ -15,22 +15,12 @@ const { pathToFileURL } = require("node:url");
 const puppeteer = requirePackage(__filename)("puppeteer");
 const { findBrowser } = require("./helpers/browser");
 const { expectPng } = require("./helpers/offline-assertions");
+const typesConsumer = require("./helpers/public-types");
 
 const repository = resolve(__dirname, "..");
 const metadata = require("../package.json");
 const jestBin = require.resolve("jest/bin/jest");
 const nodePaths = [process.execPath, process.env.MDIMG_NODE22];
-if (process.platform === "win32") {
-  nodePaths.push(
-    join(
-      process.env.LOCALAPPDATA ?? "",
-      "Temp",
-      "mdimg-review-node-22.12.0",
-      "node-v22.12.0-win-x64",
-      "node.exe",
-    ),
-  );
-}
 const nodes = [
   ...new Set(
     nodePaths
@@ -152,15 +142,6 @@ describe("CONSUMER: isolated production installation", () => {
     expect(inside(repository, workspace)).toBe(false);
     expect(inside(consumer, packageRoot)).toBe(true);
     expect(packageRequire("./package.json").version).toBe(metadata.version);
-    expect(pack.files.map((file) => file.path)).toEqual(
-      expect.arrayContaining([
-        "lib/assets/manifest.json",
-        "lib/assets/THIRD-PARTY-NOTICES.txt",
-      ]),
-    );
-    expect(pack.files.some((file) => file.path.startsWith("static/"))).toBe(
-      false,
-    );
   });
 
   test.each(Object.keys(metadata.dependencies))(
@@ -204,21 +185,7 @@ test.each([
   ["Bundler", "ts"],
 ])("CONSUMER: public types resolve in %s / .%s", (mode, extension) => {
   const filename = `types.${extension}`;
-  writeFileSync(
-    join(consumer, filename),
-    `
-import { mdimg, convert2img, createHtmlOutputProcessor, createImageOutputProcessor, createPdfOutputProcessor } from "mdimg";
-import type { IConvertOptions, IConvertResponse, IConvertTypeOption, IConvertEncodingOption, IOutputProcessor, IOutputProcessorContext, IOutputProcessorResult, IHighlightJsTheme, IExtensionOptions, IExtensionContext, IExtensionInjectResult, IExtension, IHooks, IPlugin } from "mdimg";
-const theme: IHighlightJsTheme = "base16/dracula";
-const options: IConvertOptions = { inputText: "# types", extensions: { highlightJs: { theme } }, outputProcessor: createHtmlOutputProcessor() };
-const response: Promise<IConvertResponse> = mdimg(options);
-void [response, convert2img, createImageOutputProcessor("png", undefined, "binary"), createPdfOutputProcessor()];
-// @ts-expect-error Invalid encoding must retain its error.
-mdimg({ inputText: "# invalid", encoding: "utf8" });
-// @ts-expect-error Internal source paths are not public exports.
-import "mdimg/src/mdimg.ts";
-`,
-  );
+  writeFileSync(join(consumer, filename), typesConsumer);
   const config = join(consumer, `tsconfig.${extension}.json`);
   writeFileSync(
     config,
@@ -256,7 +223,6 @@ describe.each(nodes)("CONSUMER: Node %s", (node) => {
 (async () => {
   const result = await api.mdimg({ inputText: "# Packed consumer", outputProcessor: api.createHtmlOutputProcessor() });
   console.log(JSON.stringify({
-    alias: api.mdimg === api.convert2img,
     processors: ["createHtmlOutputProcessor", "createImageOutputProcessor", "createPdfOutputProcessor"].map(name => typeof api[name]),
     heading: result.html.includes("<h1>Packed consumer</h1>"),
     sameData: result.data === result.html,
@@ -267,7 +233,6 @@ describe.each(nodes)("CONSUMER: Node %s", (node) => {
 `,
       );
       expect(JSON.parse(run(node, [filename], { cwd: tmpdir() }))).toEqual({
-        alias: true,
         processors: ["function", "function", "function"],
         heading: true,
         sameData: true,
@@ -278,7 +243,7 @@ describe.each(nodes)("CONSUMER: Node %s", (node) => {
   );
 
   test.each([
-    ["esm", false],
+    ["esm", node !== nodes[0]],
     ["cjs", true],
   ])(
     "passes the %s offline Jest cases against the installed package",

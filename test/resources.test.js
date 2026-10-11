@@ -1,4 +1,3 @@
-const { execFileSync } = require("node:child_process");
 const { readFileSync } = require("node:fs");
 const path = require("node:path");
 const ts = require("typescript");
@@ -21,7 +20,6 @@ const themeNames = paths
 let buildAssets;
 let mathJax;
 let cssFiles;
-let packed;
 
 beforeAll(async () => {
   buildAssets = await importPackage(
@@ -31,23 +29,7 @@ beforeAll(async () => {
   cssFiles = buildAssets
     .listFiles(path.join(repository, "template", "css"))
     .filter((filename) => filename.endsWith(".css"));
-  const args = ["pack", "--dry-run", "--ignore-scripts", "--json"];
-  const windows = process.platform === "win32";
-  const [pack] = JSON.parse(
-    execFileSync(
-      windows ? process.env.ComSpec : "npm",
-      windows ? ["/d", "/s", "/c", `npm ${args.join(" ")}`] : args,
-      {
-        cwd: repository,
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "pipe"],
-        timeout: 30000,
-        windowsHide: true,
-      },
-    ),
-  );
-  packed = new Set(pack.files.map((file) => file.path));
-}, 30000);
+});
 
 describe("RESOURCES: offline asset manifest", () => {
   test("uses the supported schema and resource lists", () => {
@@ -67,7 +49,7 @@ describe("RESOURCES: offline asset manifest", () => {
   });
 
   test.each(manifest.files.map((file) => [file.path, file]))(
-    "validates path, size, hash, offline CSS and package inclusion: %s",
+    "validates path, size, hash and offline CSS: %s",
     (_name, file) => {
       expect(typeof file.path).toBe("string");
       expect(file.path).not.toContain("\\");
@@ -81,7 +63,6 @@ describe("RESOURCES: offline asset manifest", () => {
         expect(() =>
           buildAssets.assertOfflineCss(data.toString(), file.path),
         ).not.toThrow();
-      expect(packed.has(`lib/assets/${file.path}`)).toBe(true);
     },
   );
 
@@ -204,55 +185,13 @@ describe("RESOURCES: installed package inputs", () => {
   );
 });
 
-describe("RESOURCES: npm package contents", () => {
-  test("publishes the manifest and every compiled offline template", () => {
-    expect(packed.has("lib/assets/manifest.json")).toBe(true);
+describe("RESOURCES: compiled CSS templates", () => {
+  test("keeps every compiled template offline", () => {
     expect(cssFiles.length).toBeGreaterThan(0);
     for (const filename of cssFiles) {
       expect(() =>
         buildAssets.assertOfflineCss(readFileSync(filename, "utf8"), filename),
       ).not.toThrow();
-      expect(packed.has(buildAssets.resourcePath(repository, filename))).toBe(
-        true,
-      );
     }
-  });
-
-  test("publishes every public entry point", () => {
-    const metadata = require("../package.json");
-    const targets = [
-      metadata.main,
-      metadata.module,
-      metadata.types,
-      ...Object.values(metadata.bin),
-    ];
-    const collectExports = (value) => {
-      if (typeof value === "string") targets.push(value);
-      else if (value && typeof value === "object")
-        Object.values(value).forEach(collectExports);
-    };
-    collectExports(metadata.exports);
-    for (const target of targets) {
-      expect(typeof target).toBe("string");
-      const filename = target.replace(/^\.\//, "");
-      expect(packed.has(filename)).toBe(true);
-      expect(() => readFileSync(path.join(repository, filename))).not.toThrow();
-    }
-  });
-
-  test("publishes every declaration file", () => {
-    for (const filename of buildAssets
-      .listFiles(path.join(repository, "lib"))
-      .filter((filename) => /\.d\.(?:ts|mts)$/.test(filename))) {
-      expect(packed.has(buildAssets.resourcePath(repository, filename))).toBe(
-        true,
-      );
-    }
-  });
-
-  test("omits obsolete static resources", () => {
-    expect([...packed].some((filename) => filename.startsWith("static/"))).toBe(
-      false,
-    );
   });
 });

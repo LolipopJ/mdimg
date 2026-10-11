@@ -328,7 +328,7 @@ const mdimg = async (options: IConvertOptions): Promise<IConvertResponse> => {
   return _finalResult;
 };
 
-export { mdimg as convert2img, mdimg };
+export { mdimg };
 export type {
   IConvertEncodingOption,
   IConvertOptions,

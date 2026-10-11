@@ -33,6 +33,8 @@ export const normalizeOptions = (options: IConvertOptions) => {
     height = 100,
     encoding = "binary",
     quality = 100,
+    inputText,
+    inputFilename,
     htmlText,
     cssText,
     htmlTemplate = "default",
@@ -47,14 +49,13 @@ export const normalizeOptions = (options: IConvertOptions) => {
     outputProcessor,
   } = options;
 
-  for (const name of ["inputText", "mdText", "cssText"] as const) {
+  for (const name of ["inputText", "cssText"] as const) {
     if (options[name] !== undefined && typeof options[name] !== "string") {
       throw new Error(`${name} must be a string.`);
     }
   }
   for (const name of [
     "inputFilename",
-    "mdFile",
     "outputFilename",
     "htmlText",
     "htmlTemplate",
@@ -65,14 +66,7 @@ export const normalizeOptions = (options: IConvertOptions) => {
     }
   }
 
-  // New fields override their deprecated aliases, even when explicitly empty.
   // A file always takes priority; whitespace text and empty files are allowed.
-  const inputFilename =
-    options.inputFilename !== undefined
-      ? options.inputFilename
-      : options.mdFile;
-  const inputText =
-    options.inputText !== undefined ? options.inputText : options.mdText;
   if (
     inputFilename === undefined &&
     (inputText === undefined || inputText === "")

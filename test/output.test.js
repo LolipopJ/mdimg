@@ -1,4 +1,3 @@
-const { execFileSync } = require("child_process");
 const { existsSync, readFileSync, readdirSync } = require("fs");
 const { resolve } = require("path");
 const puppeteer = requirePackage(__filename)("puppeteer").default;
@@ -255,25 +254,3 @@ test.each([false, true])(
     );
   },
 );
-
-test("ESM: public exports convert Markdown to HTML", () => {
-  const script = [
-    "import { mdimg, createHtmlOutputProcessor, createPdfOutputProcessor, createImageOutputProcessor } from './lib/mdimg.mjs';",
-    "if (typeof createPdfOutputProcessor !== 'function' || typeof createImageOutputProcessor !== 'function') throw new Error('missing exports');",
-    "const result = await mdimg({ inputText: '# Hello\\n\\nThis is a **test** document.\\n\\n```js\\nconsole.log(\"hi\");\\n```', extensions: false, outputProcessor: createHtmlOutputProcessor() });",
-    "process.stdout.write(JSON.stringify(result));",
-  ].join("\n");
-  const result = JSON.parse(
-    execFileSync(process.execPath, ["--input-type=module", "--eval", script], {
-      cwd: resolve(__dirname, ".."),
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-      timeout: 10000,
-    }),
-  );
-  expect(result.data).toBe(result.html);
-  expect(result.data).toContain("<h1>Hello</h1>");
-  expect(result.data).toContain("<strong>test</strong>");
-  expect(result.data).toContain('console.log("hi");');
-  expect(result.path).toBeUndefined();
-});

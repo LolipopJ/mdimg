@@ -1,5 +1,4 @@
 const { readdirSync, writeFileSync } = require("fs");
-const { resolve } = require("path");
 const puppeteer = requirePackage(__filename)("puppeteer").default;
 const { mdimg, createHtmlOutputProcessor } =
   requirePackage(__filename)("../lib/mdimg.js");
@@ -124,52 +123,6 @@ test("OPTIONS: invalid options fail before hooks and browser launch", async () =
   } finally {
     launch.mockRestore();
   }
-});
-
-test.each([
-  [{ inputText: "", mdText: "# Legacy" }, /text or file is required/],
-  [{ inputFilename: "", mdFile: "input.md" }, /inputFilename/],
-])(
-  "OPTIONS: empty new input fields do not fall back to aliases (%j)",
-  async (input, error) => {
-    await expect(mdimg({ ...htmlOptions(), ...input })).rejects.toThrow(error);
-  },
-);
-
-test("OPTIONS: files take priority over text and new fields over aliases", async () => {
-  const result = await mdimg({
-    ...htmlOptions(),
-    inputFilename: workspace.inputFilename,
-    mdFile: resolve(workspace.dir, "missing.md"),
-    inputText: "# Ignored",
-    mdText: "# Legacy",
-  });
-  expect(result.html).toContain("<h1>Hello</h1>");
-  expect(result.html).not.toContain("Ignored");
-  expect(result.html).not.toContain("Legacy");
-
-  const textResult = await mdimg({
-    ...htmlOptions(),
-    inputText: "# Modern",
-    mdText: "# Legacy",
-  });
-  expect(textResult.html).toContain("<h1>Modern</h1>");
-  expect(textResult.html).not.toContain("Legacy");
-});
-
-test("OPTIONS: legacy aliases still provide input when new fields are omitted", async () => {
-  const textResult = await mdimg({
-    ...htmlOptions(),
-    inputText: undefined,
-    mdText: "# Legacy",
-  });
-  expect(textResult.html).toContain("<h1>Legacy</h1>");
-  const fileResult = await mdimg({
-    ...htmlOptions(),
-    inputText: "# Ignored",
-    mdFile: workspace.inputFilename,
-  });
-  expect(fileResult.html).toContain("<h1>Hello</h1>");
 });
 
 test("OPTIONS: empty text is rejected alone and ignored when a file is provided", async () => {

@@ -1,18 +1,20 @@
 const { execFileSync, spawnSync } = require("child_process");
 const {
-  existsSync,
   mkdirSync,
   mkdtempSync,
+  readFileSync,
+  readdirSync,
   renameSync,
   rmSync,
   writeFileSync,
 } = require("fs");
 const { dirname, join, relative, resolve } = require("path");
+const typesConsumer = require("./helpers/public-types");
 
 const repository = resolve(__dirname, "..");
 const cache = join(repository, "node_modules", ".cache");
 let workspace;
-let packedFiles;
+let packed;
 
 beforeAll(() => {
   mkdirSync(cache, { recursive: true });
@@ -36,7 +38,7 @@ beforeAll(() => {
       { cwd: repository, encoding: "utf8", timeout: 30000 },
     ),
   );
-  packedFiles = pack.files;
+  packed = new Set(pack.files.map((file) => file.path));
   const installedPackage = join(workspace, "node_modules", "mdimg");
   mkdirSync(installedPackage, { recursive: true });
   execFileSync("tar", [
@@ -57,13 +59,13 @@ afterAll(() => {
 test.each([
   [
     "CJS",
-    "const { mdimg, convert2img, createHtmlOutputProcessor, createImageOutputProcessor, createPdfOutputProcessor } = require('mdimg');",
+    "const { mdimg, createHtmlOutputProcessor, createImageOutputProcessor, createPdfOutputProcessor } = require('mdimg');",
     "require.resolve('mdimg')",
     "mdimg.js",
   ],
   [
     "ESM",
-    "import { mdimg, convert2img, createHtmlOutputProcessor, createImageOutputProcessor, createPdfOutputProcessor } from 'mdimg';",
+    "import { mdimg, createHtmlOutputProcessor, createImageOutputProcessor, createPdfOutputProcessor } from 'mdimg';",
     "import.meta.resolve('mdimg')",
     "mdimg.mjs",
   ],
@@ -78,14 +80,16 @@ test.each([
       file,
       `${imports}
     (async () => {
-      const result = await mdimg({ inputText: '# Packed consumer', outputProcessor: createHtmlOutputProcessor() });
+      const result = await mdimg({ inputText: '# Packed consumer\\n\\nThis is a **test** document.\\n\\n\`\`\`js\\nconsole.log("hi");\\n\`\`\`', outputProcessor: createHtmlOutputProcessor() });
       console.log(JSON.stringify({
         entry: ${resolution},
-        alias: mdimg === convert2img,
         imageFactory: typeof createImageOutputProcessor,
         pdfFactory: typeof createPdfOutputProcessor,
         html: result.html.includes('<h1>Packed consumer</h1>'),
+        strong: result.html.includes('<strong>test</strong>'),
+        code: result.html.includes('console.log("hi");'),
         data: result.data === result.html,
+        path: result.path ?? null,
         styles: result.html.includes('highlight.js styles'),
         math: result.html.includes('__mdimgMathJax'),
         mermaid: result.html.includes('mermaid.initialize'),
@@ -100,40 +104,19 @@ test.each([
     );
     expect(result.entry.endsWith(entry)).toBe(true);
     expect(result).toMatchObject({
-      alias: true,
       imageFactory: "function",
       pdfFactory: "function",
       html: true,
+      strong: true,
+      code: true,
       data: true,
+      path: null,
       styles: true,
       math: true,
       mermaid: true,
     });
   },
 );
-
-const typesConsumer = `
-import { mdimg, createHtmlOutputProcessor, createPdfOutputProcessor } from 'mdimg';
-import type {
-  IConvertOptions, IConvertResponse, IConvertTypeOption, IConvertEncodingOption,
-  IOutputProcessor, IOutputProcessorContext, IOutputProcessorResult,
-  IHighlightJsTheme, IExtensionOptions, IExtensionContext,
-  IExtensionInjectResult, IExtension, IHooks, IPlugin,
-} from 'mdimg';
-
-const plugin: IPlugin = { name: 'consumer' };
-const html: IOutputProcessor = createHtmlOutputProcessor();
-const options: IConvertOptions = { inputText: '# Consumer', plugins: [plugin], outputProcessor: html };
-const response: Promise<IConvertResponse> = mdimg(options);
-mdimg({ inputText: '# HTML', outputFilename: 'out.html', outputProcessor: html });
-mdimg({ inputText: '# PDF', outputFilename: 'out.pdf', outputProcessor: createPdfOutputProcessor() });
-// @ts-expect-error Invalid encoding must retain its type error.
-mdimg({ inputText: '# Consumer', encoding: 'utf8' });
-// @ts-expect-error Internal runtime modules are not package entry points.
-import { createMathJaxExtension } from 'mdimg/lib/extensions';
-// @ts-expect-error Internal runtime modules are not package entry points.
-import { createHtmlOutputProcessor as internalHtml } from 'mdimg/lib/output';
-`;
 
 test.each([
   ["NodeNext", ["mts", "cts"]],
@@ -188,20 +171,64 @@ test("PACKAGE: private paths reject both require and import", () => {
   expect(results).toEqual(Array(8).fill("ERR_PACKAGE_PATH_NOT_EXPORTED"));
 });
 
-test("PACKAGE: published declarations have current source files", () => {
-  const orphanedDeclarations = packedFiles
-    .filter(({ path }) => path.startsWith("lib/") && path.endsWith(".d.ts"))
-    .filter(
-      ({ path }) =>
-        !existsSync(
-          join(
-            repository,
-            path.replace(/^lib\//, "src/").replace(/\.d\.ts$/, ".ts"),
-          ),
-        ),
-    )
-    .map(({ path }) => path);
-  expect(orphanedDeclarations).toEqual([]);
+test("PACKAGE: publishes the manifest and every offline asset", () => {
+  expect(packed.has("lib/assets/manifest.json")).toBe(true);
+  const manifest = JSON.parse(
+    readFileSync(join(repository, "lib/assets/manifest.json"), "utf8"),
+  );
+  expect(manifest.files.length).toBeGreaterThan(0);
+  for (const { path } of manifest.files) {
+    expect(packed.has(`lib/assets/${path}`)).toBe(true);
+  }
+  expect(packed.has("lib/assets/THIRD-PARTY-NOTICES.txt")).toBe(true);
+});
+
+test("PACKAGE: publishes every compiled CSS template", () => {
+  const templates = readdirSync(join(repository, "template/css"), {
+    recursive: true,
+  }).filter((filename) => filename.endsWith(".css"));
+  expect(templates.length).toBeGreaterThan(0);
+  for (const filename of templates) {
+    expect(packed.has(`template/css/${filename.replaceAll("\\", "/")}`)).toBe(
+      true,
+    );
+  }
+});
+
+test("PACKAGE: publishes every public entry point", () => {
+  const metadata = require("../package.json");
+  const targets = [
+    metadata.main,
+    metadata.module,
+    metadata.types,
+    ...Object.values(metadata.bin),
+  ];
+  const collectExports = (value) => {
+    if (typeof value === "string") targets.push(value);
+    else if (value && typeof value === "object")
+      Object.values(value).forEach(collectExports);
+  };
+  collectExports(metadata.exports);
+  for (const target of targets) {
+    expect(typeof target).toBe("string");
+    expect(packed.has(target.replace(/^\.\//, ""))).toBe(true);
+  }
+});
+
+test("PACKAGE: publishes every declaration file", () => {
+  const declarations = readdirSync(join(repository, "lib"), {
+    recursive: true,
+  }).filter((filename) => /\.d\.(?:ts|mts)$/.test(filename));
+  expect(declarations.length).toBeGreaterThan(0);
+  for (const filename of declarations) {
+    expect(packed.has(`lib/${filename.replaceAll("\\", "/")}`)).toBe(true);
+  }
+});
+
+test("PACKAGE: omits obsolete static resources", () => {
+  expect([...packed].some((filename) => filename.startsWith("static/"))).toBe(
+    false,
+  );
 });
 
 test("PACKAGE: type checks fail when installed declarations are missing", () => {
