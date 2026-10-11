@@ -1,0 +1,250 @@
+@use "./partials/article";
+
+// Tesla: Universal Sans, quiet monochrome, precise geometry and gallery spacing.
+#mdimg-body {
+  --article-background: #ffffff;
+  --article-text: #393c41;
+  --article-accent: #3e6ae1;
+  --article-surface: #f4f4f4;
+  --article-border: #eeeeee;
+  --article-muted: #5c5e62;
+  --article-code-background: #f4f4f4;
+  --article-code-text: #171a20;
+
+  font-family: "Universal Sans Text", -apple-system, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.43;
+  letter-spacing: normal;
+
+  > .markdown-body {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 72px 64px;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #171a20;
+      font-family: inherit;
+      font-weight: 500;
+      letter-spacing: normal;
+      text-transform: none;
+
+      strong,
+      b {
+        color: inherit;
+        font-weight: inherit;
+      }
+    }
+
+    h1 {
+      margin-bottom: 48px;
+      font-family: "Universal Sans Display", -apple-system, Arial, sans-serif;
+      font-size: 40px;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    h2 {
+      margin: 56px 0 16px;
+      font-size: 28px;
+      line-height: 1.25;
+    }
+
+    h3 {
+      margin: 40px 0 16px;
+      font-size: 22px;
+      line-height: 1.4;
+    }
+
+    h4,
+    h5,
+    h6 {
+      margin: 32px 0 12px;
+      line-height: 1.4;
+    }
+
+    h4 {
+      font-size: 17px;
+    }
+
+    h5 {
+      font-size: 16px;
+    }
+
+    h6 {
+      font-size: 14px;
+    }
+
+    p {
+      margin-bottom: 24px;
+    }
+
+    strong,
+    b {
+      color: #171a20;
+      font-weight: 500;
+    }
+
+    a {
+      color: var(--article-muted);
+      font-weight: 400;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+      transition: color 0.33s cubic-bezier(0.5, 0, 0, 0.75);
+
+      &:hover,
+      &:active {
+        color: #171a20;
+      }
+
+      &:focus-visible {
+        border-radius: 4px;
+        outline: 2px solid var(--article-accent);
+        outline-offset: 4px;
+      }
+    }
+
+    ul,
+    ol {
+      margin-bottom: 24px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin: 8px 0;
+
+      &::marker {
+        color: var(--article-text);
+      }
+    }
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+      accent-color: var(--article-accent);
+    }
+
+    blockquote {
+      margin: 32px 0;
+      padding: 24px;
+      border: 0;
+      color: var(--article-muted);
+    }
+
+    code,
+    kbd {
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.875em;
+      font-weight: 400;
+    }
+
+    kbd {
+      border: 1px solid #d0d1d2;
+      background: var(--article-background);
+    }
+
+    pre {
+      margin: 32px 0;
+      padding: 24px;
+      border: 0;
+      border-radius: 4px;
+
+      code {
+        font-size: 14px;
+        line-height: 1.6;
+      }
+    }
+
+    table {
+      margin: 32px 0;
+      font-size: 14px;
+      line-height: 1.43;
+    }
+
+    th,
+    td {
+      padding: 16px;
+    }
+
+    th {
+      background: transparent;
+      color: #171a20;
+      font-weight: 500;
+
+      strong,
+      b {
+        color: inherit;
+        font-weight: inherit;
+      }
+    }
+
+    hr {
+      margin: 48px 0;
+    }
+
+    img,
+    video {
+      display: block;
+      margin: 32px auto;
+      border-radius: 0;
+    }
+
+    figure {
+      margin: 48px 0;
+
+      img,
+      video {
+        margin: 0 auto;
+      }
+    }
+
+    figcaption {
+      margin-top: 16px;
+      font-size: 14px;
+      line-height: 1.43;
+      text-align: center;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  #mdimg-body > .markdown-body {
+    padding: 40px 24px;
+
+    h1 {
+      margin-bottom: 32px;
+      font-size: 28px;
+    }
+
+    h2 {
+      margin-top: 40px;
+      font-size: 24px;
+    }
+
+    h3 {
+      font-size: 20px;
+    }
+
+    blockquote,
+    pre {
+      padding: 16px;
+    }
+
+    th,
+    td {
+      padding: 12px 8px;
+      font-size: 14px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mdimg-body > .markdown-body a {
+    transition: none;
+  }
+}

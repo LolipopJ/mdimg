@@ -1,0 +1,346 @@
+@use "./partials/article";
+
+// NVIDIA: black hero, white editorial canvas, precise green corner squares.
+#mdimg-body {
+  --article-background: #ffffff;
+  --article-text: #1a1a1a;
+  --article-accent: #76b900;
+  --article-surface: #f7f7f7;
+  --article-border: #cccccc;
+  --article-muted: #757575;
+  --article-code-background: #f7f7f7;
+  --article-code-text: #1a1a1a;
+
+  font-family: "NVIDIA-EMEA", Arial, Helvetica, "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+
+  > .markdown-body {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 64px 48px;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #000000;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      margin: 64px 0 32px;
+      font-size: 48px;
+    }
+
+    > h1:first-child {
+      position: relative;
+      margin: -64px -48px 64px;
+      padding: 80px 128px 80px 48px;
+      background: #000000;
+      color: #ffffff;
+
+      &::after {
+        position: absolute;
+        right: 24px;
+        bottom: 24px;
+        width: 16px;
+        height: 16px;
+        background: var(--article-accent);
+        content: "";
+      }
+
+      a,
+      strong,
+      code {
+        color: inherit;
+      }
+
+      code {
+        background: #1a1a1a;
+      }
+    }
+
+    h2 {
+      margin: 64px 0 24px;
+      font-size: 36px;
+    }
+
+    h3 {
+      margin: 32px 0 16px;
+      font-size: 24px;
+    }
+
+    h4,
+    h5,
+    h6 {
+      margin: 24px 0 12px;
+    }
+
+    h4 {
+      font-size: 20px;
+    }
+
+    h5 {
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    h6 {
+      font-size: 17px;
+      line-height: 1.47;
+    }
+
+    p {
+      margin-bottom: 24px;
+    }
+
+    strong {
+      color: inherit;
+      font-weight: 700;
+    }
+
+    em,
+    i,
+    cite,
+    dfn {
+      font-style: normal;
+    }
+
+    a {
+      color: inherit;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+
+      &:focus-visible {
+        border-radius: 2px;
+        outline: 2px solid var(--article-accent);
+        outline-offset: 4px;
+      }
+    }
+
+    p a {
+      color: #0046a4;
+      font-size: 15px;
+      font-weight: 400;
+    }
+
+    ul,
+    ol {
+      margin-bottom: 24px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin: 8px 0;
+
+      &::marker {
+        color: var(--article-text);
+      }
+    }
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+      border-radius: 2px;
+      accent-color: var(--article-accent);
+    }
+
+    blockquote,
+    pre,
+    figure,
+    p:has(> img:only-child) {
+      position: relative;
+      margin: 32px 0;
+      border: 1px solid var(--article-border);
+      border-radius: 2px;
+
+      &::after {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 12px;
+        height: 12px;
+        background: var(--article-accent);
+        content: "";
+      }
+    }
+
+    blockquote {
+      padding: 32px;
+      background: var(--article-background);
+    }
+
+    code,
+    kbd,
+    pre {
+      font-family: inherit;
+      font-style: normal;
+      font-weight: 400;
+    }
+
+    code,
+    kbd {
+      padding: 2px 4px;
+      border-radius: 2px;
+      font-size: 0.9375em;
+    }
+
+    kbd {
+      border: 1px solid var(--article-border);
+      background: var(--article-background);
+    }
+
+    pre {
+      padding: 32px;
+
+      code {
+        font-size: 15px;
+        line-height: 1.67;
+
+        span {
+          background: transparent;
+          font-family: inherit;
+          font-style: normal;
+          font-weight: 400;
+        }
+      }
+    }
+
+    table {
+      margin: 32px 0;
+      border: 1px solid var(--article-border);
+      border-spacing: 0;
+      border-collapse: separate;
+      border-radius: 2px;
+      overflow: hidden;
+      font-size: 15px;
+      line-height: 1.67;
+    }
+
+    th,
+    td {
+      padding: 16px 24px;
+    }
+
+    th {
+      color: #000000;
+      font-weight: 700;
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--article-surface);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    hr {
+      margin: 64px 0;
+      border-color: var(--article-border);
+    }
+
+    img,
+    video {
+      border-radius: 2px;
+    }
+
+    figure,
+    p:has(> img:only-child) {
+      padding: 24px;
+
+      img {
+        display: block;
+      }
+    }
+
+    figcaption,
+    caption,
+    small {
+      color: var(--article-muted);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.25;
+    }
+
+    figcaption {
+      margin-top: 12px;
+    }
+
+    caption {
+      padding-bottom: 12px;
+      text-align: left;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  #mdimg-body > .markdown-body {
+    padding: 48px 32px;
+
+    h1 {
+      font-size: 36px;
+    }
+
+    > h1:first-child {
+      margin: -48px -32px 48px;
+      padding: 64px 96px 64px 32px;
+    }
+
+    h2 {
+      margin-top: 48px;
+      font-size: 28px;
+    }
+
+    hr {
+      margin: 48px 0;
+    }
+  }
+}
+
+@media (max-width: 520px) {
+  #mdimg-body > .markdown-body {
+    padding: 32px 24px;
+
+    h1 {
+      font-size: 32px;
+    }
+
+    > h1:first-child {
+      margin: -32px -24px 32px;
+      padding: 48px 64px 48px 24px;
+
+      &::after {
+        right: 16px;
+        bottom: 16px;
+      }
+    }
+
+    h2 {
+      margin-top: 32px;
+      font-size: 24px;
+    }
+
+    blockquote,
+    pre,
+    figure,
+    p:has(> img:only-child) {
+      padding: 24px;
+    }
+
+    th,
+    td {
+      padding: 12px 8px;
+      font-size: 15px;
+    }
+
+    hr {
+      margin: 32px 0;
+    }
+  }
+}

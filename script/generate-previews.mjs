@@ -26,24 +26,30 @@ const defaultOptions = {
   },
 };
 const styleOptions = {
+  claude: { theme: "dark" },
   default: { width: 800 },
   empty: { width: 800 },
   githubDark: { theme: "dark" },
   midnight: { theme: "dark" },
+  playstation: { theme: "dark" },
+  spacex: { theme: "dark" },
+  vercel: { theme: "dark" },
   words: {
     inputFilename: resolve(
       import.meta.dirname,
-      "../test/static/testTemplateWords.md",
+      "../test/static/test-template-words.md",
     ),
     htmlTemplate: "words",
     width: 1200,
   },
+  ["x.ai"]: { theme: "dark" },
 };
 
 export async function generatePreviews({
   styles = [],
   outputDir = resolve(import.meta.dirname, "../docs", process.platform),
   concurrency = 3,
+  debug = false,
   options = {},
 } = {}) {
   if (!Number.isSafeInteger(concurrency) || concurrency < 1) {
@@ -78,6 +84,7 @@ export async function generatePreviews({
         const renderOptions = {
           ...defaultOptions,
           ...styleOptions[name],
+          debug,
           ...options,
         };
         if (
@@ -120,6 +127,7 @@ async function main() {
       Number,
       3,
     )
+    .option("--debug", "Whether to keep temporary HTML file after rendering")
     .option(
       "--options <json>",
       "Override mdimg rendering options with a JSON object",
@@ -140,11 +148,12 @@ async function main() {
     )
     .exitOverride();
   program.parse();
-  const { output, concurrency, options } = program.opts();
+  const { output, concurrency, debug, options } = program.opts();
   await generatePreviews({
     styles: program.args,
     outputDir: output,
     concurrency,
+    debug,
     options,
   });
 }

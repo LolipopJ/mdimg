@@ -1,0 +1,253 @@
+@use "./partials/article";
+
+// Nike: a campaign title above quiet catalog type and flat photographic surfaces.
+#mdimg-body {
+  --article-background: #ffffff;
+  --article-text: #111111;
+  --article-accent: #111111;
+  --article-surface: #f5f5f5;
+  --article-border: #cacacb;
+  --article-muted: #707072;
+  --article-code-background: #f5f5f5;
+  --article-code-text: #111111;
+
+  font-family:
+    "Helvetica Now Text", Inter, Helvetica, Arial, "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+
+  .markdown-body {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px;
+    color: #39393b;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family:
+        "Helvetica Now Display Medium", Inter, Helvetica, Arial,
+        "Microsoft YaHei", sans-serif;
+      font-weight: 500;
+      letter-spacing: 0;
+
+      strong {
+        font-family: inherit;
+        font-weight: inherit;
+      }
+    }
+
+    // Scale the 96px campaign tier for an article; retain its uppercase, 0.9 rhythm.
+    h1 {
+      margin: 0 0 48px;
+      font-family:
+        "Nike Futura ND", "Bebas Neue", Anton, "Helvetica Now Text Medium",
+        Helvetica, Arial, "Microsoft YaHei", sans-serif;
+      font-size: 64px;
+      line-height: 0.9;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 48px 0 18px;
+      font-size: 32px;
+      line-height: 1.2;
+    }
+
+    h3 {
+      margin: 30px 0 12px;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    h4 {
+      margin: 24px 0 8px;
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    h5,
+    h6 {
+      margin: 18px 0 8px;
+      line-height: 1.5;
+    }
+
+    h5 {
+      font-size: 14px;
+    }
+
+    h6 {
+      font-size: 12px;
+    }
+
+    p {
+      margin-bottom: 24px;
+    }
+
+    strong {
+      font-family:
+        "Helvetica Now Text Medium", Inter, Helvetica, Arial,
+        "Microsoft YaHei", sans-serif;
+      font-weight: 500;
+    }
+
+    a {
+      font-weight: 500;
+      line-height: 1.75;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+    }
+
+    del {
+      color: var(--article-muted);
+    }
+
+    blockquote {
+      margin: 24px 0;
+      padding: 24px;
+      border: 0;
+      border-radius: 0;
+      color: var(--article-text);
+    }
+
+    ul,
+    ol {
+      padding-left: 24px;
+    }
+
+    li {
+      margin: 8px 0;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+    }
+
+    code,
+    kbd {
+      padding: 2px 4px;
+      border-radius: 0;
+      font-size: 0.875em;
+    }
+
+    kbd {
+      border: 1px solid var(--article-border);
+    }
+
+    pre {
+      margin: 24px 0;
+      padding: 24px;
+      border: 0;
+      border-radius: 0;
+
+      code {
+        font-size: 14px;
+        line-height: 1.5;
+      }
+    }
+
+    table {
+      margin: 24px 0;
+      line-height: 1.5;
+    }
+
+    th,
+    td {
+      padding: 12px;
+    }
+
+    th {
+      font-weight: 500;
+    }
+
+    hr {
+      margin: 48px 0;
+    }
+
+    img,
+    video {
+      border-radius: 0;
+      background: var(--article-surface);
+    }
+
+    figure {
+      margin: 48px 0;
+
+      img,
+      video {
+        display: block;
+      }
+    }
+
+    figcaption,
+    small {
+      font-family:
+        "Helvetica Now Text Medium", Inter, Helvetica, Arial,
+        "Microsoft YaHei", sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    figcaption {
+      margin-top: 8px;
+      text-align: left;
+    }
+  }
+}
+
+@media (max-width: 1023px) {
+  #mdimg-body .markdown-body {
+    padding: 32px;
+
+    h1 {
+      margin-bottom: 32px;
+    }
+
+    h2 {
+      margin-top: 32px;
+    }
+
+    figure,
+    hr {
+      margin: 32px 0;
+    }
+  }
+}
+
+@media (max-width: 599px) {
+  #mdimg-body .markdown-body {
+    padding: 24px;
+
+    h1 {
+      margin-bottom: 24px;
+      font-size: 48px;
+    }
+
+    h2 {
+      margin-top: 24px;
+      font-size: 32px;
+    }
+
+    blockquote,
+    pre {
+      padding: 16px;
+    }
+
+    th,
+    td {
+      padding: 12px 8px;
+      font-size: 14px;
+    }
+
+    figure,
+    hr {
+      margin: 24px 0;
+    }
+  }
+}

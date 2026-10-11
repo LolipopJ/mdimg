@@ -1,0 +1,401 @@
+@use "./partials/article";
+
+// Vercel: ink, engineered spacing, technical mono and a hero-scale mesh.
+#mdimg-body {
+  --article-background: #ffffff;
+  --article-text: #171717;
+  --article-accent: #0070f3;
+  --article-surface: #ffffff;
+  --article-border: #ebebeb;
+  --article-muted: #888888;
+  --article-code-background: #f5f5f5;
+  --article-code-text: #171717;
+
+  position: relative;
+  isolation: isolate;
+  font-family:
+    Geist,
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Microsoft YaHei",
+    sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+
+  ::selection {
+    background: #171717;
+    color: #f2f2f2;
+  }
+
+  // A broad opening atmosphere, never a heading underline or small badge.
+  &:has(> .markdown-body > h1:first-child)::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0 0 auto;
+    height: 320px;
+    max-height: 100%;
+    background:
+      radial-gradient(
+        ellipse at 12% 0%,
+        #007cf0 0%,
+        #00dfd8 24%,
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse at 50% 0%,
+        #7928ca 0%,
+        #ff0080 24%,
+        transparent 62%
+      ),
+      radial-gradient(
+        ellipse at 88% 0%,
+        #ff4d4d 0%,
+        #f9cb28 24%,
+        transparent 60%
+      );
+    background-repeat: no-repeat;
+    opacity: 0.14;
+    pointer-events: none;
+    content: "";
+  }
+
+  > .markdown-body {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 64px 48px;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--article-text);
+      font-weight: 600;
+      text-transform: none;
+
+      strong,
+      b {
+        color: inherit;
+        font-weight: inherit;
+      }
+
+      a {
+        color: inherit;
+        text-decoration-color: currentColor;
+      }
+    }
+
+    h1 {
+      margin: 0 0 24px;
+      font-size: 48px;
+      line-height: 1;
+      letter-spacing: -2.4px;
+    }
+
+    h2 {
+      margin: 64px 0 16px;
+      font-size: 32px;
+      line-height: 1.25;
+      letter-spacing: -1.28px;
+    }
+
+    h3 {
+      margin: 40px 0 12px;
+      font-size: 24px;
+      line-height: 1.333333;
+      letter-spacing: -0.96px;
+    }
+
+    h4 {
+      margin: 32px 0 8px;
+      font-size: 20px;
+      line-height: 1.4;
+      letter-spacing: -0.6px;
+    }
+
+    h5 {
+      margin: 24px 0 8px;
+      font-size: 18px;
+      line-height: 1.555556;
+      letter-spacing: -0.54px;
+    }
+
+    h6 {
+      margin: 24px 0 8px;
+      font-size: 16px;
+      line-height: 1.5;
+      letter-spacing: -0.48px;
+    }
+
+    p {
+      margin-bottom: 24px;
+    }
+
+    > h1:first-child + p {
+      margin-bottom: 32px;
+      color: #4d4d4d;
+      font-size: 18px;
+      line-height: 1.555556;
+    }
+
+    strong,
+    b {
+      color: var(--article-text);
+      font-weight: 500;
+    }
+
+    a {
+      color: var(--article-accent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+
+      &:visited,
+      &:hover,
+      &:active {
+        color: #0761d1;
+      }
+
+      &:focus-visible {
+        border-radius: 4px;
+        outline: 2px solid var(--article-accent);
+        outline-offset: 4px;
+      }
+    }
+
+    ul,
+    ol {
+      margin-bottom: 24px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin: 8px 0;
+
+      &::marker {
+        color: var(--article-text);
+      }
+    }
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      accent-color: var(--article-text);
+      vertical-align: middle;
+    }
+
+    blockquote {
+      margin: 32px 0;
+      padding: 24px;
+      border: 0;
+      border-radius: 8px;
+      background: #fafafa;
+      color: var(--article-text);
+      box-shadow:
+        inset 0 0 0 1px #00000014,
+        0 2px 2px #0000000a,
+        0 8px 8px -8px #0000000a;
+    }
+
+    code,
+    kbd,
+    th,
+    caption,
+    figcaption {
+      font-family:
+        "Geist Mono",
+        "JetBrains Mono",
+        "IBM Plex Mono",
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+
+    code,
+    kbd {
+      padding: 0 4px;
+      border-radius: 4px;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    kbd {
+      background: var(--article-surface);
+      font-size: 12px;
+      box-shadow:
+        inset 0 0 0 1px #00000014,
+        0 1px 1px #00000005,
+        0 2px 2px #0000000a;
+    }
+
+    // The article's dark band is the native code-editor surface.
+    pre {
+      --article-code-background: #171717;
+      --article-code-text: #ffffff;
+
+      margin: 32px 0;
+      padding: 24px;
+      border: 0;
+      border-radius: 8px;
+      box-shadow:
+        inset 0 0 0 1px #ffffff14,
+        0 1px 1px #00000005,
+        0 2px 2px #0000000a;
+
+      code {
+        font-size: 13px;
+        line-height: 20px;
+      }
+    }
+
+    table {
+      margin: 32px 0;
+      border-spacing: 0;
+      border-collapse: separate;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--article-surface);
+      font-size: 14px;
+      line-height: 20px;
+      box-shadow:
+        inset 0 0 0 1px #00000014,
+        0 1px 1px #00000005,
+        0 2px 2px #0000000a;
+    }
+
+    th,
+    td {
+      padding: 12px 16px;
+    }
+
+    th {
+      background: #fafafa;
+      font-size: 12px;
+      line-height: 16px;
+
+      strong,
+      b {
+        color: inherit;
+        font-weight: inherit;
+      }
+
+      a {
+        color: var(--article-accent);
+      }
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    caption,
+    figcaption,
+    small {
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    caption {
+      margin-bottom: 12px;
+      color: #4d4d4d;
+      text-align: left;
+    }
+
+    hr {
+      margin: 48px 0;
+      border-color: var(--article-border);
+    }
+
+    img,
+    video {
+      border-radius: 8px;
+      box-shadow:
+        inset 0 0 0 1px #00000014,
+        0 1px 1px #00000005,
+        0 2px 2px #0000000a;
+    }
+
+    figure {
+      margin: 32px 0;
+      padding: 16px;
+      border-radius: 8px;
+      background: #fafafa;
+      box-shadow: inset 0 0 0 1px #00000014;
+
+      img,
+      video {
+        box-shadow: none;
+      }
+    }
+
+    figcaption {
+      margin-top: 12px;
+      color: #4d4d4d;
+    }
+  }
+}
+
+@media (max-width: 599px) {
+  #mdimg-body > .markdown-body {
+    padding: 40px 16px;
+
+    h1 {
+      font-size: 32px;
+      line-height: 1.25;
+      letter-spacing: -1.28px;
+    }
+
+    h2 {
+      margin-top: 40px;
+      font-size: 24px;
+      line-height: 1.333333;
+      letter-spacing: -0.96px;
+    }
+
+    h3 {
+      margin-top: 32px;
+      font-size: 20px;
+      line-height: 1.4;
+      letter-spacing: -0.6px;
+    }
+
+    h4 {
+      font-size: 18px;
+      line-height: 1.555556;
+      letter-spacing: -0.54px;
+    }
+
+    h5,
+    h6 {
+      font-size: 16px;
+      line-height: 1.5;
+      letter-spacing: -0.48px;
+    }
+
+    blockquote,
+    pre {
+      padding: 16px;
+    }
+
+    th,
+    td {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+
+    th {
+      font-size: 12px;
+    }
+  }
+}

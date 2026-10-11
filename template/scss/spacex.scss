@@ -1,0 +1,259 @@
+@use "./partials/article";
+
+// SpaceX: pure black, industrial uppercase type and photographic depth.
+#mdimg-body {
+  --article-background: #000000;
+  --article-text: #ffffff;
+  --article-accent: #ffffff;
+  --article-surface: #0a0a0a;
+  --article-border: #3a3a3f;
+  --article-muted: #f0f0fa;
+  --article-code-background: #0a0a0a;
+  --article-code-text: #ffffff;
+
+  color-scheme: dark;
+  font-family: "D-DIN", Arial, Verdana, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.32px;
+
+  .markdown-body {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 48px;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--article-text);
+      font-family: "D-DIN-Bold", "Arial Narrow", Arial, Verdana, sans-serif;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: 0.96px;
+      text-transform: uppercase;
+
+      strong {
+        color: inherit;
+        font-weight: inherit;
+      }
+    }
+
+    h1 {
+      margin-bottom: 48px;
+      font-size: 60px;
+      line-height: 0.95;
+      letter-spacing: 1.2px;
+    }
+
+    h2 {
+      margin: 64px 0 24px;
+      font-size: 40px;
+      line-height: 1.2;
+    }
+
+    h3 {
+      margin: 48px 0 24px;
+      font-size: 32px;
+    }
+
+    h4 {
+      margin: 32px 0 16px;
+      font-size: 24px;
+    }
+
+    h5 {
+      margin: 32px 0 16px;
+      font-size: 18px;
+    }
+
+    h6 {
+      margin: 24px 0 12px;
+      font-size: 14px;
+    }
+
+    p {
+      margin-bottom: 24px;
+    }
+
+    strong {
+      color: var(--article-text);
+      font-weight: 700;
+    }
+
+    a {
+      color: var(--article-text);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+
+      &:focus-visible {
+        outline: 1px solid var(--article-text);
+        outline-offset: 4px;
+      }
+    }
+
+    ul,
+    ol {
+      margin-bottom: 32px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin: 8px 0;
+    }
+
+    input[type="checkbox"] {
+      accent-color: var(--article-text);
+    }
+
+    blockquote {
+      margin: 32px 0;
+      padding: 24px;
+      border: 1px solid var(--article-border);
+      color: var(--article-muted);
+      line-height: 1.7;
+    }
+
+    code,
+    kbd {
+      padding: 2px 6px;
+      border: 1px solid var(--article-border);
+      border-radius: 0;
+      font-family: inherit;
+      font-size: 0.875em;
+    }
+
+    kbd {
+      font-weight: 700;
+      letter-spacing: 0.96px;
+      text-transform: uppercase;
+    }
+
+    pre {
+      margin: 32px 0;
+      padding: 24px;
+      border-radius: 0;
+      font-family: inherit;
+
+      code {
+        font-size: 14px;
+        line-height: 1.7;
+
+        span {
+          background: transparent;
+        }
+      }
+    }
+
+    table {
+      margin: 32px 0;
+      border-top: 1px solid var(--article-border);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    th,
+    td {
+      padding: 16px 12px;
+    }
+
+    th {
+      font-weight: 700;
+      letter-spacing: 0.96px;
+      text-transform: uppercase;
+    }
+
+    hr {
+      margin: 48px 0;
+    }
+
+    img,
+    video {
+      display: block;
+      width: 100%;
+      border-radius: 0;
+    }
+
+    figure {
+      margin: 48px -48px;
+    }
+
+    figcaption {
+      margin: 12px 48px 0;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  #mdimg-body .markdown-body {
+    padding: 48px 32px;
+
+    h1 {
+      font-size: 48px;
+      letter-spacing: 0.96px;
+    }
+
+    h2 {
+      margin-top: 48px;
+      font-size: 36px;
+    }
+
+    h3 {
+      margin-top: 32px;
+      font-size: 28px;
+    }
+
+    figure {
+      margin-right: -32px;
+      margin-left: -32px;
+    }
+
+    figcaption {
+      margin-right: 32px;
+      margin-left: 32px;
+    }
+  }
+}
+
+@media (max-width: 599px) {
+  #mdimg-body .markdown-body {
+    padding: 32px 24px;
+
+    h1 {
+      margin-bottom: 32px;
+      font-size: 40px;
+    }
+
+    h2 {
+      font-size: 32px;
+    }
+
+    blockquote,
+    pre {
+      padding: 16px;
+    }
+
+    th,
+    td {
+      padding: 12px 8px;
+      font-size: 14px;
+    }
+
+    figure {
+      margin-right: -24px;
+      margin-left: -24px;
+    }
+
+    figcaption {
+      margin-right: 24px;
+      margin-left: 24px;
+    }
+  }
+}

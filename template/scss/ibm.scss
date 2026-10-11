@@ -1,0 +1,320 @@
+@use "./partials/article";
+
+// Carbon: light Plex display type, square tiles and a restrained IBM Blue.
+#mdimg-body {
+  --article-background: #ffffff;
+  --article-text: #161616;
+  --article-accent: #0f62fe;
+  --article-surface: #f4f4f4;
+  --article-border: #e0e0e0;
+  --article-muted: #525252;
+  --article-code-background: #f4f4f4;
+  --article-code-text: #161616;
+
+  font-family:
+    "IBM Plex Sans",
+    "Helvetica Neue",
+    Arial,
+    "Microsoft YaHei",
+    sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.16px;
+
+  .markdown-body {
+    max-width: 1056px;
+    margin: 0 auto;
+    padding: 48px 32px;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--article-text);
+      font-weight: 400;
+      letter-spacing: 0;
+
+      strong {
+        color: inherit;
+        font-weight: inherit;
+      }
+    }
+
+    h1 {
+      margin: 0 0 24px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--article-border);
+      font-size: 60px;
+      font-weight: 300;
+      line-height: 1.17;
+      letter-spacing: -0.4px;
+    }
+
+    h2 {
+      margin: 32px 0 16px;
+      padding-top: 24px;
+      border-top: 1px solid var(--article-border);
+      font-size: 32px;
+      line-height: 1.25;
+    }
+
+    h3 {
+      margin: 24px 0 16px;
+      font-size: 24px;
+      line-height: 1.33;
+    }
+
+    h4 {
+      margin: 24px 0 12px;
+      font-size: 20px;
+      line-height: 1.4;
+    }
+
+    h5 {
+      margin: 16px 0 8px;
+      font-size: 16px;
+      line-height: 1.5;
+      letter-spacing: 0.16px;
+    }
+
+    h6 {
+      margin: 16px 0 8px;
+      color: var(--article-muted);
+      font-size: 14px;
+      line-height: 1.29;
+      letter-spacing: 0.16px;
+    }
+
+    p {
+      margin-bottom: 16px;
+    }
+
+    > h1 + p {
+      margin-bottom: 32px;
+      font-size: 18px;
+      line-height: 1.5;
+      letter-spacing: 0;
+    }
+
+    strong {
+      color: var(--article-text);
+      font-weight: 600;
+    }
+
+    a {
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+
+      &:hover {
+        color: #0043ce;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--article-accent);
+        outline-offset: 2px;
+        text-decoration-color: var(--article-text);
+      }
+    }
+
+    blockquote,
+    pre,
+    table,
+    code,
+    kbd,
+    img,
+    video {
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    blockquote {
+      margin: 24px 0;
+      padding: 24px;
+      border: 1px solid var(--article-border);
+      background: var(--article-surface);
+      color: var(--article-text);
+    }
+
+    ul,
+    ol {
+      margin-bottom: 24px;
+      padding-left: 24px;
+
+      ul,
+      ol {
+        margin: 8px 0;
+      }
+    }
+
+    li {
+      margin: 4px 0;
+
+      &::marker {
+        color: var(--article-text);
+      }
+    }
+
+    input[type="checkbox"] {
+      display: inline-grid;
+      width: 16px;
+      height: 16px;
+      margin: 0 8px 0 -24px;
+      border: 1px solid var(--article-text);
+      border-radius: 0;
+      appearance: none;
+      place-content: center;
+      background: var(--article-background);
+      vertical-align: -2px;
+
+      &:checked {
+        background: var(--article-text);
+
+        &::before {
+          width: 8px;
+          height: 4px;
+          border-bottom: 2px solid var(--article-background);
+          border-left: 2px solid var(--article-background);
+          content: "";
+          transform: rotate(-45deg);
+        }
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--article-accent);
+        outline-offset: 2px;
+      }
+    }
+
+    // The marketing source uses Plex Sans throughout, including small text.
+    code,
+    kbd {
+      padding: 4px 8px;
+      font-family: inherit;
+      font-size: 0.875em;
+      font-weight: 400;
+      line-height: 1.29;
+      letter-spacing: 0.16px;
+    }
+
+    kbd {
+      border: 1px solid var(--article-border);
+      background: var(--article-background);
+    }
+
+    pre {
+      margin: 24px 0;
+      padding: 24px;
+      border: 1px solid var(--article-border);
+      font-family: inherit;
+
+      code {
+        padding: 0;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+    }
+
+    table {
+      margin: 24px 0;
+      border: 1px solid var(--article-border);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.29;
+      letter-spacing: 0.16px;
+    }
+
+    th,
+    td {
+      padding: 16px;
+    }
+
+    th {
+      background: #e0e0e0;
+      font-weight: 600;
+
+      a {
+        color: var(--article-accent);
+
+        &:hover {
+          color: #0043ce;
+        }
+      }
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--article-surface);
+    }
+
+    hr {
+      margin: 32px 0;
+      border-color: var(--article-border);
+    }
+
+    img,
+    video {
+      border: 1px solid var(--article-border);
+    }
+
+    figure {
+      margin: 32px 0;
+    }
+
+    figcaption,
+    small {
+      color: #8c8c8c;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.33;
+      letter-spacing: 0.32px;
+    }
+
+    figcaption {
+      margin-top: 12px;
+      text-align: left;
+    }
+  }
+}
+
+@media (max-width: 672px) {
+  #mdimg-body .markdown-body {
+    padding: 32px 16px;
+
+    h1 {
+      padding-bottom: 24px;
+      font-size: 42px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      padding-top: 16px;
+      font-size: 32px;
+    }
+
+    blockquote,
+    pre {
+      padding: 16px;
+    }
+
+    th,
+    td {
+      padding: 12px 8px;
+      font-size: 14px;
+    }
+  }
+}
+
+@media (max-width: 520px) {
+  #mdimg-body .markdown-body {
+    h1 {
+      font-size: 32px;
+    }
+
+    h2 {
+      font-size: 24px;
+    }
+  }
+}

@@ -1,14 +1,10 @@
-# Mdimg - Covert Markdown or HTML to image
+# Mdimg - Covert Markdown to image
 
 ## Marked
 
 <img alt="marked-logo" src="./marked-logo-black.svg" style="width: 120px; float: right;">
 
-> Source: https://github.com/markedjs/marked/blob/master/docs/demo/initial.md
-
-[Marked] lets you convert [Markdown] into HTML. Markdown is a simple text format whose goal is to be very easy to read and write, even when not converted to HTML. This demo page will let you type anything you like and see how it gets converted. Live. No more waiting around.
-
-## Why Markdown?
+[Marked] lets you convert [Markdown] into HTML. Markdown is a simple text format whose goal is to be very easy to read and write, even when not converted to HTML. This demo page will let you type anything you like and see how it gets converted. Live. No more waiting around. Why Markdown?
 
 It's easy. It's not overly bloated, unlike HTML. Also, as the creator of [markdown] says,
 
@@ -20,15 +16,49 @@ It's easy. It's not overly bloated, unlike HTML. Also, as the creator of [markdo
 > looking like it's been marked up with tags
 > or formatting instructions.
 
-Ready to start writing? Either start changing stuff on the left or
-[clear everything](/demo/?text=) with a simple click.
-
 [marked]: https://github.com/markedjs/marked/
 [markdown]: http://daringfireball.net/projects/markdown/
 
-## Code Block
+## Table
 
-> Source: https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Headings_and_paragraphs
+| Syntax    | Description |         Test Text |
+| :-------- | :---------: | ----------------: |
+| Header    |    Title    |       Here's this |
+| Paragraph |    Text     |          And more |
+| **Bold**  |  _Italic_   | ~~Strikethrough~~ |
+| [Link](#) |   `Code`    |          $E=mc^2$ |
+
+## Mixed Nested Lists
+
+1. Install dependencies
+   - Node.js v18+
+   - npm or yarn
+2. Configure environment
+   1. Copy `.env.example` to `.env`
+   2. Update database credentials
+      - Host: `localhost`
+      - Port: `5432`
+3. Run the application
+   - [x] Development mode: `npm run dev`
+   - [ ] Production build:
+     1. Execute `npm run build`
+     2. Start server with `npm start
+
+## LaTex
+
+This is a inline LaTex example: $\dfrac{0}{1} \neq \infty$. And below is a block LaTeX example:
+
+<div>$$
+A_{m,n} =
+\begin{pmatrix}
+a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+\end{pmatrix}
+$$</div>
+
+## Code Block
 
 ```html
 <h1>This is a top level heading</h1>
@@ -37,8 +67,6 @@ Ready to start writing? Either start changing stuff on the left or
   Is this a top level heading?
 </span>
 ```
-
-> Source: https://www.typescriptlang.org/
 
 ```ts
 interface User {
@@ -55,25 +83,7 @@ function updateUser(id: number, update: Partial<User>) {
 }
 ```
 
-## LaTex
-
-> Source: https://ashki23.github.io/markdown-latex.html#latex
-
-This is a inline LaTex example: $\dfrac{0}{1} \neq \infty$. And below is a block LaTeX example:
-
-<div>$$
-A_{m,n} =
-\begin{pmatrix}
-a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
-a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
-\vdots & \vdots & \ddots & \vdots \\
-a_{m,1} & a_{m,2} & \cdots & a_{m,n}
-\end{pmatrix}
-$$</div>
-
 ## Mermaid
-
-> Source: https://mermaid.js.org/
 
 ```mermaid
 sequenceDiagram

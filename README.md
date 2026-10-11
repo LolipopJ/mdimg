@@ -21,7 +21,7 @@ First, the script calls [marked](https://github.com/markedjs/marked) to parse Ma
 | <img alt="github dark preview" src="./docs/linux/githubDark.png" height="150"> | <img alt="github dark preview" src="./docs/darwin/githubDark.png" height="150"> | <img alt="github dark preview" src="./docs/win32/githubDark.png" height="150"> | `default`     | `githubDark` | Should be used with `theme: "dark"`               |
 | <img alt="words preview" src="./docs/linux/words.png" height="150">            | <img alt="words preview" src="./docs/darwin/words.png" height="150">            | <img alt="words preview" src="./docs/win32/words.png" height="150">            | `words`       | `words`      | It is recommended to use with **plain text only** |
 
-And more showcases with build-in CSS Templates:
+More showcases with build-in CSS Templates:
 
 - [`blueprint`](./docs/win32/blueprint.png)
 - [`botanical`](./docs/win32/botanical.png)
@@ -29,6 +29,16 @@ And more showcases with build-in CSS Templates:
 - [`paper`](./docs/win32/paper.png)
 - [`pop`](./docs/win32/pop.png)
 - [`swiss`](./docs/win32/swiss.png)
+
+Brand-inspired CSS Templates:
+
+- [`airbnb`](./docs/win32/airbnb.png)
+- [`apple`](./docs/win32/apple.png)
+- [`claude`](./docs/win32/claude.png)
+- [`nvidia`](./docs/win32/nvidia.png)
+- [`spacex`](./docs/win32/spacex.png)
+- [`x.ai`](./docs/win32/x.ai.png)
+- ...
 
 ## Requirements
 
@@ -193,7 +203,7 @@ For further development, it is recommended that write `.scss` or `.sass` files i
 
 ```bash
 # Build .scss and .sass files
-pnpm run rollup:sass
+pnpm run build:sass
 ```
 
 CSS templates with the corresponding name will be generated in `template/css` directory.
@@ -698,13 +708,13 @@ three concurrent conversions. Style names are filenames without `.css`.
 common defaults and style-specific presets. The selected style, output filename,
 and binary encoding are managed by the script. For custom output directories,
 use `--output <directory>` (or `-o`). You can also import `generatePreviews` from
-the script and call it with `{ styles, concurrency, outputDir, options }`.
+the script and call it with `{ styles, concurrency, outputDir, debug, options }`.
 
 ```bash
 # Generate only selected styles, with at most two conversions at once
-pnpm run preview ./script/generate-previews.mjs airbnb blueprint --concurrency 2
-# Override rendering options and the output directory
-pnpm run preview ./script/generate-previews.mjs airbnb --output ./preview-output --options '{"width":1200,"extensions":false}'
+pnpm run preview airbnb blueprint --concurrency 2
+# Override rendering options and the output directory, keep the temporary HTML file
+pnpm run preview airbnb --output ./preview-output --debug --options '{"width":1200,"extensions":false}'
 ```
 
 ### Test

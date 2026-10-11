@@ -45,9 +45,9 @@
     "test": "jest --roots test --maxWorkers 5 --testTimeout 60000",
     "test:consumer": "jest --config jest.consumer.config.js --runInBand --testTimeout 360000",
     "typecheck": "tsc --noEmit",
-    "rollup:ts": "rollup -c rollup.config.js --bundleConfigAsCjs",
-    "rollup:sass": "rollup -c rollup.sass.config.js --bundleConfigAsCjs",
     "build": "node ./script/build.mjs",
+    "build:ts": "rollup -c rollup.config.js --bundleConfigAsCjs",
+    "build:sass": "rollup -c rollup.sass.config.js --bundleConfigAsCjs",
     "build:assets": "node ./script/build-assets.mjs",
     "preview": "node ./script/generate-previews.mjs",
     "prepack": "npm run build"

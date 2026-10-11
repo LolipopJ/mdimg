@@ -1,0 +1,256 @@
+@use "./partials/article";
+
+// Shopify's transactional track: cream, mint surfaces and thin display type.
+#mdimg-body {
+  --article-background: #fbfbf5;
+  --article-text: #000000;
+  --article-accent: #000000;
+  --article-surface: #ffffff;
+  --article-border: #e4e4e7;
+  --article-muted: #52525b;
+  --article-code-background: #ffffff;
+  --article-code-text: #000000;
+
+  font-family:
+    "Inter Variable", Inter, Helvetica, Arial, "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  font-weight: 420;
+  line-height: 1.5;
+  font-feature-settings: "ss03";
+
+  > .markdown-body {
+    max-width: 936px;
+    margin: 0 auto;
+    padding: 48px;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--article-text);
+      font-family:
+        "NeueHaasGrotesk Display", "Neue Haas Grotesk Display",
+        "Helvetica Now Display", "Inter Display", Helvetica, Arial,
+        "Microsoft YaHei", sans-serif;
+      font-feature-settings: "ss03";
+
+      strong,
+      b {
+        color: inherit;
+        font-weight: inherit;
+      }
+    }
+
+    h1 {
+      margin: 0 0 32px;
+      font-size: 55px;
+      font-weight: 330;
+      line-height: 1.16;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 48px 0 24px;
+      font-size: 48px;
+      font-weight: 330;
+      line-height: 1.14;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 32px 0 16px;
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.28;
+      letter-spacing: 0.42px;
+    }
+
+    h4 {
+      margin: 32px 0 16px;
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.14;
+      letter-spacing: 0.36px;
+    }
+
+    h5 {
+      margin: 24px 0 12px;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.4;
+      letter-spacing: 0.3px;
+    }
+
+    h6 {
+      margin: 24px 0 12px;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.25;
+      letter-spacing: 0.72px;
+    }
+
+    p {
+      margin-bottom: 24px;
+    }
+
+    strong,
+    b {
+      color: var(--article-text);
+      font-weight: 550;
+    }
+
+    a {
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+
+      &:hover,
+      &:active {
+        color: #3f3f46;
+      }
+
+      &:focus-visible {
+        border-radius: 4px;
+        outline: 2px solid var(--article-text);
+        outline-offset: 4px;
+      }
+    }
+
+    ul,
+    ol {
+      margin-bottom: 24px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin: 8px 0;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+    }
+
+    blockquote {
+      margin: 48px 0;
+      padding: 32px;
+      border: 0;
+      border-radius: 12px;
+      background: #d4f9e0;
+      color: var(--article-text);
+    }
+
+    code,
+    kbd {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family:
+        ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875em;
+      font-weight: 400;
+      font-feature-settings: "ss03";
+    }
+
+    kbd {
+      border: 1px solid var(--article-border);
+      border-radius: 9999px;
+      background: #d4d4d8;
+    }
+
+    pre {
+      margin: 32px 0;
+      padding: 32px;
+      border-radius: 12px;
+
+      code {
+        font-size: 16px;
+        line-height: 1.5;
+      }
+    }
+
+    table {
+      margin: 32px 0;
+      border: 1px solid var(--article-border);
+      border-spacing: 0;
+      border-collapse: separate;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--article-surface);
+      font-size: 16px;
+      line-height: 1.5;
+      box-shadow:
+        0 8px 8px rgba(0, 0, 0, 0.1),
+        0 4px 4px rgba(0, 0, 0, 0.1),
+        0 2px 2px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(0, 0, 0, 0.1);
+    }
+
+    th,
+    td {
+      padding: 16px 24px;
+    }
+
+    th {
+      background: #c1fbd4;
+      font-weight: 550;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    hr {
+      margin: 48px 0;
+    }
+
+    img,
+    video {
+      border: 0;
+      border-radius: 12px;
+      box-shadow: none;
+    }
+
+    figure {
+      margin: 32px 0;
+    }
+
+    figcaption,
+    small {
+      color: var(--article-muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.49;
+      letter-spacing: 0.28px;
+    }
+
+    figcaption {
+      margin-top: 12px;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  #mdimg-body > .markdown-body {
+    padding: 32px 24px;
+
+    h1 {
+      font-size: 48px;
+    }
+
+    h2 {
+      margin-top: 32px;
+      font-size: 36px;
+    }
+
+    blockquote,
+    pre {
+      padding: 24px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      font-size: 14px;
+    }
+  }
+}

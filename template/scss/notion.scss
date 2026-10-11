@@ -1,0 +1,343 @@
+@use "./partials/article";
+
+// Notion: navy title band, pastel cards and flat, warm documentation surfaces.
+#mdimg-body {
+  --article-background: #ffffff;
+  --article-text: #1a1a1a;
+  --article-accent: #5645d4;
+  --article-surface: #f6f5f4;
+  --article-border: #e5e3df;
+  --article-muted: #5d5b54;
+  --article-code-background: #f0eeec;
+  --article-code-text: #37352f;
+
+  font-family:
+    "Notion Sans",
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    "Segoe UI",
+    Helvetica,
+    "Microsoft YaHei",
+    sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.55;
+
+  .markdown-body {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 64px 48px;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--article-text);
+      font-weight: 600;
+      letter-spacing: 0;
+
+      strong {
+        color: inherit;
+        font-weight: inherit;
+      }
+    }
+
+    h1 {
+      margin: 64px 0 32px;
+      font-size: 48px;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+    }
+
+    // The opening Markdown title carries the centered marketing hero identity.
+    > h1:first-child {
+      margin: -64px -48px 48px;
+      padding: 64px 32px;
+      background: #0a1530;
+      color: #ffffff;
+      font-size: 56px;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      text-align: center;
+
+      strong,
+      a {
+        color: inherit;
+      }
+    }
+
+    h2 {
+      margin: 64px 0 24px;
+      font-size: 36px;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+    }
+
+    h3 {
+      margin: 40px 0 16px;
+      font-size: 28px;
+      line-height: 1.25;
+    }
+
+    h4 {
+      margin: 32px 0 12px;
+      font-size: 22px;
+      line-height: 1.3;
+    }
+
+    h5 {
+      margin: 24px 0 12px;
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    h6 {
+      margin: 24px 0 12px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    p {
+      margin-bottom: 24px;
+    }
+
+    strong {
+      color: #000000;
+      font-weight: 500;
+    }
+
+    a,
+    th a {
+      color: #0075de;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+
+      &:active {
+        color: #005bab;
+      }
+
+      &:focus-visible {
+        border-radius: 4px;
+        outline: 2px solid var(--article-accent);
+        outline-offset: 4px;
+      }
+    }
+
+    button {
+      min-height: 44px;
+      padding: 10px 18px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--article-accent);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+
+      &:active {
+        background: #4534b3;
+      }
+
+      &:disabled {
+        background: var(--article-border);
+        color: #bbb8b1;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--article-accent);
+        outline-offset: 4px;
+      }
+    }
+
+    ul,
+    ol {
+      margin-bottom: 24px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin: 8px 0;
+
+      &::marker {
+        color: #37352f;
+      }
+    }
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      vertical-align: -2px;
+    }
+
+    blockquote {
+      margin: 32px 0;
+      padding: 32px;
+      border: 0;
+      border-radius: 12px;
+      background: #e6e0f5;
+      color: #37352f;
+
+      &:nth-of-type(6n + 1) {
+        background: #ffe8d4;
+      }
+
+      &:nth-of-type(6n + 2) {
+        background: #fde0ec;
+      }
+
+      &:nth-of-type(6n + 3) {
+        background: #d9f3e1;
+      }
+
+      &:nth-of-type(6n + 4) {
+        background: #dcecfa;
+      }
+
+      &:nth-of-type(6n + 5) {
+        background: #fef7d6;
+      }
+    }
+
+    mark {
+      padding: 2px 4px;
+      border-radius: 4px;
+      background: #f9e79f;
+      color: #37352f;
+    }
+
+    code,
+    kbd {
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.875em;
+    }
+
+    kbd {
+      border: 1px solid #c8c4be;
+      background: var(--article-background);
+    }
+
+    pre {
+      margin: 24px 0 32px;
+      padding: 24px;
+      border-radius: 12px;
+      background: var(--article-surface);
+
+      code {
+        font-size: 14px;
+        line-height: 1.5;
+      }
+    }
+
+    table {
+      margin: 32px 0;
+      border: 1px solid var(--article-border);
+      border-spacing: 0;
+      border-collapse: separate;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--article-background);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    th,
+    td {
+      padding: 16px 20px;
+      border-bottom-color: #ede9e4;
+    }
+
+    th {
+      font-weight: 500;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    hr {
+      margin: 64px 0;
+    }
+
+    img,
+    video {
+      border: 1px solid var(--article-border);
+      border-radius: 12px;
+    }
+
+    figure {
+      margin: 32px 0;
+    }
+
+    figcaption {
+      margin-top: 12px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    small {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  #mdimg-body .markdown-body {
+    padding: 32px 24px;
+
+    h1 {
+      font-size: 36px;
+    }
+
+    > h1:first-child {
+      margin: -32px -24px 32px;
+      padding: 48px 24px;
+      font-size: 48px;
+    }
+
+    h2 {
+      margin-top: 48px;
+      font-size: 28px;
+    }
+
+    h3 {
+      font-size: 24px;
+    }
+
+    blockquote,
+    pre {
+      padding: 24px;
+    }
+
+    th,
+    td {
+      padding: 12px 8px;
+      font-size: 14px;
+    }
+
+    hr {
+      margin: 48px 0;
+    }
+  }
+}
+
+@media (max-width: 479px) {
+  #mdimg-body .markdown-body {
+    h1 {
+      font-size: 32px;
+    }
+
+    > h1:first-child {
+      font-size: 36px;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+    }
+  }
+}
