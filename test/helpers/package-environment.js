@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-
 const { createRequire } = require("node:module");
 const { pathToFileURL } = require("node:url");
 const jestRequire = createRequire(require.resolve("jest/package.json"));

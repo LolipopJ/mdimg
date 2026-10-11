@@ -28,5 +28,22 @@ export default defineConfig(
       "simple-import-sort/exports": "error",
     },
   },
+  {
+    files: ["test/**/*"],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.jest,
+        requirePackage: "readonly",
+        importPackage: "readonly",
+      },
+    },
+  },
+  {
+    files: ["bin/mdimg.js", "test/**/*", "jest*.config.js"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
   eslintPluginPrettierRecommended,
 );

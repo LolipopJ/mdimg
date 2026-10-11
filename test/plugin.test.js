@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
-
 const { mdimg, createHtmlOutputProcessor } =
   requirePackage(__filename)("../lib/mdimg.js");
 const { resolve } = require("path");

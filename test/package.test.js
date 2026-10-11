@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
-
 const { execFileSync, spawnSync } = require("child_process");
 const {
   existsSync,

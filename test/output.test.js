@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
-
 const { execFileSync } = require("child_process");
 const { readFileSync, readdirSync } = require("fs");
 const { resolve } = require("path");

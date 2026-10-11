@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
-
 const { mkdtempSync, rmSync, writeFileSync } = require("fs");
 const { tmpdir } = require("os");
 const { dirname, join } = require("path");

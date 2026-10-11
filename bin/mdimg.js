@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable @typescript-eslint/no-require-imports */
-
 const { Command, CommanderError, Option } = require("commander");
 const { mdimg } = require("../lib/mdimg.js");
 

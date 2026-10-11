@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
-
 const { load } = require("cheerio");
 const { execFileSync } = require("child_process");
 const { resolve } = require("path");

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
-
 const fs = require("node:fs");
 const path = require("node:path");
 const puppeteer = requirePackage(__filename)("puppeteer");

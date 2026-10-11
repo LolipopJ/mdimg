@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
-
 const { readFileSync, readdirSync, writeFileSync } = require("fs");
 const { resolve } = require("path");
 const puppeteer = requirePackage(__filename)("puppeteer").default;
@@ -21,12 +19,14 @@ test.each([
   ["width", 0],
   ["width", -1],
   ["width", 1.5],
+  ["width", Number.MAX_SAFE_INTEGER + 1],
   ["width", "800"],
   ["width", null],
   ["height", NaN],
   ["height", Infinity],
   ["height", 99],
   ["height", 100.5],
+  ["height", Number.MAX_SAFE_INTEGER + 1],
   ["quality", NaN],
   ["quality", Infinity],
   ["quality", -1],
@@ -88,6 +88,22 @@ test.each([undefined, null, [], "text"])(
     await expect(mdimg(options)).rejects.toThrow(/options.*object/i);
   },
 );
+
+test("OPTIONS: missing input rejects without writing files", async () => {
+  await expect(mdimg({})).rejects.toThrow(/text or file is required/);
+  expect(readdirSync(workspace.dir)).toEqual(["input.md"]);
+});
+
+test("OPTIONS: input files take priority over conflicting text", async () => {
+  writeFileSync(workspace.inputFilename, "# File-priority-marker");
+  const result = await mdimg({
+    ...htmlOptions(),
+    inputFilename: workspace.inputFilename,
+    inputText: "# Ignored-text-marker",
+  });
+  expect(result.html).toContain("<h1>File-priority-marker</h1>");
+  expect(result.html).not.toContain("Ignored-text-marker");
+});
 
 test("OPTIONS: invalid options fail before hooks and browser launch", async () => {
   const launch = jest

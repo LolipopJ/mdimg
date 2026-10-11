@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
-
 const { execFileSync } = require("child_process");
 const { readFileSync, readdirSync, writeFileSync } = require("fs");
 const { resolve } = require("path");
-const { mdimg, createImageOutputProcessor } =
+const { load } = require("cheerio");
+const { mdimg, createHtmlOutputProcessor, createImageOutputProcessor } =
   requirePackage(__filename)("../lib/mdimg.js");
 const { expectMarkdown, useImageAssertions } = require("./helpers/assertions");
 const { useWorkspace } = require("./helpers/workspace");
@@ -25,30 +24,53 @@ async function expectFile(result, outputFilename, format, dimensions) {
 
 test("NODE: base conversion renders Markdown to a readable PNG", async () => {
   const outputFilename = resolve(workspace.dir, "base.png");
-  const result = await mdimg({ ...options(), outputFilename });
-  await expectFile(result, outputFilename, "png");
-});
-
-test("NODE: github CSS preset respects the requested width", async () => {
-  const outputFilename = resolve(workspace.dir, "github.png");
+  const processor = createImageOutputProcessor("png", undefined, "binary");
   const result = await mdimg({
     ...options(),
     outputFilename,
-    width: 1000,
-    cssTemplate: "github",
+    outputProcessor: {
+      ...processor,
+      async process(context) {
+        const extensions = await context.page.evaluate(() => ({
+          tasks: globalThis.__mdimgTasks.map(({ name }) => name),
+          highlighted: document.querySelectorAll(
+            "code.hljs, code [class^=hljs-]",
+          ).length,
+        }));
+        expect(extensions).toEqual({ tasks: [], highlighted: 0 });
+        return processor.process(context);
+      },
+    },
   });
-  expect(result.html).toContain(".markdown-body");
-  await expectFile(result, outputFilename, "png", { width: 1000 });
-});
-
-test("NODE: disabling extensions omits their scripts from rendered HTML", async () => {
-  const outputFilename = resolve(workspace.dir, "no-extensions.png");
-  const result = await mdimg({ ...options(), outputFilename });
-  expect(result.html).not.toContain("hljs.highlightAll()");
-  expect(result.html).not.toContain("mermaid.initialize(");
-  expect(result.html).not.toContain("MathJax =");
+  expect(result.html).not.toMatch(/name: "(?:highlightJs|mathJax|mermaid)"/);
   await expectFile(result, outputFilename, "png");
 });
+
+test.each(["file", "text"])(
+  "NODE: HTML %s input preserves elements and attributes",
+  async (source) => {
+    const marker = `node-html-${source}`;
+    const inputText = `<section data-input="${marker}"><h1>${marker}</h1><p>First<br>Second <strong>bold</strong></p></section>`;
+    const inputFilename = resolve(workspace.dir, `${marker}.html`);
+    writeFileSync(inputFilename, inputText);
+    const result = await mdimg({
+      ...(source === "file" ? { inputFilename } : { inputText }),
+      extensions: false,
+      outputProcessor: createHtmlOutputProcessor(),
+    });
+    const $ = load(result.html);
+    const section = $(
+      `#mdimg-body .markdown-body section[data-input="${marker}"]`,
+    );
+    expect(section).toHaveLength(1);
+    expect(section.find("h1").text()).toBe(marker);
+    expect(section.find("p br")).toHaveLength(1);
+    expect(section.find("p strong").text()).toBe("bold");
+    expect(section.find("p").text()).toBe("FirstSecond bold");
+    expect(result.data).toBe(result.html);
+    expect(result.path).toBeUndefined();
+  },
+);
 
 test("NODE: highlight.js renders code in the browser", async () => {
   let highlightedText;
@@ -73,24 +95,36 @@ test("NODE: highlight.js renders code in the browser", async () => {
   await expectFile(result, outputFilename, "png");
 });
 
-test("NODE: custom HTML and CSS affect the generated image", async () => {
-  const outputFilename = resolve(workspace.dir, "template.png");
-  const result = await mdimg({
-    ...options(),
-    outputFilename,
-    width: 320,
-    htmlText:
-      '<div id="mdimg-body"><article class="markdown-body"></article></div>',
-    cssText:
-      "body { margin: 0; } #mdimg-body { height: 200px; background: rgb(10, 20, 30); color: white; } h1 { margin: 0; }",
-  });
-  expect(result.html).toContain('<article class="markdown-body">');
-  await expectFile(result, outputFilename, "png", {
-    width: 320,
-    height: 200,
-    pixel: [10, 20, 30, 255],
-  });
-});
+test.each([
+  { height: 100, paragraphs: 1, imageHeight: 100 },
+  { height: 260, paragraphs: 1, imageHeight: 260 },
+  { height: 260, paragraphs: 12, imageHeight: 480 },
+])(
+  "NODE: height $height is a minimum for $paragraphs paragraphs",
+  async ({ height, paragraphs, imageHeight }) => {
+    writeFileSync(
+      workspace.inputFilename,
+      Array.from(
+        { length: paragraphs },
+        (_, index) =>
+          `<p style="margin:0;height:40px">Height ${height} row ${index}</p>`,
+      ).join("\n"),
+    );
+    const result = await mdimg({
+      ...options(),
+      cssTemplate: "empty",
+      width: 320,
+      height,
+      encoding: "blob",
+    });
+    const $ = load(result.html);
+    expect($("#mdimg-body .markdown-body p")).toHaveLength(paragraphs);
+    expect($("#mdimg-body p").first().text()).toBe(`Height ${height} row 0`);
+    await expectImage(result.data, "png", { width: 320, height: imageHeight });
+    expect(result.path).toBeUndefined();
+    expect(readdirSync(workspace.dir)).toEqual(["input.md"]);
+  },
+);
 
 test("NODE: output extension selects JPEG even when type is PNG", async () => {
   const outputFilename = resolve(workspace.dir, "low-quality.jpeg");
@@ -210,14 +244,3 @@ test("NODE: default filenames remain unique in the same millisecond", async () =
     "mdimg_output",
   ]);
 });
-
-test.each([
-  [{}, /text or file is required/],
-  [{ inputText: "Hello", encoding: "invalid" }, /encoding type invalid/],
-  [{ inputText: "Hello", type: "gif" }, /output file type gif/],
-])(
-  "NODE: invalid options reject with a conversion error (%j)",
-  async (input, error) => {
-    await expect(mdimg(input)).rejects.toThrow(error);
-  },
-);

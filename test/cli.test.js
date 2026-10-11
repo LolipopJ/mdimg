@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
-
 const { execFileSync, spawnSync } = require("child_process");
-const { readFileSync, readdirSync } = require("fs");
+const { load } = require("cheerio");
+const { readFileSync, readdirSync, writeFileSync } = require("fs");
 const { resolve } = require("path");
 const { useImageAssertions } = require("./helpers/assertions");
 const { useWorkspace } = require("./helpers/workspace");
@@ -31,6 +30,106 @@ test("CLI: base conversion writes a readable PNG", async () => {
   await expectImage(readFileSync(outputFilename), "png");
 });
 
+test.each([
+  {
+    name: "Markdown text",
+    text: "# CLI-Markdown-marker",
+    selector: "h1",
+    content: "CLI-Markdown-marker",
+    breaks: 0,
+  },
+  {
+    name: "literal backslash n",
+    text: "CLI-literal-marker\\nSecond-line-marker",
+    selector: "p",
+    content: "CLI-literal-marker\\nSecond-line-marker",
+    breaks: 0,
+  },
+  {
+    name: "HTML line break",
+    text: '<p data-input="cli-html-marker">CLI-first-marker<br>CLI-second-marker</p>',
+    selector: 'p[data-input="cli-html-marker"]',
+    content: "CLI-first-markerCLI-second-marker",
+    breaks: 1,
+  },
+])(
+  "CLI: -t renders $name with correct DOM and diagnostics",
+  async ({ text, selector, content, breaks }) => {
+    const outputFilename = resolve(workspace.dir, "text.png");
+    const result = spawnSync(
+      process.execPath,
+      [
+        cliFilename,
+        "-t",
+        text,
+        "-o",
+        outputFilename,
+        "-w",
+        "320",
+        "--css",
+        "empty",
+        "--extensions",
+        "false",
+        "--debug",
+      ],
+      { cwd: workspace.dir, encoding: "utf8", timeout: 30000 },
+    );
+    expect(result.error).toBeUndefined();
+    expect(result.status).toBe(0);
+    expect(result.stdout).toBe("");
+    expect(result.stderr).toMatch(/Info: start to convert text/);
+    expect(result.stderr).toMatch(/Success: convert to image/);
+    const temporaryFiles = readdirSync(workspace.dir).filter(
+      (name) => name.startsWith(".mdimg_temp_") && name.endsWith(".html"),
+    );
+    expect(temporaryFiles).toHaveLength(1);
+    const $ = load(
+      readFileSync(resolve(workspace.dir, temporaryFiles[0]), "utf8"),
+    );
+    expect($(`#mdimg-body .markdown-body ${selector}`).text()).toBe(content);
+    expect($("#mdimg-body .markdown-body br")).toHaveLength(breaks);
+    await expectImage(readFileSync(outputFilename), "png", {
+      width: 320,
+      height: 100,
+    });
+  },
+);
+
+test("CLI: HTML file input takes priority over conflicting -t text", async () => {
+  const inputFilename = resolve(workspace.dir, "priority.html");
+  const outputFilename = resolve(workspace.dir, "priority.png");
+  writeFileSync(
+    inputFilename,
+    '<section data-input="cli-file-marker"><h1>CLI-file-priority-marker</h1><p>File<br>HTML</p></section>',
+  );
+  runCli([
+    "-i",
+    inputFilename,
+    "-t",
+    "# Ignored-CLI-text-marker",
+    "-o",
+    outputFilename,
+    "--extensions",
+    "false",
+    "--debug",
+  ]);
+  const temporaryFiles = readdirSync(workspace.dir).filter(
+    (name) => name.startsWith(".mdimg_temp_") && name.endsWith(".html"),
+  );
+  expect(temporaryFiles).toHaveLength(1);
+  const $ = load(
+    readFileSync(resolve(workspace.dir, temporaryFiles[0]), "utf8"),
+  );
+  const section = $(
+    '#mdimg-body .markdown-body section[data-input="cli-file-marker"]',
+  );
+  expect(section).toHaveLength(1);
+  expect(section.find("h1").text()).toBe("CLI-file-priority-marker");
+  expect(section.find("p br")).toHaveLength(1);
+  expect($(".markdown-body").text()).not.toContain("Ignored-CLI-text-marker");
+  await expectImage(readFileSync(outputFilename), "png");
+});
+
 test("CLI: github CSS preset respects the requested width", async () => {
   const outputFilename = resolve(workspace.dir, "github.png");
   runCli([
@@ -45,9 +144,19 @@ test("CLI: github CSS preset respects the requested width", async () => {
   await expectImage(readFileSync(outputFilename), "png", { width: 1000 });
 });
 
-test("CLI: template text and quoted paths affect rendered pixels", async () => {
+test("CLI: template text overrides local files and preserves quoted paths", async () => {
+  const htmlTemplate = resolve(workspace.dir, "ignored & 'quoted'.html");
+  const cssTemplate = resolve(workspace.dir, "ignored & 'quoted'.css");
+  writeFileSync(
+    htmlTemplate,
+    '<div id="mdimg-body"><div class="markdown-body"></div><p>Ignored-CLI-HTML-marker</p></div>',
+  );
+  writeFileSync(
+    cssTemplate,
+    "/* Ignored-CLI-CSS-marker */ #mdimg-body { height: 450px; background: red; }",
+  );
   const htmlText =
-    '<div id="mdimg-body"><div class="markdown-body"></div></div>';
+    '<div id="mdimg-body"><article class="markdown-body"><p>Obsolete-CLI-text-marker</p></article></div>';
   const cssText =
     'body { margin: 0; } #mdimg-body { height: 200px; background: rgb(10, 20, 30); color: white; } h1 { margin: 0; } .markdown-body::after { content: "it\'s quoted & < >"; }';
   const outputFilename = resolve(workspace.dir, "template text & 'quoted'.png");
@@ -57,15 +166,73 @@ test("CLI: template text and quoted paths affect rendered pixels", async () => {
     outputFilename,
     "-w",
     "320",
+    "--html",
+    htmlTemplate,
+    "--css",
+    cssTemplate,
     "--htmlText",
     htmlText,
     "--cssText",
     cssText,
+    "--debug",
   ]);
+  const temporaryFiles = readdirSync(workspace.dir).filter(
+    (name) => name.startsWith(".mdimg_temp_") && name.endsWith(".html"),
+  );
+  expect(temporaryFiles).toHaveLength(1);
+  const $ = load(
+    readFileSync(resolve(workspace.dir, temporaryFiles[0]), "utf8"),
+  );
+  expect($("#mdimg-body > article.markdown-body h1").text()).toBe("Hello");
+  expect($(".markdown-body").text()).not.toContain("Obsolete-CLI-text-marker");
+  expect($("body").text()).not.toContain("Ignored-CLI-HTML-marker");
+  expect($("style").text()).not.toContain("Ignored-CLI-CSS-marker");
+  expect($("style").text()).toContain("it's quoted & < >");
   await expectImage(readFileSync(outputFilename), "png", {
     width: 320,
     height: 200,
     pixel: [10, 20, 30, 255],
+  });
+});
+
+test("CLI: local HTML and CSS replace old content and crop to mdimg-body", async () => {
+  const htmlTemplate = resolve(workspace.dir, "local & 'quoted'.html");
+  const cssTemplate = resolve(workspace.dir, "local & 'quoted'.css");
+  const outputFilename = resolve(workspace.dir, "local.png");
+  writeFileSync(
+    htmlTemplate,
+    '<aside id="outside">Outside-CLI-local-marker</aside><section id="mdimg-body"><article class="markdown-body"><p>Obsolete-CLI-local-marker</p></article></section>',
+  );
+  writeFileSync(
+    cssTemplate,
+    "body { margin: 0; background: red; } #outside { width: 900px; height: 360px; background: blue; } #mdimg-body { width: 240px; height: 180px; background: rgb(30, 40, 50); color: white; } h1 { margin: 0; }",
+  );
+  runCli([
+    ...inputArgs(),
+    "-o",
+    outputFilename,
+    "-w",
+    "320",
+    "--html",
+    htmlTemplate,
+    "--css",
+    cssTemplate,
+    "--debug",
+  ]);
+  const temporaryFiles = readdirSync(workspace.dir).filter(
+    (name) => name.startsWith(".mdimg_temp_") && name.endsWith(".html"),
+  );
+  expect(temporaryFiles).toHaveLength(1);
+  const $ = load(
+    readFileSync(resolve(workspace.dir, temporaryFiles[0]), "utf8"),
+  );
+  expect($("#mdimg-body > article.markdown-body h1").text()).toBe("Hello");
+  expect($("#outside").text()).toBe("Outside-CLI-local-marker");
+  expect($(".markdown-body").text()).not.toContain("Obsolete-CLI-local-marker");
+  await expectImage(readFileSync(outputFilename), "png", {
+    width: 240,
+    height: 180,
+    pixel: [30, 40, 50, 255],
   });
 });
 

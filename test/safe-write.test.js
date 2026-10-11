@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
-
 const fs = require("fs");
 const { dirname, resolve } = require("path");
 const { mdimg } = requirePackage(__filename)("../lib/mdimg.js");

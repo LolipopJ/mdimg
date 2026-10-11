@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
-
 const { mdimg, createImageOutputProcessor } =
   requirePackage(__filename)("../lib/mdimg.js");
 const { expectPdf, useImageAssertions } = require("./helpers/assertions");

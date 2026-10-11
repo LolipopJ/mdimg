@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
-
 const { existsSync } = require("node:fs");
 
 async function findBrowser() {

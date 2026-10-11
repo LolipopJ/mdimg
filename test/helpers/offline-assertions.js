@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 async function waitForReady(page, timeout = 30000) {
   return page.evaluate(async (milliseconds) => {
     if (
