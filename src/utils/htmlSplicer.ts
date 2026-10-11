@@ -68,7 +68,7 @@ const spliceHtml = async ({
     _cssSource = fs.readFileSync(_cssPath).toString();
   }
 
-  const $ = load(_htmlSource);
+  const $ = load(`<!DOCTYPE html>\n${_htmlSource}`);
   $("head").prepend(inlineScript(readAsset("page-ready.js")));
   $("head").append(`
 <meta charset="UTF-8">
