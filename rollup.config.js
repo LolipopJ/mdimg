@@ -14,7 +14,7 @@ const pluginsArray = [
   babel({ babelHelpers: "bundled" }),
   terser(),
   license({
-    banner: `<%= pkg.name %> - convert markdown to image\
+    banner: `<%= pkg.name %> - convert markdown to image
 Version: <%= pkg.version %>
 Homepage: <%= pkg.homepage %>
 Copyright (c) 2022, LolipopJ. (MIT Licensed)`,
