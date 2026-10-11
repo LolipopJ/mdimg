@@ -21,6 +21,10 @@ const getSassTasks = () => {
     const templateName = template.slice(0, -5);
     const task = {
       input: `${scssPath}/${templateName}.scss`,
+      onwarn(warning, warn) {
+        if (warning.code === "EMPTY_BUNDLE") return; // Silent empty chunk warning
+        warn(warning);
+      },
       plugins: [
         scss({
           failOnError: true,
