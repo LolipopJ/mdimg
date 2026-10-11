@@ -171,12 +171,26 @@ test("OUTPUT: JPEG quality zero produces smaller readable output than quality 10
 });
 
 test("OUTPUT: image processor quality is independent of global quality", async () => {
+  const processor = createImageOutputProcessor("jpeg", 80, "binary");
   const imageOptions = {
     ...options(),
     type: "webp",
     encoding: "base64",
     width: 320,
-    outputProcessor: createImageOutputProcessor("jpeg", 80, "binary"),
+    outputProcessor: {
+      ...processor,
+      async process(context) {
+        const screenshot = jest.spyOn(context.body, "screenshot");
+        const result = await processor.process(context);
+        expect(screenshot).toHaveBeenCalledTimes(1);
+        expect(screenshot).toHaveBeenCalledWith({
+          type: "jpeg",
+          quality: 80,
+          encoding: "binary",
+        });
+        return result;
+      },
+    },
   };
   const low = await mdimg({ ...imageOptions, quality: 0 });
   const high = await mdimg({ ...imageOptions, quality: 100 });
@@ -184,9 +198,8 @@ test("OUTPUT: image processor quality is independent of global quality", async (
     expect(result.data).toBeInstanceOf(Uint8Array);
     expect(result.path).toBeUndefined();
     expectMarkdown(result.html);
+    await expectImage(result.data, "jpeg", { width: 320 });
   }
-  expect(Buffer.from(low.data)).toEqual(Buffer.from(high.data));
-  await expectImage(low.data, "jpeg", { width: 320 });
   expect(readdirSync(workspace.dir)).toEqual(["input.md"]);
 });
 
