@@ -1,0 +1,44 @@
+@use "./partials/article";
+
+#mdimg-body {
+  --article-background: #f6f1e7;
+  --article-text: #302d29;
+  --article-accent: #883e39;
+  --article-surface: #ece5d8;
+  --article-border: #cfc4b2;
+  --article-muted: #686052;
+  --article-code-background: #ede6da;
+  --article-code-text: #38332e;
+
+  border-top: 7px solid var(--article-accent);
+  font-family:
+    Georgia, "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif;
+
+  .markdown-body {
+    h1 {
+      font-weight: 700;
+      letter-spacing: 0.015em;
+    }
+
+    h2 {
+      padding-top: 22px;
+      border-top: 1px solid var(--article-border);
+    }
+
+    blockquote {
+      padding: 19px 12px;
+      border: 0;
+      border-top: 1px solid var(--article-border);
+      border-bottom: 1px solid var(--article-border);
+      background: transparent;
+      color: var(--article-accent);
+      font-size: 20px;
+      text-align: center;
+    }
+
+    th {
+      border-top: 2px solid var(--article-text);
+      background: transparent;
+    }
+  }
+}

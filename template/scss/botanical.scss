@@ -1,0 +1,42 @@
+@use "./partials/article";
+
+#mdimg-body {
+  --article-background: #f4f7ee;
+  --article-text: #263c31;
+  --article-accent: #32654a;
+  --article-surface: #e2ebdb;
+  --article-border: #bdcdb8;
+  --article-muted: #56674f;
+  --article-code-background: #e7eddf;
+  --article-code-text: #243b2e;
+
+  border-top: 7px solid var(--article-accent);
+
+  .markdown-body {
+    h1 {
+      font-weight: 600;
+      line-height: 1.45;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      padding-left: 15px;
+      border-left: 4px solid var(--article-accent);
+    }
+
+    blockquote {
+      padding: 23px 25px;
+      border: 0;
+      border-radius: 4px 28px 28px 28px;
+    }
+
+    pre {
+      border: 0;
+      border-radius: 12px;
+    }
+
+    li::marker {
+      color: #59783d;
+    }
+  }
+}

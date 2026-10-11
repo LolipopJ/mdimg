@@ -38,6 +38,12 @@ const previews = [
     cssTemplate: "words",
     width: 1200,
   },
+  { name: "blueprint", cssTemplate: "blueprint", width: 1000 },
+  { name: "botanical", cssTemplate: "botanical", width: 1000 },
+  { name: "midnight", cssTemplate: "midnight", theme: "dark", width: 1000 },
+  { name: "paper", cssTemplate: "paper", width: 1000 },
+  { name: "pop", cssTemplate: "pop", width: 1000 },
+  { name: "swiss", cssTemplate: "swiss", width: 1000 },
 ];
 
 async function generatePreviews() {

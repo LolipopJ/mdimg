@@ -1,0 +1,250 @@
+@use "./base";
+
+#mdimg-body {
+  box-sizing: border-box;
+  background: var(--article-background);
+  color: var(--article-text);
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-size: 17px;
+  line-height: 1.85;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+
+  .markdown-body {
+    margin: 0;
+    padding: 46px 54px 38px;
+    overflow-wrap: anywhere;
+
+    > :first-child {
+      margin-top: 0;
+    }
+
+    > :last-child {
+      margin-bottom: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--article-text);
+      line-height: 1.45;
+      text-wrap: balance;
+    }
+
+    h1 {
+      margin: 0 0 22px;
+      font-size: 42px;
+      font-weight: 750;
+      line-height: 1.3;
+      letter-spacing: -0.045em;
+    }
+
+    h2 {
+      margin: 30px 0 14px;
+      font-size: 21px;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      margin: 24px 0 10px;
+      font-size: 19px;
+    }
+
+    h4,
+    h5,
+    h6 {
+      margin: 20px 0 10px;
+      font-size: 17px;
+    }
+
+    h5,
+    h6,
+    small {
+      color: var(--article-muted);
+    }
+
+    p {
+      margin: 0 0 18px;
+    }
+
+    strong {
+      color: var(--article-accent);
+      font-weight: 700;
+    }
+
+    a {
+      color: var(--article-accent);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    blockquote {
+      margin: 26px 0;
+      padding: 18px 23px;
+      border-left: 3px solid var(--article-accent);
+      background: var(--article-surface);
+
+      > :last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    ul,
+    ol {
+      margin: 0 0 24px;
+      padding-left: 27px;
+
+      ul,
+      ol {
+        margin: 8px 0;
+      }
+    }
+
+    li {
+      margin: 5px 0;
+
+      &::marker {
+        color: var(--article-accent);
+      }
+
+      > p {
+        margin-bottom: 8px;
+      }
+
+      &:has(> input[type="checkbox"]) {
+        list-style: none;
+      }
+    }
+
+    input[type="checkbox"] {
+      margin-right: 6px;
+      accent-color: var(--article-accent);
+    }
+
+    code,
+    kbd {
+      padding: 2px 5px;
+      border-radius: 3px;
+      background: var(--article-code-background);
+      color: var(--article-code-text);
+      font-family: Consolas, "Cascadia Code", monospace;
+      font-size: 0.83em;
+    }
+
+    pre {
+      margin: 14px 0 22px;
+      padding: 20px 22px;
+      border: 1px solid var(--article-border);
+      background: var(--article-code-background);
+      color: var(--article-code-text);
+      white-space: pre-wrap;
+
+      code {
+        display: block;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: inherit;
+        font-size: 13px;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+    }
+
+    table {
+      width: 100%;
+      margin: 16px 0 22px;
+      border-collapse: collapse;
+      color: var(--article-text);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    th,
+    td {
+      padding: 11px 13px;
+      border-bottom: 1px solid var(--article-border);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--article-surface);
+      font-weight: 650;
+
+      a,
+      strong {
+        color: inherit;
+      }
+
+      &:not([align]) {
+        text-align: left;
+      }
+    }
+
+    hr {
+      height: 0;
+      margin: 28px 0 17px;
+      border: 0;
+      border-top: 1px solid var(--article-border);
+    }
+
+    img,
+    video,
+    svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    figure {
+      margin: 24px 0;
+    }
+
+    figcaption {
+      color: var(--article-muted);
+      font-size: 14px;
+    }
+
+    mjx-container[display="true"] {
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+  }
+}
+
+@media (max-width: 520px) {
+  #mdimg-body .markdown-body {
+    padding: 30px 23px;
+
+    h1 {
+      font-size: 33px;
+    }
+
+    h2 {
+      font-size: 19px;
+    }
+
+    blockquote {
+      padding: 16px;
+    }
+
+    pre {
+      padding: 15px;
+    }
+
+    th,
+    td {
+      padding: 9px 8px;
+      font-size: 13px;
+    }
+  }
+}

@@ -21,6 +21,15 @@ First, the script calls [marked](https://github.com/markedjs/marked) to parse Ma
 | <img alt="github dark preview" src="./docs/linux/githubDark.png" height="150"> | <img alt="github dark preview" src="./docs/darwin/githubDark.png" height="150"> | <img alt="github dark preview" src="./docs/win32/githubDark.png" height="150"> | `default`     | `githubDark` | Should be used with `theme: "dark"`               |
 | <img alt="words preview" src="./docs/linux/words.png" height="150">            | <img alt="words preview" src="./docs/darwin/words.png" height="150">            | <img alt="words preview" src="./docs/win32/words.png" height="150">            | `words`       | `words`      | It is recommended to use with **plain text only** |
 
+And more showcases with build-in CSS Templates:
+
+- [`blueprint`](./docs/win32/blueprint.png)
+- [`botanical`](./docs/win32/botanical.png)
+- [`midnight`](./docs/win32/midnight.png)
+- [`paper`](./docs/win32/paper.png)
+- [`pop`](./docs/win32/pop.png)
+- [`swiss`](./docs/win32/swiss.png)
+
 ## Requirements
 
 This tool requires a **LTS Node version (v22.12.0+)**.

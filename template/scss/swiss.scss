@@ -1,0 +1,67 @@
+@use "./partials/article";
+
+#mdimg-body {
+  --article-background: #ffffff;
+  --article-text: #191919;
+  --article-accent: #c22b20;
+  --article-surface: #f2f2ef;
+  --article-border: #c7c7c1;
+  --article-muted: #5b5b54;
+  --article-code-background: #f3f3f0;
+  --article-code-text: #20201d;
+
+  border-left: 12px solid var(--article-accent);
+
+  .markdown-body {
+    padding-left: 42px;
+
+    h1 {
+      max-width: 8em;
+      font-size: 50px;
+      font-weight: 900;
+      letter-spacing: -0.06em;
+    }
+
+    h2 {
+      padding-top: 12px;
+      border-top: 5px solid var(--article-text);
+    }
+
+    blockquote {
+      padding: 20px 24px;
+      border: 0;
+      background: var(--article-accent);
+      color: var(--article-background);
+      font-weight: 650;
+
+      strong,
+      a {
+        color: inherit;
+      }
+    }
+
+    th {
+      background: var(--article-text);
+      color: var(--article-background);
+    }
+
+    pre {
+      border: 0;
+      border-left: 3px solid var(--article-text);
+    }
+  }
+}
+
+@media (max-width: 520px) {
+  #mdimg-body {
+    border-left-width: 7px;
+
+    .markdown-body {
+      padding-left: 23px;
+
+      h1 {
+        font-size: 33px;
+      }
+    }
+  }
+}

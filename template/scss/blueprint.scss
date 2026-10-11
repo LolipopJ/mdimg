@@ -1,0 +1,65 @@
+@use "./partials/article";
+
+#mdimg-body {
+  --article-background: #f1f7fc;
+  --article-text: #193d60;
+  --article-accent: #155b92;
+  --article-surface: #dfedf7;
+  --article-border: #a5bfd3;
+  --article-muted: #4b657d;
+  --article-code-background: #e4eff8;
+  --article-code-text: #153956;
+
+  border: 1px solid var(--article-border);
+  background-image:
+    linear-gradient(#2160980a 1px, transparent 1px),
+    linear-gradient(90deg, #2160980a 1px, transparent 1px);
+  background-size: 24px 24px;
+
+  .markdown-body {
+    counter-reset: blueprint-section;
+
+    h1 {
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--article-accent);
+      color: var(--article-accent);
+      font-size: 38px;
+      letter-spacing: -0.035em;
+    }
+
+    h2 {
+      counter-increment: blueprint-section;
+      font-size: 19px;
+
+      &::before {
+        margin-right: 13px;
+        color: var(--article-accent);
+        font-family: Consolas, "Cascadia Code", monospace;
+        font-size: 14px;
+        font-weight: 500;
+        content: counter(blueprint-section, decimal-leading-zero);
+      }
+    }
+
+    blockquote {
+      border: 1px dashed var(--article-accent);
+      border-left: 4px solid var(--article-accent);
+      background: #e9f3fb;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--article-border);
+    }
+
+    td {
+      background: var(--article-background);
+    }
+  }
+}
+
+@media (max-width: 520px) {
+  #mdimg-body .markdown-body h1 {
+    font-size: 33px;
+  }
+}
