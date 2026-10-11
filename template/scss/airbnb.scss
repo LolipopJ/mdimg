@@ -1,0 +1,228 @@
+@use "./partials/article";
+
+// Airbnb: white canvas, quiet typography, soft corners and a little Rausch.
+#mdimg-body {
+  --article-background: #ffffff;
+  --article-text: #222222;
+  --article-accent: #ff385c;
+  --article-surface: #f7f7f7;
+  --article-border: #dddddd;
+  --article-muted: #6a6a6a;
+  --article-code-background: #f7f7f7;
+  --article-code-text: #222222;
+
+  font-family:
+    "Airbnb Cereal VF",
+    Circular,
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    Roboto,
+    "Helvetica Neue",
+    "Microsoft YaHei",
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+
+  .markdown-body {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 64px 48px;
+    color: #3f3f3f;
+
+    h1 {
+      margin-bottom: 32px;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.43;
+      letter-spacing: 0;
+
+      &::after {
+        display: block;
+        width: 48px;
+        height: 4px;
+        margin-top: 24px;
+        border-radius: 9999px;
+        background: var(--article-accent);
+        content: "";
+      }
+    }
+
+    h2 {
+      margin: 48px 0 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #ebebeb;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1.18;
+      letter-spacing: -0.44px;
+    }
+
+    h3 {
+      margin: 32px 0 16px;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.18px;
+    }
+
+    h4,
+    h5,
+    h6 {
+      margin: 24px 0 12px;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    h5,
+    h6 {
+      font-weight: 500;
+    }
+
+    h6 {
+      font-size: 14px;
+    }
+
+    p {
+      margin-bottom: 24px;
+    }
+
+    strong {
+      color: var(--article-text);
+      font-weight: 600;
+    }
+
+    a {
+      color: var(--article-text);
+      text-decoration-color: var(--article-accent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+
+      &:active {
+        color: #e00b41;
+      }
+
+      &:focus-visible {
+        border-radius: 4px;
+        outline: 2px solid var(--article-text);
+        outline-offset: 4px;
+      }
+    }
+
+    blockquote {
+      margin: 32px 0;
+      padding: 24px;
+      border: 1px solid #ebebeb;
+      border-radius: 14px;
+      color: var(--article-text);
+    }
+
+    ul,
+    ol {
+      padding-left: 24px;
+    }
+
+    li {
+      margin: 8px 0;
+
+      &::marker {
+        color: var(--article-text);
+      }
+    }
+
+    code,
+    kbd {
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.875em;
+    }
+
+    kbd {
+      border: 1px solid var(--article-border);
+      border-bottom-width: 2px;
+      background: var(--article-background);
+    }
+
+    pre {
+      margin: 24px 0 32px;
+      padding: 24px;
+      border-color: #ebebeb;
+      border-radius: 14px;
+
+      code {
+        font-size: 14px;
+        line-height: 1.6;
+      }
+    }
+
+    table {
+      margin: 24px 0 32px;
+      border: 1px solid var(--article-border);
+      border-spacing: 0;
+      border-collapse: separate;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    th,
+    td {
+      padding: 16px;
+    }
+
+    th {
+      font-weight: 600;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    hr {
+      margin: 48px 0;
+      border-color: #ebebeb;
+    }
+
+    img,
+    video {
+      border-radius: 14px;
+    }
+
+    figure {
+      margin: 32px 0;
+    }
+
+    figcaption {
+      margin-top: 12px;
+      line-height: 1.43;
+      text-align: center;
+    }
+  }
+}
+
+@media (max-width: 743px) {
+  #mdimg-body .markdown-body {
+    padding: 32px 24px;
+
+    h1 {
+      font-size: 28px;
+    }
+
+    h2 {
+      margin-top: 32px;
+      font-size: 22px;
+    }
+
+    blockquote,
+    pre {
+      padding: 16px;
+    }
+
+    th,
+    td {
+      padding: 12px 8px;
+      font-size: 14px;
+    }
+  }
+}

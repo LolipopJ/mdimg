@@ -692,6 +692,21 @@ pnpm run build
 pnpm run preview
 ```
 
+The preview script discovers styles from `template/css/*.css` and defaults to
+three concurrent conversions. Style names are filenames without `.css`.
+`--options` accepts a JSON object of mdimg rendering options and overrides the
+common defaults and style-specific presets. The selected style, output filename,
+and binary encoding are managed by the script. For custom output directories,
+use `--output <directory>` (or `-o`). You can also import `generatePreviews` from
+the script and call it with `{ styles, concurrency, outputDir, options }`.
+
+```bash
+# Generate only selected styles, with at most two conversions at once
+pnpm run preview ./script/generate-previews.mjs airbnb blueprint --concurrency 2
+# Override rendering options and the output directory
+pnpm run preview ./script/generate-previews.mjs airbnb --output ./preview-output --options '{"width":1200,"extensions":false}'
+```
+
 ### Test
 
 ```bash
