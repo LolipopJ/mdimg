@@ -4,10 +4,6 @@ export interface IConvertOptions {
     inputText?: string;
     /** Filename of source Markdown or HTML */
     inputFilename?: string;
-    /** @deprecated: rename to `inputText` */
-    mdText?: string;
-    /** @deprecated: rename to `inputFilename` */
-    mdFile?: string;
     /**
      * Output binary image filename. File type can be `jpeg`, `png` or `webp`. Available when `encoding: "binary"`.
      * Existing files are overwritten only after the new output is fully written.

@@ -17,6 +17,7 @@ export declare class PluginManager {
      *
      * A plugin enters this set when ANY of the following are suppressed via the
      * `extensions` config:
+     *   - all extensions globally (`extensions = false`), or
      *   - the plugin's own name (`extensions[pluginName] = false`), or
      *   - the name of any `IExtension` the plugin owns
      *     (`extensions[extensionName] = false`).
@@ -39,9 +40,8 @@ export declare class PluginManager {
     getExtensions(): IExtension[];
     /**
      * Return all marked extensions declared by plugins, in registration order.
-     * Plugins whose name appears in `suppressedPluginNames` (i.e. suppressed via
-     * `extensions[pluginName] = false`) are excluded so that their tokenizers and
-     * renderers do not participate in parsing when the plugin is disabled.
+     * Suppressed plugins are excluded so that their tokenizers and renderers
+     * do not participate in parsing when their extensions are disabled.
      */
     getMarkedExtensions(): MarkedExtension[];
 }
