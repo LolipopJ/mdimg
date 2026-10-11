@@ -2,6 +2,10 @@ const { execFileSync, spawnSync } = require("child_process");
 const { load } = require("cheerio");
 const { readFileSync, readdirSync, writeFileSync } = require("fs");
 const { resolve } = require("path");
+const { pathToFileURL } = require("node:url");
+const puppeteer = requirePackage(__filename)("puppeteer");
+const { findBrowser, prepareOfflinePage } = require("./helpers/browser");
+const { waitForReady } = require("./helpers/offline-assertions");
 const { useImageAssertions } = require("./helpers/assertions");
 const { useWorkspace } = require("./helpers/workspace");
 
@@ -28,6 +32,63 @@ test("CLI: base conversion writes a readable PNG", async () => {
   const stdout = runCli([...inputArgs(), "-o", outputFilename]);
   expect(stdout.length).toBe(0);
   await expectImage(readFileSync(outputFilename), "png");
+});
+
+test("CLI: valid extension JSON enables single-dollar MathJax rendering", async () => {
+  writeFileSync(workspace.inputFilename, "$x+1$");
+  const outputFilename = resolve(workspace.dir, "inline-math.png");
+  const result = spawnSync(
+    process.execPath,
+    [
+      cliFilename,
+      "-i",
+      workspace.inputFilename,
+      "-o",
+      outputFilename,
+      "--debug",
+      "--extensions",
+      JSON.stringify({
+        highlightJs: false,
+        mermaid: false,
+        mathJax: { tex: { inlineMath: [["$", "$"]] } },
+      }),
+    ],
+    { cwd: workspace.dir, encoding: "utf8", timeout: 30000 },
+  );
+  expect(result.error).toBeUndefined();
+  expect(result.status).toBe(0);
+  expect(result.stdout).toBe("");
+  await expectImage(readFileSync(outputFilename), "png");
+  const temporary = readdirSync(workspace.dir).filter((file) =>
+    file.startsWith(".mdimg_temp_"),
+  );
+  expect(temporary).toHaveLength(1);
+  const browser = await puppeteer.launch({
+    executablePath: await findBrowser(),
+    args: ["--no-sandbox"],
+  });
+  const externalRequests = [],
+    pageErrors = [],
+    consoleErrors = [];
+  try {
+    const page = await browser.newPage();
+    await prepareOfflinePage(page, externalRequests, pageErrors, {
+      consoleErrors,
+    });
+    await page.goto(pathToFileURL(resolve(workspace.dir, temporary[0])).href);
+    await waitForReady(page);
+    expect(
+      await page.$$eval('mjx-container[jax="SVG"]', (nodes) => nodes.length),
+    ).toBe(1);
+    expect(
+      await page.$$eval("mjx-container path[d]", (nodes) => nodes.length),
+    ).toBeGreaterThan(0);
+    expect(externalRequests).toEqual([]);
+    expect(pageErrors).toEqual([]);
+    expect(consoleErrors).toEqual([]);
+  } finally {
+    await browser.close();
+  }
 });
 
 test.each([

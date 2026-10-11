@@ -102,6 +102,7 @@ describe("MATHJAX: offline SVG adapter", () => {
             loaded,
             loadedForFormula,
             count: containers.length,
+            text: document.body.textContent,
             paths: containers.map(
               (container) => container.querySelectorAll("path[d]").length,
             ),
@@ -184,6 +185,13 @@ describe("MATHJAX: offline SVG adapter", () => {
     expect(
       configured.loaded.includes("mathjax/input/tex/extensions/cancel.js"),
     ).toBeTruthy();
+  });
+  test("leaves single dollar delimiters as text by default", async () => {
+    const result = await render({ html: "<p>$x+1$</p>" });
+    expect(result.error).toBeUndefined();
+    expect(result.scriptErrors).toEqual([]);
+    expect(result.count).toBe(0);
+    expect(result.text).toBe("$x+1$");
   });
   test("supports TeX-only input", async () => {
     const texOnly = await render({

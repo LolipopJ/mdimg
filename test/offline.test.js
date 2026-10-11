@@ -194,7 +194,7 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
           },
         },
       });
-      return openHtml(
+      await openHtml(
         html,
         async (page) => {
           const paths = await page.$$eval(
@@ -202,19 +202,54 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
             (nodes) => nodes.length,
           );
           expect(paths > 0).toBeTruthy();
-          return {
-            paths,
-          };
         },
         join(relocated, "tex-only.html"),
       );
     });
-    for (const [name, options] of [
+    test.each([false, true])(
+      "single-dollar-api-enabled-%s",
+      async (enabled) => {
+        const { html } = await outputHtml({
+          inputFilename: undefined,
+          inputText: "$x+1$",
+          extensions: {
+            highlightJs: false,
+            mermaid: false,
+            mathJax: enabled ? { tex: { inlineMath: [["$", "$"]] } } : true,
+          },
+        });
+        await openHtml(html, async (page) => {
+          const result = await page.evaluate(() => ({
+            count: document.querySelectorAll('mjx-container[jax="SVG"]').length,
+            paths: document.querySelectorAll("mjx-container path[d]").length,
+            text: document.querySelector(".markdown-body p").textContent,
+          }));
+          expect(result.count).toBe(enabled ? 1 : 0);
+          if (enabled) expect(result.paths).toBeGreaterThan(0);
+          else expect(result.text).toBe("$x+1$");
+        });
+      },
+    );
+    for (const [name, options, colors] of [
+      [
+        "light",
+        { theme: "light" },
+        ["rgb(250, 250, 250)", "rgb(166, 38, 164)"],
+      ],
       [
         "dark",
         {
           theme: "dark",
         },
+        ["rgb(40, 44, 52)", "rgb(198, 120, 221)"],
+      ],
+      [
+        "light-with-github-dark",
+        {
+          theme: "light",
+          extensions: { highlightJs: { theme: "github-dark" } },
+        },
+        ["rgb(13, 17, 23)", "rgb(255, 123, 114)"],
       ],
       [
         "brown-paper",
@@ -241,15 +276,22 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
         const { html } = await outputHtml(options);
         const content = await openHtml(
           html,
-          expectDocument,
+          async (page) => {
+            const content = await expectDocument(page);
+            if (colors) {
+              expect(
+                await page.$eval("code.language-javascript", (code) => [
+                  getComputedStyle(code).backgroundColor,
+                  getComputedStyle(code.querySelector(".hljs-keyword")).color,
+                ]),
+              ).toEqual(colors);
+            }
+            return content;
+          },
           join(relocated, `${name}.html`),
         );
         if (name === "brown-paper")
           expect(content.codeBackground.startsWith('url("data:')).toBeTruthy();
-        return {
-          htmlBytes: Buffer.byteLength(html),
-          content,
-        };
       });
     }
     for (const [mode, options] of [
@@ -263,6 +305,7 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
           },
         },
       ],
+      ["legacyMathML", { extensions: { mermaid: { legacyMathML: true } } }],
       [
         "directive",
         {
@@ -285,11 +328,14 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
                   html.replace(
                     /<\/body>(?=\s*<\/html>\s*$)/,
                     `<script>
+          ${mode === "legacyMathML" ? "globalThis.MathMLElement = undefined;" : ""}
           const originalRun = mermaid.run.bind(mermaid);
           mermaid.run = options => {
-            if (Array.from(document.fonts).some(font => font.family.includes('KaTeX_') && font.status !== 'loaded')) {
+            const fonts = Array.from(document.fonts).filter(font => font.family.includes('KaTeX_'));
+            if (!fonts.length || fonts.some(font => font.status !== 'loaded')) {
               throw new Error('KaTeX fonts were not loaded before Mermaid layout');
             }
+            globalThis.katexFontsBeforeLayout = fonts.length;
             return originalRun(options);
           };
         </script></body>`,
@@ -298,7 +344,7 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
             },
           ],
         });
-        return openHtml(
+        await openHtml(
           html,
           async (page) => {
             const label = await page.$eval(".mermaid .katex-html", (node) => ({
@@ -306,9 +352,9 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
               height: node.getBoundingClientRect().height,
             }));
             expect(label.width > 0 && label.height > 0).toBeTruthy();
-            return {
-              label,
-            };
+            expect(
+              await page.evaluate(() => globalThis.katexFontsBeforeLayout),
+            ).toBeGreaterThan(0);
           },
           join(relocated, `legacy-${mode}.html`),
         );
@@ -333,18 +379,16 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
       const { html } = await outputHtml({
         extensions: false,
       });
-      return {
-        content: await openHtml(
-          html,
-          (page) =>
-            expectDocument(page, {
-              math: false,
-              mermaid: false,
-              highlight: false,
-            }),
-          join(relocated, "disabled.html"),
-        ),
-      };
+      await openHtml(
+        html,
+        (page) =>
+          expectDocument(page, {
+            math: false,
+            mermaid: false,
+            highlight: false,
+          }),
+        join(relocated, "disabled.html"),
+      );
     });
     test("builtins-replaced", async () => {
       const { html } = await outputHtml({
@@ -360,10 +404,10 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
           },
         ],
       });
-      const content = await openHtml(
+      await openHtml(
         html,
         async (page) => {
-          const result = await expectDocument(page, {
+          await expectDocument(page, {
             math: false,
             mermaid: false,
             highlight: false,
@@ -375,13 +419,9 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
               globalThis.replaced_mermaid,
             ]),
           ).toEqual([true, true, true]);
-          return result;
         },
         join(relocated, "replaced.html"),
       );
-      return {
-        content,
-      };
     });
     test("inline-script-boundary", async () => {
       const { html } = await outputHtml({
@@ -392,18 +432,16 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
           },
         },
       });
-      return {
-        content: await openHtml(
-          html,
-          async (page) => {
-            expect(
-              await page.evaluate(() => globalThis.offlineBoundary),
-            ).toBeUndefined();
-            return expectDocument(page);
-          },
-          join(relocated, "script-boundary.html"),
-        ),
-      };
+      await openHtml(
+        html,
+        async (page) => {
+          expect(
+            await page.evaluate(() => globalThis.offlineBoundary),
+          ).toBeUndefined();
+          return expectDocument(page);
+        },
+        join(relocated, "script-boundary.html"),
+      );
     });
     test("standalone-html-error-diagnostic", async () => {
       errorsExpected = true;
@@ -415,8 +453,11 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
       writeFileSync(file, html);
       const context = await browser.createBrowserContext();
       const page = await context.newPage();
+      const consoleErrors = [];
       try {
-        await prepareOfflinePage(page, externalRequests, pageErrors);
+        await prepareOfflinePage(page, externalRequests, pageErrors, {
+          consoleErrors,
+        });
         await page.goto(pathToFileURL(file).href, {
           waitUntil: "load",
         });
@@ -425,9 +466,7 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
         );
         const diagnostic = await page.evaluate(() => globalThis.__mdimgError);
         expect(diagnostic).toMatch(/mathjax/i);
-        return {
-          diagnostic,
-        };
+        expect(consoleErrors).toContain(diagnostic);
       } finally {
         await context.close();
       }
@@ -457,7 +496,7 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
       });
       expect(existsSync(result.path)).toBeTruthy();
       expect(preparedApiPages).toBe(before + 1);
-      return verify(result.data);
+      await verify(result.data);
     });
   }
   if (!smokeOnly)
@@ -516,6 +555,30 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
         },
         /Mermaid.*layout.*missing-layout.*not packaged/i,
       ],
+      [
+        "remote-node-image",
+        {
+          inputFilename: undefined,
+          inputText:
+            '```mermaid\nflowchart TD\n A@{ img: "https://mdimg.invalid/node.png", label: "Remote" }\n```',
+        },
+        /Mermaid.*image.*https:\/\/mdimg\.invalid\/node\.png.*not packaged/i,
+      ],
+      ...[
+        ["remote-theme-import", '@import "https://mdimg.invalid/theme.css";'],
+        [
+          "remote-theme-url",
+          '.node { background: url("https://mdimg.invalid/texture.png"); }',
+        ],
+      ].map(([name, themeCSS]) => [
+        name,
+        {
+          inputFilename: undefined,
+          inputText: "```mermaid\nflowchart TD\n A --> B\n```",
+          extensions: { mermaid: { themeCSS } },
+        },
+        /Mermaid.*external styles\/fonts.*not packaged/i,
+      ]),
       [
         "invalid-formula",
         {
@@ -693,28 +756,32 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
           writeFileSync(file, html);
           const context = await browser.createBrowserContext();
           const page = await context.newPage();
+          const consoleErrors = [];
           try {
-            await prepareOfflinePage(page, externalRequests, pageErrors);
+            await prepareOfflinePage(page, externalRequests, pageErrors, {
+              consoleErrors,
+            });
             await page.goto(pathToFileURL(file).href, {
               waitUntil: "load",
             });
             await expect(waitForReady(page, 35000)).rejects.toThrow(diagnostic);
-            expect(await page.evaluate(() => globalThis.__mdimgError)).toMatch(
-              diagnostic,
-            );
+            const message = await page.evaluate(() => globalThis.__mdimgError);
+            expect(message).toMatch(diagnostic);
+            expect(consoleErrors).toContain(message);
           } finally {
             await context.close();
           }
-          return {};
+          return;
         }
         await expect(
-          api.mdimg({
-            ...baseOptions,
-            ...options,
-            encoding: "blob",
-          }),
+          api
+            .mdimg({
+              ...baseOptions,
+              ...options,
+              encoding: "blob",
+            })
+            .then(() => undefined),
         ).rejects.toThrow(diagnostic);
-        return {};
       });
     }
 });

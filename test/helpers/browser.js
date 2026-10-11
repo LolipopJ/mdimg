@@ -21,7 +21,12 @@ async function findBrowser() {
   return executablePath;
 }
 
-async function prepareOfflinePage(page, externalRequests, pageErrors) {
+async function prepareOfflinePage(
+  page,
+  externalRequests,
+  pageErrors,
+  { consoleErrors = [], handleLocalRequest } = {},
+) {
   await page.setCacheEnabled(false);
   const session = await page.createCDPSession();
   await session.send("Network.clearBrowserCache");
@@ -30,11 +35,14 @@ async function prepareOfflinePage(page, externalRequests, pageErrors) {
     if (/^https?:/i.test(request.url())) {
       externalRequests.push(request.url());
       void request.abort();
-    } else {
+    } else if (!handleLocalRequest?.(request)) {
       void request.continue();
     }
   });
   page.on("pageerror", (error) => pageErrors.push(String(error)));
+  page.on("console", (message) => {
+    if (message.type() === "error") consoleErrors.push(message.text());
+  });
   await page.setOfflineMode(true);
 }
 
