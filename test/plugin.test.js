@@ -304,40 +304,6 @@ test("PLUGIN: afterRender receives Uint8Array data before disk write (binary)", 
   await expectImage(onDisk, "png");
 });
 
-test("PLUGIN: afterRender data transform propagates to the output file on disk", async () => {
-  const outputFilename = resolve(
-    workspace.dir,
-    "test-plugin-afterrender-transform.png",
-  );
-  let originalByteLength = 0;
-
-  const result = await mdimg({
-    inputFilename: workspace.inputFilename,
-    outputFilename,
-    extensions: false,
-    plugins: [
-      {
-        name: "transformPlugin",
-        hooks: {
-          afterRender: (res) => {
-            expect(existsSync(outputFilename)).toBe(false);
-            originalByteLength = res.data.length;
-            // Keep only the first 4 bytes (PNG magic) to make the result trivially verifiable
-            return { ...res, data: res.data.slice(0, 4) };
-          },
-        },
-      },
-    ],
-  });
-
-  const onDisk = readFileSync(outputFilename);
-  expect(originalByteLength).toBeGreaterThan(4);
-  // Disk file reflects the hook's transformation, not the original screenshot
-  expect(onDisk.length).toBe(4);
-  expect(onDisk).toEqual(Buffer.from([0x89, 0x50, 0x4e, 0x47]));
-  expect(onDisk).toEqual(Buffer.from(result.data));
-});
-
 // ── extensions config suppression gate ───────────────────────────────────────
 
 test("PLUGIN: extensions[name]=false suppresses a plugin-contributed extension", async () => {

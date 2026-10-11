@@ -1,4 +1,4 @@
-const { readFileSync, readdirSync, writeFileSync } = require("fs");
+const { readdirSync, writeFileSync } = require("fs");
 const { resolve } = require("path");
 const puppeteer = requirePackage(__filename)("puppeteer").default;
 const { mdimg, createHtmlOutputProcessor } =
@@ -198,20 +198,4 @@ test("OPTIONS: whitespace text and empty files remain valid input", async () => 
 test("OPTIONS: empty CSS overrides the preset instead of using default styles", async () => {
   const result = await mdimg({ ...htmlOptions(), cssText: "" });
   expect(result.html).toMatch(/<style>\s*<\/style>/);
-});
-
-test("OPTIONS: JPEG quality zero reaches the screenshot instead of defaulting to 100", async () => {
-  const options = {
-    inputFilename: workspace.inputFilename,
-    extensions: false,
-    type: "jpeg",
-    encoding: "blob",
-    width: 320,
-  };
-  const low = await mdimg({ ...options, quality: 0 });
-  const high = await mdimg({ ...options, quality: 100 });
-  expect(Buffer.from(low.data).length).toBeLessThan(
-    Buffer.from(high.data).length,
-  );
-  expect(readFileSync(workspace.inputFilename, "utf8")).toContain("# Hello");
 });

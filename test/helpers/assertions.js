@@ -95,7 +95,7 @@ function useImageAssertions() {
   };
 }
 
-function expectPdf(data) {
+function expectPdf(data, { width = 288, height = 216 } = {}) {
   const pages = JSON.parse(
     execFileSync(process.execPath, [resolve(__dirname, "read-pdf.mjs")], {
       input: Buffer.from(data),
@@ -105,8 +105,9 @@ function expectPdf(data) {
     }),
   );
   expect(pages).toHaveLength(1);
-  expect(pages[0].width).toBeCloseTo(288, 0);
-  expect(pages[0].height).toBeCloseTo(216, 0);
+  // Chromium rounds paper dimensions to device units; allow at most one point.
+  expect(Math.abs(pages[0].width - width)).toBeLessThanOrEqual(1);
+  expect(Math.abs(pages[0].height - height)).toBeLessThanOrEqual(1);
   expect(pages[0].text).toContain("Hello");
   expect(pages[0].text).toContain("This is a test document.");
   expect(pages[0].text).toContain("console.log('hi');");

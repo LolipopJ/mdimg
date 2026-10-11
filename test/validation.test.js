@@ -1,4 +1,4 @@
-const { mdimg, createImageOutputProcessor } =
+const { mdimg, createImageOutputProcessor, createPdfOutputProcessor } =
   requirePackage(__filename)("../lib/mdimg.js");
 const { expectPdf, useImageAssertions } = require("./helpers/assertions");
 const { useWorkspace } = require("./helpers/workspace");
@@ -38,4 +38,17 @@ test("VALIDATION: a readable image with the wrong width fails the size assertion
 
 test("VALIDATION: a PDF header without a document fails parsing", () => {
   expect(() => expectPdf(Buffer.from("%PDF-1.7\n%%EOF\n"))).toThrow();
+});
+
+test("VALIDATION: a readable PDF with the wrong paper size fails the size assertion", async () => {
+  const result = await mdimg({
+    inputFilename: workspace.inputFilename,
+    extensions: false,
+    cssText: "body { margin: 0; } h1 { margin: 0; }",
+    outputProcessor: createPdfOutputProcessor({ width: "4in", height: "3in" }),
+  });
+  expectPdf(result.data);
+  expect(() =>
+    expectPdf(result.data, { width: 595.28, height: 841.89 }),
+  ).toThrow(/toBeLessThanOrEqual/);
 });
