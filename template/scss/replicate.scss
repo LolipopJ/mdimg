@@ -140,11 +140,6 @@
       text-decoration-thickness: 1px;
       text-underline-offset: 4px;
 
-      &:hover,
-      &:active {
-        color: #c01f00;
-      }
-
       &:focus-visible {
         outline: 3px solid rgba(59, 130, 246, 0.5);
         outline-offset: 4px;
@@ -189,6 +184,15 @@
       border-radius: 16px;
       background: var(--article-surface);
       color: var(--article-text);
+
+      blockquote {
+        margin: 16px 0;
+        padding: 12px 16px;
+        border: 0;
+        border-left: 2px solid var(--article-muted);
+        border-radius: 0;
+        background: transparent;
+      }
     }
 
     pre,
@@ -216,11 +220,8 @@
     pre {
       margin: 32px 0;
       padding: 24px;
-      overflow-x: hidden;
       border: 0;
       border-radius: 10px;
-      white-space: pre;
-      overflow-wrap: normal;
       word-break: normal;
 
       code {
@@ -228,7 +229,6 @@
         font-size: inherit;
         font-weight: inherit;
         line-height: inherit;
-        white-space: inherit;
         overflow-wrap: inherit;
         word-break: inherit;
       }
@@ -318,14 +318,6 @@
       font-size: 96px;
       letter-spacing: -2.4px;
     }
-  }
-}
-
-@media (width < 1024px) {
-  #mdimg-body > .markdown-body pre {
-    overflow-x: hidden;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
   }
 }
 

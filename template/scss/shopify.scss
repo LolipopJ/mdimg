@@ -105,11 +105,6 @@
       text-decoration-thickness: 1px;
       text-underline-offset: 4px;
 
-      &:hover,
-      &:active {
-        color: #3f3f46;
-      }
-
       &:focus-visible {
         border-radius: 4px;
         outline: 2px solid var(--article-text);
@@ -138,6 +133,14 @@
       border-radius: 12px;
       background: #d4f9e0;
       color: var(--article-text);
+
+      blockquote {
+        margin: 16px 0;
+        padding: 12px 16px;
+        border-left: 2px solid var(--article-text);
+        border-radius: 0;
+        background: #c1fbd4;
+      }
     }
 
     code,

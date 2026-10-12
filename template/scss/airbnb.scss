@@ -31,6 +31,11 @@
     padding: 64px 48px;
     color: #3f3f3f;
 
+    :is(h1, h2, h3, h4, h5, h6) strong {
+      color: inherit;
+      font-weight: inherit;
+    }
+
     h1 {
       margin-bottom: 32px;
       font-size: 28px;
@@ -100,10 +105,6 @@
       text-decoration-thickness: 1px;
       text-underline-offset: 3px;
 
-      &:active {
-        color: #e00b41;
-      }
-
       &:focus-visible {
         border-radius: 4px;
         outline: 2px solid var(--article-text);
@@ -117,6 +118,15 @@
       border: 1px solid #ebebeb;
       border-radius: 14px;
       color: var(--article-text);
+
+      blockquote {
+        margin: 16px 0;
+        padding: 8px 16px;
+        border: 0;
+        border-left: 2px solid var(--article-accent);
+        border-radius: 0;
+        background: transparent;
+      }
     }
 
     ul,

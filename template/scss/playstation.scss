@@ -97,11 +97,6 @@
       letter-spacing: 0;
       text-decoration: none;
 
-      &:active {
-        text-decoration: underline;
-        text-underline-offset: 4px;
-      }
-
       &:focus-visible {
         outline: 2px solid currentcolor;
         outline-offset: 4px;
@@ -149,6 +144,14 @@
       border-radius: 8px;
       background: var(--article-background);
       color: rgb(255 255 255 / 70%);
+
+      blockquote {
+        margin: 16px 0;
+        padding: 12px 16px;
+        border-left: 2px solid var(--article-border);
+        border-radius: 0;
+        background: var(--article-surface);
+      }
 
       a {
         color: #53b1ff;

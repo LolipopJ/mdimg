@@ -113,6 +113,13 @@
       border: 0;
       border-radius: 0;
       color: var(--article-text);
+
+      blockquote {
+        margin: 16px 0;
+        padding: 8px 16px;
+        border-left: 2px solid var(--article-text);
+        background: transparent;
+      }
     }
 
     ul,

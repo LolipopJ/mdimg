@@ -91,6 +91,10 @@
       border-left: 3px solid var(--article-accent);
       background: var(--article-surface);
 
+      > :first-child {
+        margin-top: 0;
+      }
+
       > :last-child {
         margin-bottom: 0;
       }
@@ -145,9 +149,11 @@
       background: var(--article-code-background);
       color: var(--article-code-text);
       white-space: pre-wrap;
+      overflow-wrap: anywhere;
 
       code {
         display: block;
+        overflow: visible;
         padding: 0;
         border: 0;
         border-radius: 0;
@@ -216,7 +222,7 @@
 
     mjx-container[display="true"] {
       max-width: 100%;
-      overflow: auto hidden;
+      overflow: visible;
     }
   }
 }

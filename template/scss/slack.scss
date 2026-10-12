@@ -137,12 +137,6 @@
       text-decoration-thickness: 1px;
       text-underline-offset: 3px;
 
-      &:hover,
-      &:active {
-        color: #3860be;
-        text-decoration: underline;
-      }
-
       &:focus-visible {
         border-radius: 2px;
         outline: 2px solid currentcolor;
@@ -182,6 +176,14 @@
     }
 
     blockquote {
+      --article-background: #4a154b;
+      --article-text: #fff;
+      --article-surface: #592466;
+      --article-border: rgb(255 255 255 / 25%);
+      --article-muted: #d9bdde;
+      --article-code-background: #481a54;
+      --article-code-text: #fff;
+
       margin: 40px 0;
       padding: 32px;
       border: 0;
@@ -190,6 +192,15 @@
       color: #fff;
       font-size: 18px;
       letter-spacing: -0.0216px;
+
+      blockquote {
+        margin: 16px 0;
+        padding: 12px 20px;
+        border-left: 2px solid #d9bdde;
+        border-radius: 0;
+        background: #592466;
+        font-size: 1em;
+      }
 
       h1,
       h2,
@@ -205,11 +216,6 @@
       a {
         color: #fff;
         text-decoration: underline;
-
-        &:hover,
-        &:active {
-          color: #d9bdde;
-        }
       }
 
       small,
@@ -262,15 +268,6 @@
       background: var(--article-background);
       font-size: 16px;
       line-height: 1.55;
-
-      a {
-        color: #1264a3;
-
-        &:hover,
-        &:active {
-          color: #3860be;
-        }
-      }
     }
 
     th,
@@ -322,11 +319,6 @@
       font-weight: 700;
       line-height: 1.38;
       letter-spacing: 0.2px;
-      cursor: pointer;
-
-      &:active {
-        background: #611f69;
-      }
 
       &:focus-visible {
         outline: 2px solid currentcolor;

@@ -190,6 +190,15 @@
       border-radius: 16px;
       background: var(--article-surface);
       color: var(--article-text);
+
+      blockquote {
+        margin: 16px 0;
+        padding: 12px 16px;
+        border: 0;
+        border-left: 2px solid var(--elevenlabs-border-strong);
+        border-radius: 0;
+        background: var(--elevenlabs-surface-soft);
+      }
     }
 
     code,
@@ -212,7 +221,6 @@
     pre {
       margin: 32px 0;
       padding: 24px;
-      overflow-x: hidden;
       border: 1px solid var(--article-border);
       border-radius: 16px;
       background: var(--article-surface);
@@ -221,8 +229,6 @@
       font-size: 14px;
       line-height: 1.5;
       letter-spacing: 0;
-      white-space: pre;
-      overflow-wrap: normal;
       word-break: normal;
 
       code {
@@ -231,8 +237,6 @@
         font-family: inherit;
         font-size: inherit;
         line-height: inherit;
-        white-space: pre;
-        overflow-wrap: normal;
         word-break: normal;
       }
     }

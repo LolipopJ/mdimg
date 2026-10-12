@@ -186,6 +186,14 @@
       border-radius: 0;
       background: var(--article-surface);
       color: var(--bmw-m-body-strong);
+
+      blockquote {
+        margin: 16px 0;
+        padding: 12px 16px;
+        border: 0;
+        border-left: 1px solid var(--article-accent);
+        background: var(--bmw-m-surface-soft);
+      }
     }
 
     code,
@@ -207,15 +215,12 @@
       max-width: 100%;
       margin: 40px 0;
       padding: 24px;
-      overflow-x: hidden;
       border: 1px solid var(--article-border);
       border-radius: 0;
       font-family: var(--bmw-m-code-font);
       font-size: 14px;
       font-weight: 400;
       line-height: 1.5;
-      white-space: pre;
-      overflow-wrap: normal;
       word-break: normal;
 
       code {
@@ -223,17 +228,13 @@
         background: transparent;
         color: inherit;
         font: inherit;
-        white-space: inherit;
-        overflow-wrap: normal;
         word-break: normal;
       }
     }
 
     table {
-      display: block;
       max-width: 100%;
       margin: 40px 0;
-      overflow-x: hidden;
       color: var(--article-text);
       font-size: 16px;
       line-height: 1.5;

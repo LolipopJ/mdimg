@@ -102,13 +102,9 @@
 
     a {
       color: var(--article-text);
-      text-decoration-color: var(--cursor-hairline-strong);
+      text-decoration-color: var(--article-accent);
       text-decoration-thickness: 1px;
       text-underline-offset: 3px;
-
-      &:hover {
-        text-decoration-color: currentcolor;
-      }
 
       &:focus-visible {
         border-radius: 4px;
@@ -152,8 +148,13 @@
       background: var(--article-surface);
       color: var(--cursor-body);
 
-      > :first-child {
-        margin-top: 0;
+      blockquote {
+        margin: 16px 0;
+        padding: 8px 16px;
+        border: 0;
+        border-left: 1px solid var(--cursor-hairline-strong);
+        border-radius: 0;
+        background: var(--cursor-canvas-soft);
       }
     }
 

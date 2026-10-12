@@ -115,6 +115,14 @@
       border: 1px solid var(--article-border);
       color: var(--article-muted);
       line-height: 1.7;
+
+      blockquote {
+        margin: 16px 0;
+        padding: 8px 16px;
+        border: 0;
+        border-left: 1px solid var(--article-muted);
+        background: transparent;
+      }
     }
 
     code,
@@ -178,15 +186,23 @@
     }
 
     figure {
+      margin: 32px 0;
+    }
+
+    > figure {
       margin: 48px -48px;
     }
 
     figcaption {
-      margin: 12px 48px 0;
+      margin: 12px 0 0;
       font-size: 13px;
       font-weight: 400;
       line-height: 1.5;
       letter-spacing: 0;
+    }
+
+    > figure > figcaption {
+      margin-inline: 48px;
     }
   }
 }
@@ -210,12 +226,12 @@
       font-size: 28px;
     }
 
-    figure {
+    > figure {
       margin-right: -32px;
       margin-left: -32px;
     }
 
-    figcaption {
+    > figure > figcaption {
       margin-right: 32px;
       margin-left: 32px;
     }
@@ -246,12 +262,12 @@
       font-size: 14px;
     }
 
-    figure {
+    > figure {
       margin-right: -24px;
       margin-left: -24px;
     }
 
-    figcaption {
+    > figure > figcaption {
       margin-right: 24px;
       margin-left: 24px;
     }

@@ -172,6 +172,15 @@
 
     // A rectangular dark tile carries the editorial quote without chrome.
     blockquote {
+      --article-background: var(--apple-dark-surface);
+      --article-text: var(--apple-dark-text);
+      --article-accent: var(--apple-dark-link);
+      --article-surface: var(--apple-dark-surface-secondary);
+      --article-border: rgb(255 255 255 / 20%);
+      --article-muted: var(--apple-dark-muted);
+      --article-code-background: var(--apple-dark-surface-secondary);
+      --article-code-text: var(--apple-dark-text);
+
       margin: 48px 0;
       padding: 48px 32px;
       border: 0;
@@ -180,11 +189,25 @@
       color: var(--apple-dark-text);
       text-align: center;
 
-      p {
+      > p {
         font-size: 24px;
         font-weight: 300;
         line-height: 1.5;
         letter-spacing: 0;
+      }
+
+      blockquote {
+        margin: 24px 0;
+        padding: 16px 24px;
+        border-left: 1px solid var(--apple-dark-muted);
+        background: var(--apple-dark-surface-secondary);
+        text-align: left;
+
+        > p {
+          font-size: 17px;
+          font-weight: 400;
+          line-height: 1.47;
+        }
       }
 
       h1,
@@ -384,7 +407,7 @@
     blockquote {
       padding: 32px 24px;
 
-      p {
+      > p {
         font-size: 21px;
       }
     }

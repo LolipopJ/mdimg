@@ -196,6 +196,22 @@
         font-weight: 700;
         line-height: 1.2;
       }
+
+      blockquote {
+        --dell-ribbon-inset: 12px;
+
+        margin: 12px 0;
+        padding: 8px var(--dell-ribbon-inset);
+        border: 0;
+        border-left: 1px solid var(--article-border);
+        background: transparent;
+
+        > :is(h1, h2, h3, h4, h5, h6):first-child {
+          margin: 0 0 8px;
+          padding: 0 0 4px;
+          background: transparent;
+        }
+      }
     }
 
     $catalog-tints: (
@@ -209,7 +225,7 @@
       8: #8c9ae0,
     );
     @each $index, $tint in $catalog-tints {
-      blockquote:nth-of-type(8n + #{$index}) {
+      > blockquote:nth-of-type(8n + #{$index}) {
         background: $tint;
       }
     }
@@ -237,17 +253,12 @@
       max-width: 100%;
       margin: 16px 0 24px;
       padding: 12px 16px;
-      overflow: hidden;
-      white-space: pre;
-      overflow-wrap: normal;
       word-break: normal;
 
       code {
         font-family: inherit;
         font-size: inherit;
         line-height: inherit;
-        white-space: inherit;
-        overflow-wrap: normal;
         word-break: normal;
       }
     }

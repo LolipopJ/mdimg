@@ -95,12 +95,6 @@
       font-weight: 400;
       text-decoration-thickness: 1px;
       text-underline-offset: 3px;
-      transition: color 0.33s cubic-bezier(0.5, 0, 0, 0.75);
-
-      &:hover,
-      &:active {
-        color: #171a20;
-      }
 
       &:focus-visible {
         border-radius: 4px;
@@ -133,6 +127,13 @@
       padding: 24px;
       border: 0;
       color: var(--article-muted);
+
+      blockquote {
+        margin: 16px 0;
+        padding: 8px 16px;
+        border-left: 1px solid #d0d1d2;
+        background: var(--article-background);
+      }
     }
 
     code,
@@ -211,7 +212,6 @@
     }
   }
 }
-
 @media (width <= 767px) {
   #mdimg-body > .markdown-body {
     padding: 40px 24px;
@@ -243,8 +243,3 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #mdimg-body > .markdown-body a {
-    transition: none;
-  }
-}

@@ -147,6 +147,15 @@
       border: 1px solid var(--article-border);
       border-radius: 8px;
       color: var(--article-text);
+
+      blockquote {
+        margin: 16px 0;
+        padding: 12px 16px;
+        border: 0;
+        border-left: 1px solid rgb(255 255 255 / 25%);
+        border-radius: 0;
+        background: var(--article-code-background);
+      }
     }
 
     code,

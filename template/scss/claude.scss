@@ -121,14 +121,10 @@
     }
 
     a {
-      text-decoration: none;
+      color: var(--claude-accent-active);
+      text-decoration: underline;
       text-decoration-thickness: 1px;
       text-underline-offset: 3px;
-
-      &:active {
-        color: var(--claude-accent-active);
-        text-decoration: underline;
-      }
 
       &:focus-visible {
         border-radius: 4px;
@@ -171,6 +167,15 @@
       color: var(--claude-strong);
       font-size: 18px;
       line-height: 1.55;
+
+      blockquote {
+        margin: 16px 0;
+        padding: 12px 16px;
+        border-left: 2px solid var(--claude-accent-active);
+        border-radius: 0;
+        background: var(--claude-surface-soft);
+        font-size: 1em;
+      }
     }
 
     code,
@@ -197,11 +202,8 @@
     pre {
       margin: 32px 0;
       padding: 24px;
-      overflow-x: auto;
       border: 0;
       border-radius: 12px;
-      white-space: pre;
-      overflow-wrap: normal;
       word-break: normal;
 
       code {
@@ -209,8 +211,6 @@
         color: inherit;
         font-size: 14px;
         line-height: 1.6;
-        white-space: pre;
-        overflow-wrap: normal;
         word-break: normal;
       }
     }

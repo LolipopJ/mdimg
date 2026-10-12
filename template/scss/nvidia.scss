@@ -175,6 +175,12 @@
       background: var(--article-background);
 
       blockquote {
+        margin: 16px 0;
+        padding: 12px 16px;
+        border: 0;
+        border-left: 2px solid var(--article-border);
+        background: var(--article-surface);
+
         &::after {
           content: unset;
         }

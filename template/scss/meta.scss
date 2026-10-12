@@ -111,10 +111,6 @@
       text-decoration-thickness: 1px;
       text-underline-offset: 3px;
 
-      &:active {
-        color: #0457cb;
-      }
-
       &:focus-visible {
         border-radius: 4px;
         outline: 2px solid var(--article-accent);
@@ -149,6 +145,15 @@
       border-radius: 24px;
       background: var(--article-surface);
       color: var(--article-text);
+
+      blockquote {
+        margin: 16px 0;
+        padding: 12px 16px;
+        border: 0;
+        border-left: 2px solid #8595a4;
+        border-radius: 0;
+        background: var(--article-background);
+      }
     }
 
     code,

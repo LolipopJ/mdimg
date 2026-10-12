@@ -100,13 +100,9 @@
     }
 
     a {
-      color: #262626;
+      color: var(--article-accent);
       text-decoration-thickness: 1px;
       text-underline-offset: 4px;
-
-      &:active {
-        color: #0653b6;
-      }
 
       &:focus-visible {
         outline: 2px solid var(--article-accent);
@@ -150,6 +146,14 @@
       border-radius: 0;
       color: var(--article-text);
       background: var(--article-surface);
+
+      blockquote {
+        margin: 16px 0;
+        padding: 8px 16px;
+        border: 0;
+        border-left: 2px solid #cccccc;
+        background: var(--article-background);
+      }
     }
 
     code,
@@ -169,15 +173,12 @@
     pre {
       margin: 32px 0;
       padding: 24px;
-      overflow: hidden;
       border: 1px solid var(--article-border);
       border-radius: 0;
       font-family: "Cascadia Code", Consolas, monospace;
       font-size: 14px;
       font-weight: 400;
       line-height: 1.55;
-      white-space: pre;
-      overflow-wrap: normal;
       word-break: normal;
 
       code {
@@ -185,17 +186,13 @@
         font-size: inherit;
         font-weight: inherit;
         line-height: inherit;
-        white-space: inherit;
-        overflow-wrap: normal;
         word-break: normal;
       }
     }
 
     table {
-      display: block;
       max-width: 100%;
       margin: 32px 0;
-      overflow-x: hidden;
       font-size: 14px;
       line-height: 1.55;
     }
