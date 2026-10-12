@@ -179,6 +179,7 @@
     th {
       background: var(--article-surface);
       font-weight: 650;
+      white-space: nowrap;
 
       a,
       strong {
@@ -245,6 +246,10 @@
     td {
       padding: 9px 8px;
       font-size: 13px;
+    }
+
+    th {
+      white-space: normal;
     }
   }
 }
