@@ -13,32 +13,71 @@ First, the script calls [marked](https://github.com/markedjs/marked) to parse Ma
 > [!NOTE]
 > Rendering results may differ from the preview images below depending on the actual host environment.
 
-| Linux                                                                          | MacOS                                                                           | Windows                                                                        | HTML Template | CSS Template | Notes                                             |
-| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------- | ------------ | ------------------------------------------------- |
-| <img alt="default preview" src="./docs/linux/default.png" height="150">        | <img alt="default preview" src="./docs/darwin/default.png" height="150">        | <img alt="default preview" src="./docs/win32/default.png" height="150">        | `default`     | `default`    |
-| <img alt="empty preview" src="./docs/linux/empty.png" height="150">            | <img alt="empty preview" src="./docs/darwin/empty.png" height="150">            | <img alt="empty preview" src="./docs/win32/empty.png" height="150">            | `default`     | `empty`      | Only use base stylesheets                         |
-| <img alt="github preview" src="./docs/linux/github.png" height="150">          | <img alt="github preview" src="./docs/darwin/github.png" height="150">          | <img alt="github preview" src="./docs/win32/github.png" height="150">          | `default`     | `github`     |
-| <img alt="github dark preview" src="./docs/linux/githubDark.png" height="150"> | <img alt="github dark preview" src="./docs/darwin/githubDark.png" height="150"> | <img alt="github dark preview" src="./docs/win32/githubDark.png" height="150"> | `default`     | `githubDark` | Should be used with `theme: "dark"`               |
-| <img alt="words preview" src="./docs/linux/words.png" height="150">            | <img alt="words preview" src="./docs/darwin/words.png" height="150">            | <img alt="words preview" src="./docs/win32/words.png" height="150">            | `words`       | `words`      | It is recommended to use with **plain text only** |
+| MacOS                                                 | Windows                                              | Linux                                                | HTML Template | CSS Template | Notes                               |
+| ----------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------- | ------------- | ------------ | ----------------------------------- |
+| <img src="./docs/darwin/default.png" height="600">    | <img src="./docs/win32/default.png" height="600">    | <img src="./docs/linux/default.png" height="600">    | `default`     | `default`    |                                     |
+| <img src="./docs/darwin/github.png" height="600">     | <img src="./docs/win32/github.png" height="600">     | <img src="./docs/linux/github.png" height="600">     | `default`     | `github`     |                                     |
+| <img src="./docs/darwin/githubDark.png" height="600"> | <img src="./docs/win32/githubDark.png" height="600"> | <img src="./docs/linux/githubDark.png" height="600"> | `default`     | `githubDark` | Should be used with `theme: "dark"` |
 
-More showcases with build-in CSS Templates:
+Build-in CSS Templates:
 
-- [`blueprint`](./docs/darwin/blueprint.png)
-- [`botanical`](./docs/darwin/botanical.png)
-- [`midnight`](./docs/darwin/midnight.png)
-- [`paper`](./docs/darwin/paper.png)
-- [`pop`](./docs/darwin/pop.png)
-- [`swiss`](./docs/darwin/swiss.png)
+<table>
+  <tr>
+    <td><code>blueprint</code></td>
+    <td><code>botanical</code></td>
+    <td><code>midnight</code></td>
+    <td><code>paper</code></td>
+    <td><code>pop</code></td>
+    <td><code>swiss</code></td>
+  </tr>
+  <tr>
+    <td><img src="./docs/darwin/blueprint.png" height="600"></td>
+    <td><img src="./docs/darwin/botanical.png" height="600"></td>
+    <td><img src="./docs/darwin/midnight.png" height="600"></td>
+    <td><img src="./docs/darwin/paper.png" height="600"></td>
+    <td><img src="./docs/darwin/pop.png" height="600"></td>
+    <td><img src="./docs/darwin/swiss.png" height="600"></td>
+  </tr>
+</table>
 
 Brand-inspired CSS Templates:
 
-- [`airbnb`](./docs/darwin/airbnb.png)
-- [`apple`](./docs/darwin/apple.png)
-- [`claude`](./docs/darwin/claude.png)
-- [`nvidia`](./docs/darwin/nvidia.png)
-- [`spacex`](./docs/darwin/spacex.png)
-- [`x.ai`](./docs/darwin/x.ai.png)
-- ...
+<table>
+  <tr>
+    <td><code>apple</code></td>
+    <td><code>binance</code></td>
+    <td><code>bmw-m</code></td>
+    <td><code>claude</code></td>
+    <td><code>nike</code></td>
+    <td><code>nvidia</code></td>
+  </tr>
+  <tr>
+    <td><img src="./docs/darwin/apple.png" height="600"></td>
+    <td><img src="./docs/darwin/binance.png" height="600"></td>
+    <td><img src="./docs/darwin/bmw-m.png" height="600"></td>
+    <td><img src="./docs/darwin/claude.png" height="600"></td>
+    <td><img src="./docs/darwin/nike.png" height="600"></td>
+    <td><img src="./docs/darwin/nvidia.png" height="600"></td>
+  </tr>
+  <tr>
+    <td><code>playstation</code></td>
+    <td><code>replicate</code></td>
+    <td><code>sentry</code></td>
+    <td><code>slack</code></td>
+    <td><code>spacex</code></td>
+    <td><code>vercel</code></td>
+  </tr>
+  <tr>
+    <td><img src="./docs/darwin/playstation.png" height="600"></td>
+    <td><img src="./docs/darwin/replicate.png" height="600"></td>
+    <td><img src="./docs/darwin/sentry.png" height="600"></td>
+    <td><img src="./docs/darwin/slack.png" height="600"></td>
+    <td><img src="./docs/darwin/spacex.png" height="600"></td>
+    <td><img src="./docs/darwin/vercel.png" height="600"></td>
+  </tr>
+</table>
+
+More previews can be found in [`docs/darwin`](./docs/darwin).
 
 ## Requirements
 
