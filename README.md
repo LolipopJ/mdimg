@@ -23,21 +23,21 @@ First, the script calls [marked](https://github.com/markedjs/marked) to parse Ma
 
 More showcases with build-in CSS Templates:
 
-- [`blueprint`](./docs/win32/blueprint.png)
-- [`botanical`](./docs/win32/botanical.png)
-- [`midnight`](./docs/win32/midnight.png)
-- [`paper`](./docs/win32/paper.png)
-- [`pop`](./docs/win32/pop.png)
-- [`swiss`](./docs/win32/swiss.png)
+- [`blueprint`](./docs/darwin/blueprint.png)
+- [`botanical`](./docs/darwin/botanical.png)
+- [`midnight`](./docs/darwin/midnight.png)
+- [`paper`](./docs/darwin/paper.png)
+- [`pop`](./docs/darwin/pop.png)
+- [`swiss`](./docs/darwin/swiss.png)
 
 Brand-inspired CSS Templates:
 
-- [`airbnb`](./docs/win32/airbnb.png)
-- [`apple`](./docs/win32/apple.png)
-- [`claude`](./docs/win32/claude.png)
-- [`nvidia`](./docs/win32/nvidia.png)
-- [`spacex`](./docs/win32/spacex.png)
-- [`x.ai`](./docs/win32/x.ai.png)
+- [`airbnb`](./docs/darwin/airbnb.png)
+- [`apple`](./docs/darwin/apple.png)
+- [`claude`](./docs/darwin/claude.png)
+- [`nvidia`](./docs/darwin/nvidia.png)
+- [`spacex`](./docs/darwin/spacex.png)
+- [`x.ai`](./docs/darwin/x.ai.png)
 - ...
 
 ## Requirements
