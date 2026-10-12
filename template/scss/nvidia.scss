@@ -173,6 +173,12 @@
     blockquote {
       padding: 32px;
       background: var(--article-background);
+
+      blockquote {
+        &::after {
+          content: unset;
+        }
+      }
     }
 
     code,
