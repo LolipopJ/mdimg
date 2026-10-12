@@ -2,7 +2,7 @@
 
 // Meta: Optimistic type, generous white space and flat, softly rounded surfaces.
 #mdimg-body {
-  --article-background: #ffffff;
+  --article-background: #fff;
   --article-text: #1c1e21;
   --article-accent: #0064e0;
   --article-surface: #f1f4f7;
@@ -242,7 +242,7 @@
   }
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   #mdimg-body > .markdown-body {
     padding: 40px 24px;
 
@@ -284,7 +284,7 @@
   }
 }
 
-@media (max-width: 479px) {
+@media (width <= 479px) {
   #mdimg-body > .markdown-body {
     padding: 32px 20px;
 

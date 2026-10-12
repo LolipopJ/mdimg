@@ -2,7 +2,7 @@
 
 // Carbon: light Plex display type, square tiles and a restrained IBM Blue.
 #mdimg-body {
-  --article-background: #ffffff;
+  --article-background: #fff;
   --article-text: #161616;
   --article-accent: #0f62fe;
   --article-surface: #f4f4f4;
@@ -278,7 +278,7 @@
   }
 }
 
-@media (max-width: 672px) {
+@media (width <= 672px) {
   #mdimg-body .markdown-body {
     padding: 32px 16px;
 
@@ -307,7 +307,7 @@
   }
 }
 
-@media (max-width: 520px) {
+@media (width <= 520px) {
   #mdimg-body .markdown-body {
     h1 {
       font-size: 32px;

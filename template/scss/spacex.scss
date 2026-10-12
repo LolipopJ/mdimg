@@ -2,17 +2,17 @@
 
 // SpaceX: pure black, industrial uppercase type and photographic depth.
 #mdimg-body {
-  --article-background: #000000;
-  --article-text: #ffffff;
-  --article-accent: #ffffff;
+  --article-background: #000;
+  --article-text: #fff;
+  --article-accent: #fff;
   --article-surface: #0a0a0a;
   --article-border: #3a3a3f;
   --article-muted: #f0f0fa;
   --article-code-background: #0a0a0a;
-  --article-code-text: #ffffff;
+  --article-code-text: #fff;
 
   color-scheme: dark;
-  font-family: "D-DIN", Arial, Verdana, sans-serif;
+  font-family: D-DIN, Arial, Verdana, sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
@@ -30,7 +30,7 @@
     h5,
     h6 {
       color: var(--article-text);
-      font-family: "D-DIN-Bold", "Arial Narrow", Arial, Verdana, sans-serif;
+      font-family: D-DIN-Bold, "Arial Narrow", Arial, Verdana, sans-serif;
       font-weight: 700;
       line-height: 1.25;
       letter-spacing: 0.96px;
@@ -191,7 +191,7 @@
   }
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   #mdimg-body .markdown-body {
     padding: 48px 32px;
 
@@ -222,7 +222,7 @@
   }
 }
 
-@media (max-width: 599px) {
+@media (width <= 599px) {
   #mdimg-body .markdown-body {
     padding: 32px 24px;
 

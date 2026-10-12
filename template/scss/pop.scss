@@ -46,12 +46,12 @@
 
     th {
       background: var(--article-accent);
-      color: #ffffff;
+      color: #fff;
     }
   }
 }
 
-@media (max-width: 520px) {
+@media (width <= 520px) {
   #mdimg-body {
     border-width: 2px;
 

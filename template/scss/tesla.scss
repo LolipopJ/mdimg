@@ -2,11 +2,11 @@
 
 // Tesla: Universal Sans, quiet monochrome, precise geometry and gallery spacing.
 #mdimg-body {
-  --article-background: #ffffff;
+  --article-background: #fff;
   --article-text: #393c41;
   --article-accent: #3e6ae1;
   --article-surface: #f4f4f4;
-  --article-border: #eeeeee;
+  --article-border: #eee;
   --article-muted: #5c5e62;
   --article-code-background: #f4f4f4;
   --article-code-text: #171a20;
@@ -212,7 +212,7 @@
   }
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   #mdimg-body > .markdown-body {
     padding: 40px 24px;
 

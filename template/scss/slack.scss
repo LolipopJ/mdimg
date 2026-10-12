@@ -2,7 +2,7 @@
 
 // Slack: broad pastel atmosphere, tight display type and aubergine surfaces.
 #mdimg-body {
-  --article-background: #ffffff;
+  --article-background: #fff;
   --article-text: #1d1d1d;
   --article-accent: #4a154b;
   --article-surface: #f4ede4;
@@ -24,7 +24,7 @@
   background-repeat: no-repeat;
   background-size: 100% 440px;
   font-family:
-    "Salesforce-Sans",
+    Salesforce-Sans,
     "Salesforce Sans",
     Inter,
     Lato,
@@ -49,7 +49,7 @@
     h6 {
       color: var(--article-text);
       font-family:
-        "Salesforce-Avant-Garde",
+        Salesforce-Avant-Garde,
         "Salesforce Avant Garde",
         Inter,
         system-ui,
@@ -145,7 +145,7 @@
 
       &:focus-visible {
         border-radius: 2px;
-        outline: 2px solid currentColor;
+        outline: 2px solid currentcolor;
         outline-offset: 4px;
         text-decoration: underline;
       }
@@ -187,7 +187,7 @@
       border: 0;
       border-radius: 16px;
       background: var(--article-accent);
-      color: #ffffff;
+      color: #fff;
       font-size: 18px;
       letter-spacing: -0.0216px;
 
@@ -203,7 +203,7 @@
       }
 
       a {
-        color: #ffffff;
+        color: #fff;
         text-decoration: underline;
 
         &:hover,
@@ -219,11 +219,11 @@
       }
 
       input[type="checkbox"] {
-        accent-color: #ffffff;
+        accent-color: #fff;
       }
 
       button {
-        border: 2px solid #ffffff;
+        border: 2px solid #fff;
         background: transparent;
       }
     }
@@ -316,7 +316,7 @@
       border: 0;
       border-radius: 90px;
       background: var(--article-accent);
-      color: #ffffff;
+      color: #fff;
       font-family: inherit;
       font-size: 16px;
       font-weight: 700;
@@ -329,7 +329,7 @@
       }
 
       &:focus-visible {
-        outline: 2px solid currentColor;
+        outline: 2px solid currentcolor;
         outline-offset: -5px;
         box-shadow: inset 0 0 0 1px #611f69;
       }
@@ -337,7 +337,7 @@
   }
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   #mdimg-body {
     background-size: 160% 360px;
     background-position: center top;

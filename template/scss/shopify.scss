@@ -3,13 +3,13 @@
 // Shopify's transactional track: cream, mint surfaces and thin display type.
 #mdimg-body {
   --article-background: #fbfbf5;
-  --article-text: #000000;
-  --article-accent: #000000;
-  --article-surface: #ffffff;
+  --article-text: #000;
+  --article-accent: #000;
+  --article-surface: #fff;
   --article-border: #e4e4e7;
   --article-muted: #52525b;
-  --article-code-background: #ffffff;
-  --article-code-text: #000000;
+  --article-code-background: #fff;
+  --article-code-text: #000;
 
   font-family:
     "Inter Variable", Inter, Helvetica, Arial, "Microsoft YaHei", sans-serif;
@@ -179,10 +179,10 @@
       font-size: 16px;
       line-height: 1.5;
       box-shadow:
-        0 8px 8px rgba(0, 0, 0, 0.1),
-        0 4px 4px rgba(0, 0, 0, 0.1),
-        0 2px 2px rgba(0, 0, 0, 0.1),
-        0 0 0 1px rgba(0, 0, 0, 0.1);
+        0 8px 8px rgb(0 0 0 / 10%),
+        0 4px 4px rgb(0 0 0 / 10%),
+        0 2px 2px rgb(0 0 0 / 10%),
+        0 0 0 1px rgb(0 0 0 / 10%);
     }
 
     th,
@@ -229,7 +229,7 @@
   }
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   #mdimg-body > .markdown-body {
     padding: 32px 24px;
 

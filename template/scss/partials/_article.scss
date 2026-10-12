@@ -216,13 +216,12 @@
 
     mjx-container[display="true"] {
       max-width: 100%;
-      overflow-x: auto;
-      overflow-y: hidden;
+      overflow: auto hidden;
     }
   }
 }
 
-@media (max-width: 520px) {
+@media (width <= 520px) {
   #mdimg-body .markdown-body {
     padding: 30px 23px;
 

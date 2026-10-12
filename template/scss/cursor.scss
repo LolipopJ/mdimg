@@ -5,10 +5,10 @@
   --article-background: #f7f7f4;
   --article-text: #26251e;
   --article-accent: #f54e00;
-  --article-surface: #ffffff;
+  --article-surface: #fff;
   --article-border: #e6e5e0;
   --article-muted: #807d72;
-  --article-code-background: #ffffff;
+  --article-code-background: #fff;
   --article-code-text: #26251e;
   --cursor-body: #5a5852;
   --cursor-canvas-soft: #fafaf7;
@@ -16,7 +16,7 @@
   --cursor-hairline-strong: #cfcdc4;
 
   font-family:
-    "CursorGothic",
+    CursorGothic,
     Inter,
     system-ui,
     "Helvetica Neue",
@@ -107,7 +107,7 @@
       text-underline-offset: 3px;
 
       &:hover {
-        text-decoration-color: currentColor;
+        text-decoration-color: currentcolor;
       }
 
       &:focus-visible {
@@ -246,7 +246,7 @@
   }
 }
 
-@media (max-width: 1023px) {
+@media (width <= 1023px) {
   #mdimg-body .markdown-body {
     padding: 64px 48px;
 
@@ -256,7 +256,7 @@
   }
 }
 
-@media (max-width: 639px) {
+@media (width <= 639px) {
   #mdimg-body .markdown-body {
     padding: 32px 24px;
 

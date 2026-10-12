@@ -1,7 +1,7 @@
 @use "./partials/article";
 
 #mdimg-body {
-  --article-background: #ffffff;
+  --article-background: #fff;
   --article-text: #191919;
   --article-accent: #c22b20;
   --article-surface: #f2f2ef;
@@ -52,7 +52,7 @@
   }
 }
 
-@media (max-width: 520px) {
+@media (width <= 520px) {
   #mdimg-body {
     border-left-width: 7px;
 

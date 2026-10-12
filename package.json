@@ -42,6 +42,8 @@
     "mdimg": "node ./bin/mdimg.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "stylelint": "stylelint template/**/*.scss",
+    "stylelint:fix": "stylelint template/**/*.scss --fix",
     "test": "jest --roots test --maxWorkers 5 --testTimeout 60000",
     "test:consumer": "jest --config jest.consumer.config.js --runInBand --testTimeout 360000",
     "typecheck": "tsc --noEmit",
@@ -102,6 +104,8 @@
     "rollup-plugin-scss": "^4.0.1",
     "rollup-plugin-typescript2": "^0.37.0",
     "sass": "^1.105.1",
+    "stylelint": "^17.16.0",
+    "stylelint-config-standard-scss": "^17.0.0",
     "tslib": "^2.8.1",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.71.1"

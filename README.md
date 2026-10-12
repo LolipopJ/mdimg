@@ -686,11 +686,20 @@ npx puppeteer browsers install chrome
 
 ### Lint
 
+For TypeScript and other support files:
+
 ```bash
 # Check lint rules
 pnpm run lint
 # Check lint rules and fix resolvable errors
 pnpm run lint:fix
+```
+
+For Stylesheets:
+
+```bash
+pnpm run stylelint
+pnpm run stylelint:fix
 ```
 
 ### Build

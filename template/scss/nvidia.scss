@@ -2,16 +2,16 @@
 
 // NVIDIA: black hero, white editorial canvas, precise green corner squares.
 #mdimg-body {
-  --article-background: #ffffff;
+  --article-background: #fff;
   --article-text: #1a1a1a;
   --article-accent: #76b900;
   --article-surface: #f7f7f7;
-  --article-border: #cccccc;
+  --article-border: #ccc;
   --article-muted: #757575;
   --article-code-background: #f7f7f7;
   --article-code-text: #1a1a1a;
 
-  font-family: "NVIDIA-EMEA", Arial, Helvetica, "Microsoft YaHei", sans-serif;
+  font-family: NVIDIA-EMEA, Arial, Helvetica, "Microsoft YaHei", sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
@@ -27,7 +27,7 @@
     h4,
     h5,
     h6 {
-      color: #000000;
+      color: #000;
       font-weight: 700;
       line-height: 1.25;
       letter-spacing: 0;
@@ -42,8 +42,8 @@
       position: relative;
       margin: -64px -48px 64px;
       padding: 80px 128px 80px 48px;
-      background: #000000;
-      color: #ffffff;
+      background: #000;
+      color: #fff;
 
       &::after {
         position: absolute;
@@ -228,7 +228,7 @@
     }
 
     th {
-      color: #000000;
+      color: #000;
       font-weight: 700;
     }
 
@@ -279,7 +279,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   #mdimg-body > .markdown-body {
     padding: 48px 32px;
 
@@ -303,7 +303,7 @@
   }
 }
 
-@media (max-width: 520px) {
+@media (width <= 520px) {
   #mdimg-body > .markdown-body {
     padding: 32px 24px;
 

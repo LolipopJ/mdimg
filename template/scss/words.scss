@@ -1,32 +1,32 @@
 @use "./default";
 
-$themeColor: rgb(29, 155, 240);
-$backgroundColor: #fafafa;
-$borderLeftWidth: 3rem;
-$fontFamily: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+$theme-color: rgb(29 155 240);
+$background-color: #fafafa;
+$border-left-width: 3rem;
+$font-family: -apple-system, blinkmacsystemfont, "Segoe UI", helvetica, arial,
   sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 
 .html {
   font-size: 24px;
-  font-family: $fontFamily;
+  font-family: $font-family;
 }
 
 #mdimg-body {
-  border-left: $borderLeftWidth solid $themeColor;
+  border-left: $border-left-width solid $theme-color;
 }
 
 .top {
-  color: $themeColor;
+  color: $theme-color;
   font-size: 5rem;
   font-weight: bold;
   padding-left: 4rem;
-  padding-top: $borderLeftWidth;
+  padding-top: $border-left-width;
 }
 
 .markdown-body {
   padding: 2rem 4rem;
   margin: 0 4rem;
-  background-color: $backgroundColor;
+  background-color: $background-color;
   hyphens: auto;
 
   p {
@@ -38,5 +38,5 @@ $fontFamily: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
 }
 
 .bottom {
-  padding-bottom: $borderLeftWidth;
+  padding-bottom: $border-left-width;
 }

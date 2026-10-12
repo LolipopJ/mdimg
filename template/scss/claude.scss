@@ -182,7 +182,7 @@
       font-family:
         "JetBrains Mono",
         "Cascadia Code",
-        "SFMono-Regular",
+        SFMono-Regular,
         Consolas,
         monospace;
       font-size: 0.875em;
@@ -267,7 +267,7 @@
   }
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   #mdimg-body .markdown-body {
     padding: 32px 24px;
 

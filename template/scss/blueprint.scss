@@ -58,7 +58,7 @@
   }
 }
 
-@media (max-width: 520px) {
+@media (width <= 520px) {
   #mdimg-body .markdown-body h1 {
     font-size: 33px;
   }

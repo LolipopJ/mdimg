@@ -2,14 +2,14 @@
 
 // Airbnb: white canvas, quiet typography, soft corners and a little Rausch.
 #mdimg-body {
-  --article-background: #ffffff;
-  --article-text: #222222;
+  --article-background: #fff;
+  --article-text: #222;
   --article-accent: #ff385c;
   --article-surface: #f7f7f7;
-  --article-border: #dddddd;
+  --article-border: #ddd;
   --article-muted: #6a6a6a;
   --article-code-background: #f7f7f7;
-  --article-code-text: #222222;
+  --article-code-text: #222;
 
   font-family:
     "Airbnb Cereal VF",
@@ -201,7 +201,7 @@
   }
 }
 
-@media (max-width: 743px) {
+@media (width <= 743px) {
   #mdimg-body .markdown-body {
     padding: 32px 24px;
 
