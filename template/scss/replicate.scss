@@ -1,0 +1,422 @@
+@use "./partials/article";
+
+// Replicate: warm paper, oversized editorial display, dark code wells.
+#mdimg-body {
+  --article-background: #f9f7f3;
+  --article-text: #202020;
+  --article-accent: #ea2804;
+  --article-surface: #f3f0e8;
+  --article-border: rgba(32, 32, 32, 0.12);
+  --article-muted: #575757;
+  --article-code-background: #202020;
+  --article-code-text: #fcfcfc;
+  --article-font-body: "basier-square", Geist, Inter, "Segoe UI", "Microsoft YaHei", sans-serif;
+  --article-font-display: "rb-freigeist-neue", "Bricolage Grotesque", Inter, "Segoe UI", "Microsoft YaHei", sans-serif;
+  --article-font-code: "JetBrains Mono", "jetbrains-mono", ui-monospace, Consolas, monospace;
+
+  background: var(--article-background);
+  font-family: var(--article-font-body);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+
+  ::selection {
+    background: var(--article-text);
+    color: var(--article-background);
+  }
+
+  > .markdown-body {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 96px 32px;
+    color: #3a3a3a;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--article-text);
+      font-family: var(--article-font-display);
+      font-weight: 700;
+      line-height: 1;
+
+      strong,
+      b {
+        color: inherit;
+        font-family: inherit;
+        font-weight: inherit;
+      }
+
+      a {
+        color: inherit;
+      }
+    }
+
+    h1 {
+      margin: 0 0 48px;
+      font-size: 72px;
+      letter-spacing: -1.8px;
+    }
+
+    // The first Markdown title supplies the hero; its mesh stops at its edges.
+    > h1:first-child {
+      padding: 48px 32px;
+      background:
+        radial-gradient(ellipse at 80% 0%, #ff6a3d, transparent 65%),
+        radial-gradient(ellipse at 100% 100%, #f4a8a0, transparent 60%),
+        #ea2804;
+      color: #fcfcfc;
+      font-size: 128px;
+      letter-spacing: -3px;
+    }
+
+    h2 {
+      margin: 96px 0 32px;
+      font-size: 72px;
+      letter-spacing: -1.8px;
+    }
+
+    h3 {
+      margin: 48px 0 24px;
+      font-size: 48px;
+      letter-spacing: -1px;
+    }
+
+    h4 {
+      margin: 32px 0 16px;
+      font-size: 30px;
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+    }
+
+    h5,
+    h6 {
+      margin: 24px 0 12px;
+      font-family: var(--article-font-body);
+      font-weight: 600;
+    }
+
+    h5 {
+      font-size: 24px;
+      line-height: 1.33;
+      letter-spacing: -0.35px;
+    }
+
+    h6 {
+      font-size: 20px;
+      line-height: 1.4;
+      letter-spacing: -0.3px;
+    }
+
+    p {
+      margin-bottom: 24px;
+    }
+
+    > h1:first-child + p {
+      margin-bottom: 48px;
+      font-family: var(--article-font-display);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.56;
+    }
+
+    strong,
+    b {
+      color: var(--article-text);
+      font-family: var(--article-font-display);
+      font-weight: 600;
+    }
+
+    em,
+    del {
+      color: inherit;
+    }
+
+    a {
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+
+      &:hover,
+      &:active {
+        color: #c01f00;
+      }
+
+      &:focus-visible {
+        outline: 3px solid rgba(59, 130, 246, 0.5);
+        outline-offset: 4px;
+      }
+    }
+
+    ul,
+    ol {
+      margin-bottom: 24px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin: 8px 0;
+
+      &::marker {
+        color: var(--article-text);
+      }
+
+      &:has(> input[type="checkbox"]) {
+        margin-left: -24px;
+      }
+    }
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      accent-color: var(--article-text);
+      vertical-align: -3px;
+
+      &:focus-visible {
+        outline: 3px solid rgba(59, 130, 246, 0.5);
+        outline-offset: 4px;
+      }
+    }
+
+    blockquote {
+      margin: 32px 0;
+      padding: 24px 32px;
+      border: 1px solid var(--article-border);
+      border-radius: 16px;
+      background: var(--article-surface);
+      color: var(--article-text);
+    }
+
+    pre,
+    code,
+    kbd {
+      font-family: var(--article-font-code);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.43;
+      letter-spacing: 0;
+    }
+
+    code,
+    kbd {
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    kbd {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-bottom-width: 2px;
+      background: #000;
+    }
+
+    pre {
+      margin: 32px 0;
+      padding: 24px;
+      overflow-x: hidden;
+      border: 0;
+      border-radius: 10px;
+      white-space: pre;
+      overflow-wrap: normal;
+      word-break: normal;
+
+      code {
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        line-height: inherit;
+        white-space: inherit;
+        overflow-wrap: inherit;
+        word-break: inherit;
+      }
+    }
+
+    table {
+      margin: 32px 0;
+      border: 1px solid var(--article-border);
+      border-spacing: 0;
+      border-collapse: separate;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      font-family: var(--article-font-body);
+      font-size: 14px;
+      line-height: 1.43;
+    }
+
+    th,
+    td {
+      padding: 16px;
+    }
+
+    th {
+      background: var(--article-surface);
+      font-weight: 600;
+
+      strong,
+      b {
+        font-family: inherit;
+        font-weight: inherit;
+      }
+
+      a {
+        color: var(--article-accent);
+      }
+    }
+
+    tr:last-child {
+      th,
+      td {
+        border-bottom: 0;
+      }
+    }
+
+    caption,
+    figcaption,
+    small {
+      color: var(--article-muted);
+      font-family: var(--article-font-body);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.43;
+    }
+
+    caption {
+      margin-bottom: 12px;
+      text-align: left;
+    }
+
+    hr {
+      margin: 48px 0;
+      border-color: var(--article-border);
+    }
+
+    img,
+    video {
+      border-radius: 10px;
+    }
+
+    figure {
+      margin: 32px 0;
+    }
+
+    figcaption {
+      margin-top: 12px;
+    }
+  }
+}
+
+@media (width < 1280px) {
+  #mdimg-body > .markdown-body {
+    padding-right: 24px;
+    padding-left: 24px;
+
+    > h1:first-child {
+      font-size: 96px;
+      letter-spacing: -2.4px;
+    }
+  }
+}
+
+@media (width < 1024px) {
+  #mdimg-body > .markdown-body pre {
+    overflow-x: hidden;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (width < 768px) {
+  #mdimg-body > .markdown-body {
+    padding: 64px 24px;
+
+    h1 {
+      margin-bottom: 32px;
+    }
+
+    > h1:first-child {
+      padding: 32px 24px;
+      font-size: 64px;
+      letter-spacing: -1.8px;
+    }
+
+    h1,
+    h2 {
+      font-size: 48px;
+      letter-spacing: -1px;
+    }
+
+    h2 {
+      margin-top: 64px;
+    }
+
+    h3 {
+      margin-top: 32px;
+      font-size: 30px;
+      letter-spacing: -0.5px;
+    }
+
+    blockquote {
+      padding: 24px;
+    }
+
+    pre {
+      padding: 24px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    th {
+      white-space: normal;
+    }
+  }
+}
+
+@media (width <= 425px) {
+  #mdimg-body > .markdown-body {
+    padding: 64px 16px;
+
+    > h1:first-child {
+      padding: 32px 16px;
+      font-size: 48px;
+      letter-spacing: -1px;
+    }
+
+    h1,
+    h2 {
+      font-size: 30px;
+      letter-spacing: -0.5px;
+    }
+
+    h3,
+    h4 {
+      font-size: 24px;
+      line-height: 1.2;
+      letter-spacing: -0.35px;
+    }
+
+    h5,
+    h6 {
+      font-size: 20px;
+      line-height: 1.4;
+      letter-spacing: -0.3px;
+    }
+
+    blockquote,
+    pre {
+      padding: 16px;
+    }
+
+    th,
+    td {
+      padding: 12px 8px;
+    }
+  }
+}

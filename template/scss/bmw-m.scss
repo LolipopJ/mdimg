@@ -1,0 +1,376 @@
+@use "./partials/article";
+
+// BMW M: pure black, stamped display type, light copy and a restrained M stripe.
+#mdimg-body {
+  --article-background: #000000;
+  --article-text: #bbbbbb;
+  --article-accent: #ffffff;
+  --article-surface: #1a1a1a;
+  --article-border: #3c3c3c;
+  --article-muted: #7e7e7e;
+  --article-code-background: #1a1a1a;
+  --article-code-text: #e6e6e6;
+  --bmw-m-body-strong: #e6e6e6;
+  --bmw-m-surface-soft: #0d0d0d;
+  --bmw-m-blue-light: #0066b1;
+  --bmw-m-blue-dark: #1c69d4;
+  --bmw-m-red: #e22718;
+  --bmw-m-display-font:
+    "BMWTypeNextLatin", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Microsoft YaHei", sans-serif;
+  --bmw-m-code-font: "Cascadia Code", Consolas, "Liberation Mono", monospace;
+
+  background: var(--article-background);
+  color-scheme: dark;
+  font-family:
+    "BMWTypeNextLatin Light", "BMWTypeNextLatin", Inter, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.5;
+  letter-spacing: 0;
+
+  > .markdown-body {
+    --bmw-m-gutter: 64px;
+
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 64px var(--bmw-m-gutter);
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--article-accent);
+      font-family: var(--bmw-m-display-font);
+      font-weight: 700;
+      letter-spacing: 0;
+
+      strong,
+      b {
+        color: inherit;
+        font-family: inherit;
+        font-weight: inherit;
+      }
+    }
+
+    h1,
+    h2,
+    h3 {
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 0 64px;
+      font-size: 80px;
+      line-height: 1;
+
+      // The tricolor is a 4px identity divider, never an action or panel fill.
+      &::after {
+        display: block;
+        width: 96px;
+        height: 4px;
+        margin-top: 24px;
+        background: linear-gradient(
+          90deg,
+          var(--bmw-m-blue-light) 0 33.333%,
+          var(--bmw-m-blue-dark) 33.333% 66.667%,
+          var(--bmw-m-red) 66.667% 100%
+        );
+        content: "";
+      }
+    }
+
+    h2 {
+      margin: 96px 0 24px;
+      font-size: 56px;
+      line-height: 1.05;
+    }
+
+    h3 {
+      margin: 64px 0 24px;
+      font-size: 40px;
+      line-height: 1.1;
+    }
+
+    h4 {
+      margin: 40px 0 16px;
+      font-size: 24px;
+      line-height: 1.3;
+    }
+
+    h5,
+    h6 {
+      margin: 24px 0 12px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    h5 {
+      font-size: 20px;
+    }
+
+    h6 {
+      font-size: 18px;
+    }
+
+    p {
+      margin-bottom: 24px;
+    }
+
+    strong,
+    b {
+      color: var(--bmw-m-body-strong);
+      font-weight: 300;
+    }
+
+    em {
+      color: var(--bmw-m-body-strong);
+    }
+
+    del {
+      color: var(--article-muted);
+    }
+
+    a {
+      color: var(--article-accent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+
+      &:focus-visible {
+        outline: 2px solid var(--article-accent);
+        outline-offset: 4px;
+      }
+    }
+
+    // Standalone links take the machined label treatment; prose links stay inline.
+    p > a:only-child {
+      font-family: var(--bmw-m-display-font);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: 1.5px;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    ul,
+    ol {
+      margin-bottom: 24px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin: 8px 0;
+
+      &::marker {
+        color: var(--article-accent);
+      }
+    }
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      vertical-align: -2px;
+      accent-color: var(--article-accent);
+    }
+
+    blockquote {
+      margin: 40px 0;
+      padding: 24px;
+      border: 1px solid var(--article-border);
+      border-left: 1px solid var(--article-accent);
+      border-radius: 0;
+      background: var(--article-surface);
+      color: var(--bmw-m-body-strong);
+    }
+
+    code,
+    kbd {
+      padding: 2px 4px;
+      border-radius: 0;
+      font-family: var(--bmw-m-code-font);
+      font-size: 0.875em;
+      font-weight: 400;
+    }
+
+    kbd {
+      border: 1px solid var(--article-border);
+      background: var(--article-background);
+      color: var(--article-accent);
+    }
+
+    pre {
+      max-width: 100%;
+      margin: 40px 0;
+      padding: 24px;
+      overflow-x: hidden;
+      border: 1px solid var(--article-border);
+      border-radius: 0;
+      font-family: var(--bmw-m-code-font);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.5;
+      white-space: pre;
+      overflow-wrap: normal;
+      word-break: normal;
+
+      code {
+        padding: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        white-space: inherit;
+        overflow-wrap: normal;
+        word-break: normal;
+      }
+    }
+
+    table {
+      display: block;
+      max-width: 100%;
+      margin: 40px 0;
+      overflow-x: hidden;
+      color: var(--article-text);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    th,
+    td {
+      padding: 24px;
+      border-bottom: 1px solid var(--article-border);
+      background: var(--bmw-m-surface-soft);
+    }
+
+    th {
+      background: var(--article-surface);
+      color: var(--article-accent);
+      font-family: var(--bmw-m-display-font);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+
+      strong,
+      b {
+        color: inherit;
+        font-weight: inherit;
+      }
+    }
+
+    hr {
+      margin: 64px 0;
+      border-top: 1px solid var(--article-border);
+    }
+
+    img,
+    video {
+      display: block;
+      margin: 40px auto;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    figure {
+      margin: 64px 0;
+
+      img,
+      video {
+        margin: 0;
+      }
+    }
+
+    // Photography bleeds to the article edges while prose retains its measure.
+    > p:has(> img:only-child),
+    > figure {
+      margin-inline: calc(-1 * var(--bmw-m-gutter));
+
+      > img,
+      > video {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    figcaption,
+    small {
+      color: var(--article-muted);
+      font-family: var(--bmw-m-display-font);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0.5px;
+    }
+
+    figcaption {
+      margin-top: 12px;
+    }
+
+    > figure > figcaption {
+      padding-inline: var(--bmw-m-gutter);
+    }
+  }
+}
+
+@media (width <= 1023px) {
+  #mdimg-body > .markdown-body {
+    --bmw-m-gutter: 40px;
+  }
+}
+
+@media (width <= 767px) {
+  #mdimg-body > .markdown-body {
+    --bmw-m-gutter: 24px;
+
+    padding: 40px var(--bmw-m-gutter);
+
+    h1 {
+      margin-bottom: 40px;
+      font-size: 48px;
+    }
+
+    h2 {
+      margin-top: 64px;
+      font-size: 40px;
+    }
+
+    h3 {
+      margin-top: 40px;
+      font-size: 32px;
+      line-height: 1.15;
+    }
+
+    blockquote,
+    pre {
+      padding: 16px;
+    }
+
+    th,
+    td {
+      padding: 16px 12px;
+      font-size: 14px;
+    }
+
+    th {
+      white-space: normal;
+    }
+
+    hr {
+      margin: 40px 0;
+    }
+
+    figure {
+      margin-block: 40px;
+    }
+
+    img,
+    video {
+      margin: 24px auto;
+    }
+  }
+}

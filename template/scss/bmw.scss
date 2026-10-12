@@ -1,0 +1,293 @@
+@use "./partials/article";
+
+// BMW corporate: white canvas, heavy display type, Light body and square geometry.
+#mdimg-body {
+  --article-background: #ffffff;
+  --article-text: #3c3c3c;
+  --article-accent: #1c69d4;
+  --article-surface: #f7f7f7;
+  --article-border: #e6e6e6;
+  --article-muted: #6b6b6b;
+  --article-code-background: #fafafa;
+  --article-code-text: #1a1a1a;
+
+  background: var(--article-background);
+  font-family: "BMW Type Next Latin Light", "BMW Type Next Latin", Inter,
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.55;
+  letter-spacing: 0;
+
+  > .markdown-body {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 80px 48px;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #262626;
+      font-family: "BMW Type Next Latin", Inter, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+
+      strong,
+      b {
+        color: inherit;
+        font-weight: inherit;
+      }
+    }
+
+    h1 {
+      margin: 0 0 48px;
+      font-size: 64px;
+      line-height: 1.05;
+    }
+
+    h2 {
+      margin: 80px 0 24px;
+      font-size: 48px;
+      line-height: 1.1;
+    }
+
+    h3 {
+      margin: 48px 0 24px;
+      font-size: 32px;
+      line-height: 1.15;
+    }
+
+    h4 {
+      margin: 32px 0 16px;
+      font-size: 24px;
+      line-height: 1.25;
+    }
+
+    h5 {
+      margin: 24px 0 16px;
+      font-size: 20px;
+      line-height: 1.3;
+    }
+
+    h6 {
+      margin: 24px 0 12px;
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    p {
+      margin-bottom: 24px;
+    }
+
+    strong,
+    b {
+      color: #1a1a1a;
+      font-weight: inherit;
+    }
+
+    em {
+      color: inherit;
+    }
+
+    small {
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    a {
+      color: #262626;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+
+      &:active {
+        color: #0653b6;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--article-accent);
+        outline-offset: 4px;
+      }
+    }
+
+    ul,
+    ol {
+      margin-bottom: 24px;
+      padding-left: 24px;
+
+      ul,
+      ol {
+        margin: 8px 0;
+      }
+    }
+
+    li {
+      margin: 8px 0;
+
+      &::marker {
+        color: #262626;
+      }
+    }
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      border-radius: 0;
+      vertical-align: -2px;
+      accent-color: var(--article-accent);
+    }
+
+    blockquote {
+      margin: 32px 0;
+      padding: 24px;
+      border: 1px solid var(--article-border);
+      border-left: 4px solid #cccccc;
+      border-radius: 0;
+      color: var(--article-text);
+      background: var(--article-surface);
+    }
+
+    code,
+    kbd {
+      padding: 4px 8px;
+      border-radius: 0;
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: 0.875em;
+      font-weight: 400;
+    }
+
+    kbd {
+      border: 1px solid #cccccc;
+      background: var(--article-background);
+    }
+
+    pre {
+      margin: 32px 0;
+      padding: 24px;
+      overflow: hidden;
+      border: 1px solid var(--article-border);
+      border-radius: 0;
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.55;
+      white-space: pre;
+      overflow-wrap: normal;
+      word-break: normal;
+
+      code {
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        line-height: inherit;
+        white-space: inherit;
+        overflow-wrap: normal;
+        word-break: normal;
+      }
+    }
+
+    table {
+      display: block;
+      max-width: 100%;
+      margin: 32px 0;
+      overflow-x: hidden;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    th,
+    td {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--article-border);
+    }
+
+    th {
+      color: #262626;
+      background: var(--article-surface);
+      font-family: "BMW Type Next Latin", Inter, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-weight: 700;
+
+      strong,
+      b {
+        color: inherit;
+        font-weight: inherit;
+      }
+    }
+
+    hr {
+      margin: 80px 0;
+      border-top: 1px solid var(--article-border);
+    }
+
+    img,
+    video {
+      display: block;
+      margin: 32px auto;
+      border-radius: 0;
+      background: #fafafa;
+    }
+
+    figure {
+      margin: 48px 0;
+
+      img,
+      video {
+        margin: 0 auto;
+      }
+    }
+
+    figcaption {
+      margin-top: 12px;
+      font-family: "BMW Type Next Latin", Inter, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+@media (width < 768px) {
+  #mdimg-body > .markdown-body {
+    padding: 48px 24px;
+
+    h1 {
+      margin-bottom: 32px;
+      font-size: 40px;
+    }
+
+    h2 {
+      margin-top: 48px;
+      font-size: 32px;
+      line-height: 1.15;
+    }
+
+    h3 {
+      margin-top: 32px;
+      font-size: 24px;
+      line-height: 1.25;
+    }
+
+    blockquote,
+    pre {
+      padding: 16px;
+    }
+
+    th,
+    td {
+      padding: 12px 16px;
+      font-size: 14px;
+    }
+
+    hr {
+      margin: 48px 0;
+    }
+  }
+}

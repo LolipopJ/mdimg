@@ -1,0 +1,356 @@
+@use "./partials/article";
+
+// Binance: flat near-black canvas, yellow focal type and compact market cards.
+#mdimg-body {
+  --article-background: #0b0e11;
+  --article-text: #eaecef;
+  --article-accent: #fcd535;
+  --article-surface: #1e2329;
+  --article-border: #2b3139;
+  --article-muted: #707a8a;
+  --article-code-background: #1e2329;
+  --article-code-text: #eaecef;
+
+  color-scheme: dark;
+  font-family:
+    BinanceNova,
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Microsoft YaHei",
+    sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+
+  .markdown-body {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 80px 48px;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #fff;
+      font-weight: 600;
+      letter-spacing: 0;
+
+      strong,
+      code {
+        color: inherit;
+        font-weight: inherit;
+      }
+    }
+
+    h1 {
+      margin: 0 0 32px;
+      color: var(--article-accent);
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -1px;
+    }
+
+    h2 {
+      margin: 80px 0 24px;
+      font-size: 40px;
+      line-height: 1.15;
+      letter-spacing: -0.3px;
+    }
+
+    h3 {
+      margin: 48px 0 24px;
+      font-size: 32px;
+      line-height: 1.2;
+    }
+
+    h4 {
+      margin: 32px 0 16px;
+      font-size: 24px;
+      line-height: 1.3;
+    }
+
+    h5 {
+      margin: 24px 0 12px;
+      font-size: 20px;
+      line-height: 1.35;
+    }
+
+    h6 {
+      margin: 24px 0 12px;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    p {
+      margin-bottom: 16px;
+    }
+
+    strong {
+      color: inherit;
+      font-weight: 600;
+    }
+
+    em {
+      color: inherit;
+    }
+
+    a {
+      text-decoration: none;
+
+      &:active {
+        color: #f0b90b;
+      }
+
+      &:focus-visible {
+        border-radius: 4px;
+        outline: 2px solid rgb(59 130 246 / 50%);
+        outline-offset: 4px;
+      }
+    }
+
+    ul,
+    ol {
+      margin-bottom: 24px;
+      padding-left: 24px;
+
+      ul,
+      ol {
+        margin: 8px 0;
+      }
+    }
+
+    li {
+      margin: 4px 0;
+
+      &::marker {
+        color: var(--article-text);
+      }
+    }
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin: 0 8px 0 -24px;
+      border-radius: 4px;
+      vertical-align: -3px;
+      accent-color: var(--article-accent);
+    }
+
+    blockquote {
+      margin: 32px 0;
+      padding: 24px;
+      border: 1px solid var(--article-border);
+      border-radius: 12px;
+      background: var(--article-surface);
+      color: var(--article-text);
+
+      > :first-child {
+        margin-top: 0;
+      }
+    }
+
+    code,
+    kbd,
+    pre {
+      font-family: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0;
+    }
+
+    code,
+    kbd {
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    kbd {
+      border: 1px solid var(--article-border);
+      border-bottom-width: 2px;
+    }
+
+    pre {
+      margin: 24px 0 32px;
+      padding: 24px;
+      border-radius: 12px;
+      overflow-x: hidden;
+      white-space: pre;
+      overflow-wrap: normal;
+
+      code {
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        white-space: inherit;
+        overflow-wrap: normal;
+        word-break: normal;
+      }
+    }
+
+    table {
+      margin: 32px 0;
+      border: 1px solid var(--article-border);
+      border-spacing: 0;
+      border-collapse: separate;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--article-surface);
+      font-size: 16px;
+      line-height: 1.4;
+      font-variant-numeric: tabular-nums;
+    }
+
+    th,
+    td {
+      padding: 12px 24px;
+    }
+
+    th {
+      color: var(--article-muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    td {
+      font-family:
+        BinancePlex,
+        "IBM Plex Sans",
+        "JetBrains Mono",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        "Microsoft YaHei",
+        sans-serif;
+      font-weight: 500;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    hr {
+      margin: 80px 0;
+      border-top: 1px solid var(--article-border);
+    }
+
+    img,
+    video {
+      border-radius: 12px;
+    }
+
+    figure {
+      margin: 32px 0;
+
+      img {
+        display: block;
+      }
+    }
+
+    figcaption,
+    caption,
+    small {
+      color: var(--article-muted);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    figcaption {
+      margin-top: 12px;
+    }
+
+    caption {
+      padding-bottom: 12px;
+      text-align: left;
+    }
+  }
+}
+
+@media (width < 768px) {
+  #mdimg-body .markdown-body {
+    padding: 48px 24px;
+
+    h1 {
+      margin-bottom: 24px;
+      font-size: 36px;
+      letter-spacing: -0.5px;
+    }
+
+    h2 {
+      margin-top: 48px;
+      font-size: 32px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin-top: 32px;
+      font-size: 24px;
+      line-height: 1.3;
+    }
+
+    h4 {
+      font-size: 20px;
+      line-height: 1.35;
+    }
+
+    h5 {
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    blockquote,
+    pre {
+      padding: 16px;
+    }
+
+    table {
+      display: block;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    th,
+    td {
+      padding: 12px 16px;
+      white-space: nowrap;
+    }
+
+    hr {
+      margin: 48px 0;
+    }
+  }
+}
+
+@media (width <= 520px) {
+  #mdimg-body .markdown-body {
+    padding: 32px 16px;
+
+    h1 {
+      font-size: 36px;
+    }
+
+    h2 {
+      font-size: 32px;
+    }
+
+    th {
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    td {
+      font-size: 16px;
+    }
+  }
+}

@@ -26,12 +26,14 @@ const defaultOptions = {
   },
 };
 const styleOptions = {
+  binance: { theme: "dark" },
+  "bmw-m": { theme: "dark" },
   claude: { theme: "dark" },
-  default: { width: 800 },
-  empty: { width: 800 },
   githubDark: { theme: "dark" },
   midnight: { theme: "dark" },
   playstation: { theme: "dark" },
+  replicate: { theme: "dark" },
+  sentry: { theme: "dark" },
   spacex: { theme: "dark" },
   vercel: { theme: "dark" },
   words: {
