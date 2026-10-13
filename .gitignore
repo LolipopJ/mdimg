@@ -1,6 +1,21 @@
-.serena/
-mdimg_output/
-node_modules/
-
+node_modules/**
+site/dist/**
+site/node_modules/**
 tsconfig.tsbuildinfo
-**/*/.*.html
+
+# Mdimg outputs
+mdimg_output/**
+**/.*.html
+
+# AI temp files
+.serena/**
+docs/superpowers/**
+
+# Graphify
+graphify-out/cache/**
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+graphify-out/BENCHMARK.txt
+graphify-out/COMMIT_MESSAGE.txt
+graphify-out/cost.json
+graphify-out/diagnostics.json

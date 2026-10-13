@@ -1,0 +1,5 @@
+{
+  "excludes": ["lib/assets/**", "docs/**", "test/static/marked-logo-black.svg"],
+  "gitignore": true,
+  "directed": false
+}
