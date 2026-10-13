@@ -1,23 +1,39 @@
 import eslint from "@eslint/js";
 import { defineConfig } from "eslint/config";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import reactPlugin from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default defineConfig(
   {
-    ignores: [".*/", "docs/", "lib/", "node_modules/", "template/css/"],
+    ignores: [
+      ".*/**",
+      "docs/**",
+      "lib/**",
+      "node_modules/**",
+      "site/dist/**",
+      "template/css/**",
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
     files: ["**/*.js", "**/*.mjs", "**/*.ts"],
+    ignores: ["site/src/**"],
     languageOptions: {
       globals: {
         ...globals.node,
       },
     },
+  },
+  {
+    files: ["site/src/**"],
+    ...reactPlugin.configs.flat.recommended,
+    ...reactPlugin.configs.flat["jsx-runtime"],
+    ...reactHooks.configs.flat["recommended-latest"],
   },
   {
     plugins: {
@@ -29,7 +45,7 @@ export default defineConfig(
     },
   },
   {
-    files: ["test/**/*"],
+    files: ["test/**"],
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -40,7 +56,7 @@ export default defineConfig(
     },
   },
   {
-    files: ["bin/mdimg.js", "test/**/*", "jest*.config.js"],
+    files: ["bin/mdimg.js", "test/**", "jest*.config.js"],
     rules: {
       "@typescript-eslint/no-require-imports": "off",
     },
