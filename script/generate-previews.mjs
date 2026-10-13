@@ -50,7 +50,7 @@ const styleOptions = {
 export async function generatePreviews({
   styles = [],
   outputDir = resolve(import.meta.dirname, "../docs", process.platform),
-  concurrency = 5,
+  concurrency = 3,
   debug = false,
   options = {},
 } = {}) {
@@ -127,7 +127,7 @@ async function main() {
       "-j, --concurrency <number>",
       "Maximum concurrent conversions",
       Number,
-      5,
+      3,
     )
     .option("--debug", "Whether to keep temporary HTML file after rendering")
     .option(

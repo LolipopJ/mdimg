@@ -760,7 +760,7 @@ the script and call it with `{ styles, concurrency, outputDir, debug, options }`
 
 ```bash
 # Generate only selected styles, with at most two conversions at once
-pnpm run preview airbnb blueprint --concurrency 2
+pnpm run preview airbnb apple blueprint --concurrency 2
 # Override rendering options and the output directory, keep the temporary HTML file
 pnpm run preview airbnb --output ./preview-output --debug --options '{"width":1200,"extensions":false}'
 ```

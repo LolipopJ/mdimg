@@ -7,6 +7,9 @@ const requirePackage = createRequire(path.resolve(__dirname, "package.json"));
 
 const getSassTasks = () => {
   const cssPath = path.resolve(__dirname, "template/css");
+  fs.rmSync(cssPath, { recursive: true, force: true });
+  fs.mkdirSync(cssPath, { recursive: true });
+
   const scssPath = path.resolve(__dirname, "template/scss");
   const templates = fs
     .readdirSync(scssPath)
