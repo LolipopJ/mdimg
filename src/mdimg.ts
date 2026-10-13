@@ -34,7 +34,6 @@ const mdimg = async (options: IConvertOptions): Promise<IConvertResponse> => {
     cssText,
     htmlTemplate,
     cssTemplate,
-    theme,
     extensions,
     plugins,
     log,
@@ -170,7 +169,6 @@ const mdimg = async (options: IConvertOptions): Promise<IConvertResponse> => {
     cssText,
     htmlTemplate,
     cssTemplate,
-    theme,
     resolvedExtensions: _pluginManager.getExtensions(),
     log,
   });

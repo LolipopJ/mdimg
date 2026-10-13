@@ -12,7 +12,6 @@ const cssDir = resolve(import.meta.dirname, "../template/css");
 const defaultOptions = {
   inputFilename: resolve(import.meta.dirname, "../test/static/test.md"),
   htmlTemplate: "default",
-  theme: "light",
   width: 1000,
   extensions: {
     mathJax: {
@@ -26,16 +25,6 @@ const defaultOptions = {
   },
 };
 const styleOptions = {
-  binance: { theme: "dark" },
-  "bmw-m": { theme: "dark" },
-  claude: { theme: "dark" },
-  githubDark: { theme: "dark" },
-  midnight: { theme: "dark" },
-  playstation: { theme: "dark" },
-  replicate: { theme: "dark" },
-  sentry: { theme: "dark" },
-  spacex: { theme: "dark" },
-  vercel: { theme: "dark" },
   words: {
     inputFilename: resolve(
       import.meta.dirname,
@@ -44,7 +33,6 @@ const styleOptions = {
     htmlTemplate: "words",
     width: 1200,
   },
-  ["x.ai"]: { theme: "dark" },
 };
 
 export async function generatePreviews({

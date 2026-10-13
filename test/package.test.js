@@ -10,6 +10,7 @@ const {
 } = require("fs");
 const { dirname, join, relative, resolve } = require("path");
 const typesConsumer = require("./helpers/public-types");
+const ts = require("typescript");
 
 const repository = resolve(__dirname, "..");
 const cache = join(repository, "node_modules", ".cache");
@@ -149,6 +150,39 @@ test.each([
   expect(result.stdout + result.stderr).toBe("");
   expect(result.status).toBe(0);
 });
+
+test.each([
+  ["NodeNext", "mts"],
+  ["NodeNext", "cts"],
+  ["Bundler", "ts"],
+])(
+  "PACKAGE: %s %s types work without bundled build dependencies",
+  (mode, extension) => {
+    const file = join(workspace, `isolated-types.${extension}`);
+    writeFileSync(file, typesConsumer);
+    const options = {
+      module:
+        mode === "NodeNext" ? ts.ModuleKind.NodeNext : ts.ModuleKind.ESNext,
+      moduleResolution: ts.ModuleResolutionKind[mode],
+      target: ts.ScriptTarget.ES2022,
+      strict: true,
+      noEmit: true,
+      types: [],
+    };
+    const host = ts.createCompilerHost(options);
+    // The packed package must not resolve these through the repository's devDependencies.
+    host.resolveModuleNames = (names, containingFile) =>
+      names.map((name) =>
+        /^(highlight\.js|mermaid|dompurify|trusted-types)(\/|$)/.test(name)
+          ? undefined
+          : ts.resolveModuleName(name, containingFile, options, host)
+              .resolvedModule,
+      );
+    const program = ts.createProgram([file], options, host);
+    const diagnostics = ts.getPreEmitDiagnostics(program);
+    expect(ts.formatDiagnosticsWithColorAndContext(diagnostics, host)).toBe("");
+  },
+);
 
 test("PACKAGE: private paths reject both require and import", () => {
   const file = join(workspace, "private.mjs");

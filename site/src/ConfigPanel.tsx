@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import type { Shell } from "./commands";
 import { createCalls } from "./commands";
 import type { Config, Manifest } from "./config";
-import { defaults, integerError } from "./config";
+import { defaults, integerError, selectTemplate } from "./config";
 
 type Props = {
   config: Config;
@@ -144,7 +144,9 @@ export function ConfigPanel({
           <select
             id="template"
             value={config.cssTemplate}
-            onChange={(event) => set("cssTemplate", event.target.value)}
+            onChange={(event) =>
+              onChange(selectTemplate(config, event.target.value))
+            }
           >
             {manifest.templates.map((template) => (
               <option key={template.name}>{template.name}</option>
@@ -171,28 +173,13 @@ export function ConfigPanel({
               {widthError} The last valid preview is kept.
             </p>
           )}
-          <label htmlFor="theme">Base theme</label>
-          <select
-            id="theme"
-            value={config.theme}
-            onChange={(event) =>
-              set("theme", event.target.value as Config["theme"])
-            }
-          >
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
-          <p className="hint">
-            Sets the base mdimg theme. The choices below override each
-            extension. Article colors come from the template.
-          </p>
         </fieldset>
         <fieldset disabled={locked}>
           <legend>Rendering</legend>
           <label className="check">
             <input
               type="checkbox"
-              checked={config.highlightJs}
+              checked={!!config.highlightJs}
               onChange={(event) => set("highlightJs", event.target.checked)}
             />
             Syntax highlighting
@@ -216,7 +203,7 @@ export function ConfigPanel({
           <label className="check">
             <input
               type="checkbox"
-              checked={config.mathJax}
+              checked={!!config.mathJax}
               onChange={(event) => set("mathJax", event.target.checked)}
             />
             Math formulas
@@ -224,7 +211,7 @@ export function ConfigPanel({
           <label className="check">
             <input
               type="checkbox"
-              checked={config.mermaid}
+              checked={!!config.mermaid}
               onChange={(event) => set("mermaid", event.target.checked)}
             />
             Mermaid diagrams
@@ -357,9 +344,9 @@ export function ConfigPanel({
             {copyMessage}
           </span>
           <p className="hint">
-            Install a matching mdimg version. Save your edited Markdown as{" "}
-            <code>path/to/file.md</code> and keep its relative images alongside
-            it. New source templates may not be published on npm yet.
+            To use, install a matching mdimg version, save your edited Markdown
+            as <code>path/to/file.md</code>.<br />
+            New source templates may not be published on npm yet.
           </p>
           <p className="version">
             mdimg {manifest.packageVersion} ·{" "}

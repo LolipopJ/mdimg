@@ -13,11 +13,11 @@ First, the script calls [marked](https://github.com/markedjs/marked) to parse Ma
 > [!NOTE]
 > Rendering results may differ from the preview images below depending on the actual host environment.
 
-| MacOS                                                 | Windows                                              | Linux                                                | HTML Template | CSS Template | Notes                               |
-| ----------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------- | ------------- | ------------ | ----------------------------------- |
-| <img src="./docs/darwin/default.png" height="600">    | <img src="./docs/win32/default.png" height="600">    | <img src="./docs/linux/default.png" height="600">    | `default`     | `default`    |                                     |
-| <img src="./docs/darwin/github.png" height="600">     | <img src="./docs/win32/github.png" height="600">     | <img src="./docs/linux/github.png" height="600">     | `default`     | `github`     |                                     |
-| <img src="./docs/darwin/githubDark.png" height="600"> | <img src="./docs/win32/githubDark.png" height="600"> | <img src="./docs/linux/githubDark.png" height="600"> | `default`     | `githubDark` | Should be used with `theme: "dark"` |
+| MacOS                                                 | Windows                                              | Linux                                                | HTML Template | CSS Template |
+| ----------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------- | ------------- | ------------ |
+| <img src="./docs/darwin/default.png" height="600">    | <img src="./docs/win32/default.png" height="600">    | <img src="./docs/linux/default.png" height="600">    | `default`     | `default`    |
+| <img src="./docs/darwin/github.png" height="600">     | <img src="./docs/win32/github.png" height="600">     | <img src="./docs/linux/github.png" height="600">     | `default`     | `github`     |
+| <img src="./docs/darwin/githubDark.png" height="600"> | <img src="./docs/win32/githubDark.png" height="600"> | <img src="./docs/linux/githubDark.png" height="600"> | `default`     | `githubDark` |
 
 Build-in CSS Templates:
 
@@ -131,10 +131,8 @@ const convertRes = await mdimg({
   outputFilename: "path/to/output.png",
   width: 600,
   cssTemplate: "github",
-  theme: "light",
   // or with dark theme
   // cssTemplate: "githubDark",
-  // theme: "dark",
 });
 
 console.log(
@@ -179,7 +177,6 @@ Here are all available options:
 | cssText         | `String`                         | `undefined`     | CSS rendering text                                                                                                                                                                                                                            |
 | htmlTemplate    | `String`                         | `default`       | HTML rendering template. Available presets can be found in [`template/html`](./template/html/). If ends with `.html`, the mdimg will try to read local file. This option **has no effect** if `htmlText` is specified                         |
 | cssTemplate     | `String`                         | `default`       | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). If ends with `.css`, the mdimg will try to read local file. This option **has no effect** if `cssText` is specified                              |
-| theme           | `light` \| `dark`                | `light`         | Rendering color theme, affects the default highlight.js theme and other dark/light-aware styles                                                                                                                                               |
 | extensions      | `boolean \| IExtensionOptions`   | `true`          | Configurations for [extensions](#extensions)                                                                                                                                                                                                  |
 | plugins         | `IPlugin[]`                      | `[]`            | List of [plugins](#plugins) to apply during the conversion pipeline                                                                                                                                                                           |
 | outputProcessor | `IOutputProcessor`               | image processor | Custom output processor. Overrides the built-in screenshot logic. See [Output Processors](#output-processors)                                                                                                                                 |
@@ -393,14 +390,16 @@ sequenceDiagram
 
 > Highlight.js is a syntax highlighter.
 
-By default the theme is chosen automatically based on the global `theme` option (`atom-one-light` for `light`, `atom-one-dark` for `dark`). You can override it independently by setting `extensions.highlightJs.theme` to any of the [bundled theme names](https://highlightjs.org/demo):
+By default, highlight.js and Mermaid themes follow the CSS template. Dark templates (`binance`, `bmw-m`, `claude`, `githubDark`, `midnight`, `playstation`, `replicate`, `sentry`, `spacex`, `vercel`, and `x.ai`) use `atom-one-dark` and Mermaid's `dark` theme. Other templates use `atom-one-light` and Mermaid's `default` theme. Template filenames use the same mapping.
+
+You can override either theme independently with `extensions.highlightJs.theme` or `extensions.mermaid.theme`. Highlight.js accepts any of the [bundled theme names](https://highlightjs.org/demo):
 
 ```ts
 await mdimg({
-  theme: "light", // global page theme
+  cssTemplate: "github",
   extensions: {
     highlightJs: {
-      theme: "github-dark", // highlight.js theme, independent of global theme
+      theme: "github-dark", // overrides the CSS template's default
     },
   },
 });
@@ -458,15 +457,15 @@ await mdimg({
 
 ### Custom Extensions
 
-A plugin can also contribute one or more **extensions** — each extension injects HTML fragments into the `<head>` or `<body>` of the rendered page.
+A plugin can also contribute one or more **extensions** — each extension injects HTML fragments into the `<head>` or `<body>` of the rendered page. The injection context provides the selected `cssTemplate` name or filename.
 
 ```ts
 import type { IPlugin, IExtension } from "mdimg";
 
 const fontExtension: IExtension = {
   name: "googleFont",
-  inject({ theme }) {
-    const family = theme === "dark" ? "JetBrains+Mono" : "Inter";
+  inject({ cssTemplate }) {
+    const family = cssTemplate === "githubDark" ? "JetBrains+Mono" : "Inter";
     return {
       head: `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=${family}&display=swap">`,
     };
@@ -584,9 +583,11 @@ const customHljsPlugin: IPlugin = {
   extensions: [
     {
       name: "highlightJs", // same name → replaces the built-in
-      inject({ theme }) {
+      inject({ cssTemplate }) {
         const cssFile =
-          theme === "dark" ? "./custom-dark.css" : "./custom-light.css";
+          cssTemplate === "githubDark"
+            ? "./custom-dark.css"
+            : "./custom-light.css";
         return {
           head: `<style>${readFileSync(cssFile, "utf8")}</style>`,
           body: `<script>${customScript}</script>

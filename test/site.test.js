@@ -7,17 +7,28 @@ const workspace = mkdtempSync(join(tmpdir(), "mdimg-site-"));
 afterAll(() => rmSync(workspace, { recursive: true, force: true }));
 
 async function loadSource(name) {
-  const source = resolve(__dirname, `../site/src/${name}.ts`);
+  const source = resolve(
+    __dirname,
+    name === "themeDefaults"
+      ? "../src/utils/themeDefaults.ts"
+      : `../site/src/${name}.ts`,
+  );
+  if (name === "config") await loadSource("themeDefaults");
   if (!require("node:fs").existsSync(source)) return {};
   const filename = join(workspace, `${name}.mjs`);
   writeFileSync(
     filename,
-    ts.transpileModule(readFileSync(source, "utf8"), {
-      compilerOptions: {
-        target: ts.ScriptTarget.ES2022,
-        module: ts.ModuleKind.ESNext,
-      },
-    }).outputText,
+    ts
+      .transpileModule(readFileSync(source, "utf8"), {
+        compilerOptions: {
+          target: ts.ScriptTarget.ES2022,
+          module: ts.ModuleKind.ESNext,
+        },
+      })
+      .outputText.replace(
+        "../../src/utils/themeDefaults",
+        "./themeDefaults.mjs",
+      ),
   );
   return importPackage(filename);
 }
@@ -48,7 +59,6 @@ test("SITE: calls preserve false extensions, words HTML and format", async () =>
   const config = {
     cssTemplate: "words",
     width: 800,
-    theme: "dark",
     type: "webp",
     quality: 0,
     highlightJs: false,
@@ -68,6 +78,8 @@ test("SITE: calls preserve false extensions, words HTML and format", async () =>
   });
   expect(calls.cli).toContain("--css");
   expect(calls.cli).not.toContain("--cssTemplate");
+  expect(calls.cli).not.toContain("--theme");
+  expect(calls.options).not.toHaveProperty("theme");
   expect(calls.node).toContain('import { mdimg } from "mdimg"');
   const png = createCalls(
     { ...config, type: "png", highlightJs: true, mathJax: true },
@@ -83,6 +95,46 @@ test("SITE: calls preserve false extensions, words HTML and format", async () =>
   expect(png.cli).not.toContain("--quality");
 });
 
+test("SITE: switching templates resets extension themes together", async () => {
+  const { defaults, selectTemplate } = await loadSource("config");
+  expect(typeof selectTemplate).toBe("function");
+  const custom = {
+    ...defaults,
+    width: 1200,
+    highlightTheme: "base16/dracula",
+    mermaidTheme: "forest",
+    highlightJs: false,
+  };
+  for (const cssTemplate of [
+    "binance",
+    "bmw-m",
+    "claude",
+    "githubDark",
+    "midnight",
+    "playstation",
+    "replicate",
+    "sentry",
+    "spacex",
+    "vercel",
+    "x.ai",
+  ]) {
+    const dark = selectTemplate(custom, cssTemplate);
+    expect(dark).toMatchObject({
+      cssTemplate,
+      width: 1200,
+      highlightJs: false,
+      highlightTheme: "atom-one-dark",
+      mermaidTheme: "dark",
+    });
+    expect(selectTemplate(dark, "github")).toMatchObject({
+      cssTemplate: "github",
+      highlightTheme: "atom-one-light",
+      mermaidTheme: "default",
+    });
+  }
+  expect(custom.mermaidTheme).toBe("forest");
+});
+
 test("SITE: shell quoting preserves apostrophes, dollar signs and extension JSON", async () => {
   const { createCalls, quoteShell } = await loadSource("commands");
   expect(typeof quoteShell).toBe("function");
@@ -92,7 +144,6 @@ test("SITE: shell quoting preserves apostrophes, dollar signs and extension JSON
     {
       cssTemplate: "default",
       width: 1,
-      theme: "light",
       type: "jpeg",
       quality: 100,
       highlightJs: true,

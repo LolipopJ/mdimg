@@ -39,7 +39,6 @@ export const normalizeOptions = (options: IConvertOptions) => {
     cssText,
     htmlTemplate = "default",
     cssTemplate = "default",
-    theme = "light",
     extensions = true,
     plugins = [],
     log = false,
@@ -86,9 +85,6 @@ export const normalizeOptions = (options: IConvertOptions) => {
     throw new Error(
       `encoding type ${encoding} is not supported. Valid types: base64, binary, blob.`,
     );
-  }
-  if (theme !== "light" && theme !== "dark") {
-    throw new Error("theme must be 'light' or 'dark'.");
   }
   for (const [name, value] of Object.entries({ log, debug })) {
     if (typeof value !== "boolean") {
@@ -200,7 +196,6 @@ export const normalizeOptions = (options: IConvertOptions) => {
     cssText,
     htmlTemplate,
     cssTemplate,
-    theme,
     extensions,
     plugins,
     log,

@@ -1,4 +1,8 @@
-import type { IExtension, IExtensionInjectResult } from "../interfaces";
+import type {
+  IExtension,
+  IExtensionInjectResult,
+  IExtensionOptions,
+} from "../interfaces";
 import {
   inlineScript,
   readAsset,
@@ -7,7 +11,7 @@ import {
 } from "../utils/assets";
 
 export const createMathJaxExtension = (
-  config: boolean | Record<string, unknown>,
+  config: IExtensionOptions["mathJax"],
 ): IExtension => ({
   name: "mathJax",
 

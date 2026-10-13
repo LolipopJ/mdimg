@@ -2,18 +2,20 @@ import type {
   IExtension,
   IExtensionContext,
   IExtensionInjectResult,
+  IExtensionOptions,
 } from "../interfaces";
 import { inlineScript, readAsset, serializeForScript } from "../utils/assets";
+import { getDefaultThemes } from "../utils/themeDefaults";
 
 export const createMermaidExtension = (
-  config: boolean | Record<string, unknown>,
+  config: IExtensionOptions["mermaid"],
 ): IExtension => ({
   name: "mermaid",
 
-  inject({ theme }: IExtensionContext): IExtensionInjectResult {
+  inject({ cssTemplate }: IExtensionContext): IExtensionInjectResult {
     const mermaidOptions = Object.assign(
       {
-        theme: theme === "dark" ? "dark" : undefined,
+        theme: getDefaultThemes(cssTemplate).mermaid,
       },
       config === true ? {} : config,
       { startOnLoad: false },

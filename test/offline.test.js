@@ -233,23 +233,23 @@ describe(`OFFLINE: ${format} rendering without network access`, () => {
     for (const [name, options, colors] of [
       [
         "light",
-        { theme: "light" },
-        ["rgb(250, 250, 250)", "rgb(166, 38, 164)"],
+        { cssTemplate: "github" },
+        ["rgba(0, 0, 0, 0)", "rgb(166, 38, 164)"],
       ],
       [
         "dark",
         {
-          theme: "dark",
+          cssTemplate: "githubDark",
         },
-        ["rgb(40, 44, 52)", "rgb(198, 120, 221)"],
+        ["rgba(0, 0, 0, 0)", "rgb(198, 120, 221)"],
       ],
       [
         "light-with-github-dark",
         {
-          theme: "light",
+          cssTemplate: "github",
           extensions: { highlightJs: { theme: "github-dark" } },
         },
-        ["rgb(13, 17, 23)", "rgb(255, 123, 114)"],
+        ["rgba(0, 0, 0, 0)", "rgb(255, 123, 114)"],
       ],
       [
         "brown-paper",

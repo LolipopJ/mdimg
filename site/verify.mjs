@@ -269,6 +269,24 @@ try {
     sanitized: true,
   };
 
+  assert.equal(await page.$("#theme"), null);
+  for (const [template, highlightTheme, mermaidTheme] of [
+    ["githubDark", "atom-one-dark", "dark"],
+    ["github", "atom-one-light", "default"],
+  ]) {
+    await page.select("#template", template);
+    await page.waitForFunction(
+      (highlight, mermaid) =>
+        document.querySelector("#highlight-theme").value === highlight &&
+        document.querySelector("#mermaid-theme").value === mermaid,
+      {},
+      highlightTheme,
+      mermaidTheme,
+    );
+    await settled();
+  }
+  evidence.templateThemes = "dark and light defaults follow the CSS template";
+
   await page.select("#highlight-theme", "base16/dracula");
   await settled();
   for (const theme of [
@@ -396,7 +414,6 @@ try {
   const reset = await page.evaluate(() => ({
     width: document.querySelector("#width").value,
     template: document.querySelector("#template").value,
-    theme: document.querySelector("#theme").value,
     format: document.querySelector("#format").value,
     highlightTheme: document.querySelector("#highlight-theme").value,
     mermaidTheme: document.querySelector("#mermaid-theme").value,
@@ -409,7 +426,6 @@ try {
   assert.deepEqual(reset, {
     width: "800",
     template: "github",
-    theme: "light",
     format: "png",
     highlightTheme: "github",
     mermaidTheme: "default",

@@ -87,12 +87,6 @@ program
   )
   .addOption(
     new Option(
-      "--theme <color theme>",
-      "Rendering color theme, will impact styles of code block and so on",
-    ),
-  )
-  .addOption(
-    new Option(
       "--extensions <options>",
       "Extension configurations. Can be 'true', 'false', or a JSON object to configure individual extensions (highlightJs, mathJax, mermaid)",
     ),
@@ -149,7 +143,6 @@ async function main() {
     cssText,
     css,
     extensions,
-    theme,
     debug,
   } = program.opts();
 
@@ -168,7 +161,6 @@ async function main() {
     htmlTemplate: html ?? template,
     cssTemplate: css ?? template,
     extensions: parseExtensions(extensions),
-    theme,
     log: encoding === undefined || encoding === "binary",
     debug,
   });

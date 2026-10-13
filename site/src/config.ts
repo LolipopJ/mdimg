@@ -2,31 +2,42 @@ import type { MermaidConfig } from "mermaid";
 
 import type {
   IConvertOptions,
+  IExtensionOptions,
   IHighlightJsTheme,
 } from "../../src/interfaces/index";
+import { getDefaultThemes } from "../../src/utils/themeDefaults";
 
 export type Config = Required<
-  Pick<IConvertOptions, "cssTemplate" | "width" | "theme" | "type" | "quality">
+  Pick<IConvertOptions, "cssTemplate" | "width" | "type" | "quality">
 > & {
-  highlightJs: boolean;
+  highlightJs: IExtensionOptions["highlightJs"];
   highlightTheme: IHighlightJsTheme;
-  mathJax: boolean;
-  mermaid: boolean;
+  mathJax: IExtensionOptions["mathJax"];
+  mermaid: IExtensionOptions["mermaid"];
   mermaidTheme: NonNullable<MermaidConfig["theme"]>;
 };
 
 export const defaults: Config = {
   cssTemplate: "github",
   width: 800,
-  theme: "light",
   type: "png",
   quality: 100,
   highlightJs: true,
-  highlightTheme: "github",
+  highlightTheme: getDefaultThemes("github").highlightJs,
   mathJax: true,
   mermaid: true,
-  mermaidTheme: "default",
+  mermaidTheme: getDefaultThemes("github").mermaid,
 };
+
+export function selectTemplate(config: Config, cssTemplate: string): Config {
+  const themes = getDefaultThemes(cssTemplate);
+  return {
+    ...config,
+    cssTemplate,
+    highlightTheme: themes.highlightJs,
+    mermaidTheme: themes.mermaid,
+  };
+}
 
 export function integerError(
   value: string,

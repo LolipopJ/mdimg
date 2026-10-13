@@ -50,11 +50,6 @@ export interface IConvertOptions {
    */
   cssTemplate?: string;
   /**
-   * Rendering color theme
-   * @defaultValue `light`
-   */
-  theme?: "light" | "dark";
-  /**
    * Configuration for third-party extensions
    */
   extensions?: boolean | IExtensionOptions;
@@ -468,15 +463,16 @@ export interface IExtensionOptions {
    */
   highlightJs?:
     | boolean
-    | {
-        /**
-         * Highlight.js theme name. Defaults to `atom-one-light` / `atom-one-dark`
-         * based on the global `theme` option when not set.
-         * Independent of the global theme — setting this overrides the automatic selection.
-         */
-        theme?: IHighlightJsTheme;
-        [key: string]: unknown;
-      };
+    | Partial<
+        import("highlight.js").HLJSOptions & {
+          /**
+           * Highlight.js theme name. Defaults to `atom-one-light` / `atom-one-dark`
+           * based on the CSS template when not set.
+           * Setting this overrides the automatic selection.
+           */
+          theme: IHighlightJsTheme;
+        }
+      >;
   /**
    * Provide a boolean value of a configuration object.
    * Available options: https://docs.mathjax.org/en/latest/options/index.html
@@ -490,7 +486,7 @@ export interface IExtensionOptions {
    * @link https://github.com/mermaid-js/mermaid
    * @defaultValue `true`
    */
-  mermaid?: boolean | Record<string, unknown>;
+  mermaid?: boolean | Partial<import("mermaid").MermaidConfig>;
   /**
    * Suppress any extension (built-in or plugin-contributed) or entire plugin
    * by setting its name to `false`.
@@ -511,15 +507,15 @@ export interface IExtensionOptions {
    * Both forms reach the same result for a plugin that contributes both
    * injection and custom parsing.
    */
-  [name: string]: boolean | Record<string, unknown> | undefined;
+  [name: string]: boolean | object | undefined;
 }
 
 // ─── Extension Framework ──────────────────────────────────────────────────────
 
 /** Runtime context passed to an extension's `inject` method */
 export interface IExtensionContext {
-  /** Current rendering theme */
-  theme: "light" | "dark";
+  /** Selected CSS template name or filename */
+  cssTemplate: string;
 }
 
 /** HTML fragments returned by an extension to be injected into the page */

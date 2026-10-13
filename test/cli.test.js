@@ -359,7 +359,7 @@ test.each([
   [["-t", "# Hello", "--height", "99"], /height/],
   [["-t", "# Hello", "-q", "101"], /quality/],
   [["-t", "# Hello", "-q", ""], /quality/],
-  [["-t", "# Hello", "--theme", "sepia"], /theme/],
+  [["-t", "# Hello", "--theme", "dark"], /unknown option '--theme'/],
   [["-t", "# Hello", "--type", "gif"], /type/],
   [["-t", "# Hello", "-e", "hex"], /encoding/],
   [["-t", "# Hello", "--extensions", "null"], /extensions/],

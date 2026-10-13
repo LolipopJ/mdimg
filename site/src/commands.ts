@@ -19,7 +19,6 @@ export function createCalls(
     width: config.width,
     htmlTemplate,
     cssTemplate: config.cssTemplate,
-    theme: config.theme,
     extensions: {
       highlightJs: config.highlightJs
         ? { theme: config.highlightTheme }
@@ -39,7 +38,7 @@ export function createCalls(
     ...(config.type === "png" ? {} : { quality: config.quality }),
   };
   const q = (value: string) => quoteShell(value, shell);
-  const cli = `mdimg -i ${q(options.inputFilename!)} -o ${q(options.outputFilename!)} --type ${config.type} --width ${config.width} --html ${q(htmlTemplate)} --css ${q(config.cssTemplate)} --theme ${config.theme}${config.type === "png" ? "" : ` --quality ${config.quality}`} --extensions ${q(JSON.stringify(options.extensions))}`;
+  const cli = `mdimg -i ${q(options.inputFilename!)} -o ${q(options.outputFilename!)} --type ${config.type} --width ${config.width} --html ${q(htmlTemplate)} --css ${q(config.cssTemplate)}${config.type === "png" ? "" : ` --quality ${config.quality}`} --extensions ${q(JSON.stringify(options.extensions))}`;
   return {
     options,
     cli,

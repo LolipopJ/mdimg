@@ -11,12 +11,11 @@ const spliceHtml = async ({
   cssText,
   htmlTemplate = "default",
   cssTemplate = "default",
-  theme = "light",
   resolvedExtensions = [],
   log = false,
 }: Pick<
   IConvertOptions,
-  "htmlText" | "cssText" | "htmlTemplate" | "cssTemplate" | "theme" | "log"
+  "htmlText" | "cssText" | "htmlTemplate" | "cssTemplate" | "log"
 > & {
   /** HTML document parsed by Markdown source */
   renderedHtml: string;
@@ -80,7 +79,7 @@ ${_cssSource}
 `);
   $(".markdown-body").html(renderedHtml);
 
-  const context = { theme };
+  const context = { cssTemplate };
 
   for (const ext of resolvedExtensions) {
     const result = await ext.inject(context);

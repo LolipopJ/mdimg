@@ -14,7 +14,6 @@ test.each([
     name: "default",
     htmlTemplate: "default",
     cssTemplate: "default",
-    theme: "light",
     width: 800,
     styles: { paddingTop: "96px", paddingLeft: "64px" },
   },
@@ -22,7 +21,6 @@ test.each([
     name: "empty",
     htmlTemplate: "default",
     cssTemplate: "empty",
-    theme: "light",
     width: 800,
     styles: { paddingTop: "0px", paddingLeft: "0px" },
   },
@@ -30,7 +28,6 @@ test.each([
     name: "github",
     htmlTemplate: "default",
     cssTemplate: "github",
-    theme: "light",
     width: 1000,
     styles: {
       paddingTop: "96px",
@@ -43,7 +40,6 @@ test.each([
     name: "githubDark",
     htmlTemplate: "default",
     cssTemplate: "githubDark",
-    theme: "dark",
     width: 1000,
     styles: {
       paddingTop: "96px",
@@ -56,7 +52,6 @@ test.each([
     name: "words",
     htmlTemplate: "words",
     cssTemplate: "words",
-    theme: "light",
     width: 1200,
     styles: {
       paddingTop: "32px",
@@ -66,7 +61,7 @@ test.each([
   },
 ])(
   "TEMPLATE: $name preview has its DOM, styles and image width",
-  async ({ name, htmlTemplate, cssTemplate, theme, width, styles }) => {
+  async ({ name, htmlTemplate, cssTemplate, width, styles }) => {
     const marker = `Preview-${name}`;
     writeFileSync(workspace.inputFilename, marker);
     const outputFilename = resolve(workspace.dir, `${name}.png`);
@@ -77,7 +72,6 @@ test.each([
       extensions: false,
       htmlTemplate,
       cssTemplate,
-      theme,
       width,
       outputProcessor: {
         ...processor,
