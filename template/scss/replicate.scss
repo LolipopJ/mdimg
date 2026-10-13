@@ -6,13 +6,13 @@
   --article-text: #202020;
   --article-accent: #ea2804;
   --article-surface: #f3f0e8;
-  --article-border: rgba(32, 32, 32, 0.12);
+  --article-border: rgb(32 32 32 / 12%);
   --article-muted: #575757;
   --article-code-background: #202020;
   --article-code-text: #fcfcfc;
-  --article-font-body: "basier-square", Geist, Inter, "Segoe UI", "Microsoft YaHei", sans-serif;
-  --article-font-display: "rb-freigeist-neue", "Bricolage Grotesque", Inter, "Segoe UI", "Microsoft YaHei", sans-serif;
-  --article-font-code: "JetBrains Mono", "jetbrains-mono", ui-monospace, Consolas, monospace;
+  --article-font-body: "basier-square", geist, inter, "Segoe UI", "Microsoft YaHei", sans-serif;
+  --article-font-display: "rb-freigeist-neue", "Bricolage Grotesque", inter, "Segoe UI", "Microsoft YaHei", sans-serif;
+  --article-font-code: "JetBrains Mono", "jetbrains-mono", ui-monospace, consolas, monospace;
 
   background: var(--article-background);
   font-family: var(--article-font-body);
@@ -141,7 +141,7 @@
       text-underline-offset: 4px;
 
       &:focus-visible {
-        outline: 3px solid rgba(59, 130, 246, 0.5);
+        outline: 3px solid rgb(59 130 246 / 50%);
         outline-offset: 4px;
       }
     }
@@ -172,7 +172,7 @@
       vertical-align: -3px;
 
       &:focus-visible {
-        outline: 3px solid rgba(59, 130, 246, 0.5);
+        outline: 3px solid rgb(59 130 246 / 50%);
         outline-offset: 4px;
       }
     }
@@ -212,7 +212,7 @@
     }
 
     kbd {
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgb(255 255 255 / 20%);
       border-bottom-width: 2px;
       background: #000;
     }

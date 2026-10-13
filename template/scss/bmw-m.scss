@@ -2,9 +2,9 @@
 
 // BMW M: pure black, stamped display type, light copy and a restrained M stripe.
 #mdimg-body {
-  --article-background: #000000;
-  --article-text: #bbbbbb;
-  --article-accent: #ffffff;
+  --article-background: #000;
+  --article-text: #bbb;
+  --article-accent: #fff;
   --article-surface: #1a1a1a;
   --article-border: #3c3c3c;
   --article-muted: #7e7e7e;
@@ -16,14 +16,14 @@
   --bmw-m-blue-dark: #1c69d4;
   --bmw-m-red: #e22718;
   --bmw-m-display-font:
-    "BMWTypeNextLatin", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Microsoft YaHei", sans-serif;
-  --bmw-m-code-font: "Cascadia Code", Consolas, "Liberation Mono", monospace;
+    "BMWTypeNextLatin", inter, -apple-system, blinkmacsystemfont, "Segoe UI",
+    roboto, "Microsoft YaHei", sans-serif;
+  --bmw-m-code-font: "Cascadia Code", consolas, "Liberation Mono", monospace;
 
   background: var(--article-background);
   color-scheme: dark;
   font-family:
-    "BMWTypeNextLatin Light", "BMWTypeNextLatin", Inter, -apple-system,
+    "BMWTypeNextLatin Light", BMWTypeNextLatin, Inter, -apple-system,
     BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
   font-size: 16px;
   font-weight: 300;

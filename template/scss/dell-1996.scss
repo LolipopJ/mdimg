@@ -4,7 +4,7 @@
 #mdimg-body {
   --article-background: #fff;
   --article-text: #000;
-  --article-accent: #0000ee;
+  --article-accent: #00e;
   --article-surface: #b3bd95;
   --article-border: #000;
   --article-muted: #000;
@@ -224,6 +224,7 @@
       7: #a5b8c0,
       8: #8c9ae0,
     );
+
     @each $index, $tint in $catalog-tints {
       > blockquote:nth-of-type(8n + #{$index}) {
         background: $tint;

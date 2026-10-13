@@ -1,0 +1,258 @@
+@use "./partials/article";
+
+#mdimg-body {
+  --article-background: #c5adc9;
+  --article-text: #433147;
+  --article-accent: #a1477e;
+  --article-surface: #f8eaf3;
+  --article-border: #ddc7dc;
+  --article-muted: #725b76;
+  --article-code-background: #f8f2f8;
+  --article-code-text: #4e3955;
+
+  position: relative;
+  isolation: isolate;
+  min-height: 0;
+  padding: 52px 36px;
+  color: var(--article-text);
+  background:
+    radial-gradient(ellipse at 48% 8%, #eadbdc 0%, #eadbdc00 43%),
+    radial-gradient(ellipse at 5% 70%, #af5c9c 0%, #af5c9c00 42%),
+    radial-gradient(ellipse at 95% 84%, #db93bb 0%, #db93bb00 45%),
+    linear-gradient(155deg, #ab9cb9 0%, #d8bfce 43%, #9e87b1 100%);
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  // Soft flower waves frame an open valley around the reading surface.
+  &::before {
+    inset: 14px;
+    background:
+      radial-gradient(ellipse at 15% 25%, rgb(206 147 216 / 30%) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 75%, rgb(244 143 177 / 25%) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, rgb(225 190 231 / 20%) 0%, transparent 60%);
+    filter: blur(40px);
+  }
+
+  // Overlapping petal daubs keep a broken oil-paint texture at the edges.
+  &::after {
+    inset: 0;
+    background:
+      linear-gradient(
+        180deg,
+        rgb(106 27 154 / 4%) 0%,
+        transparent 35%,
+        transparent 65%,
+        rgb(106 27 154 / 4%) 100%
+      ),
+      radial-gradient(ellipse at 50% 0%, rgb(255 255 255 / 15%) 0%, transparent 40%),
+      radial-gradient(ellipse at 50% 100%, rgb(255 255 255 / 12%) 0%, transparent 40%);
+  }
+
+  > .markdown-body {
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 54px 56px;
+    border: 1px solid #fff5f9d9;
+    border-radius: 22px;
+    background:
+      radial-gradient(ellipse at 100% 0%, #ead4e61c 0%, #ead4e600 52%),
+      linear-gradient(145deg, #fffaf9f5 0%, #fcf4fcf2 58%, #fff5f9ed 100%);
+    backdrop-filter: blur(14px) saturate(1.08);
+    box-shadow:
+      0 20px 56px #61436830,
+      0 3px 12px #5d416519,
+      inset 0 1px 0 #fff;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: 16px;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #67416a;
+      font-family: Georgia, "Times New Roman", "Songti SC", SimSun, serif;
+      font-weight: 600;
+      line-height: 1.45;
+      letter-spacing: 0.025em;
+
+      strong,
+      b,
+      a {
+        color: inherit;
+        font-weight: inherit;
+      }
+    }
+
+    h1 {
+      margin: 0 0 30px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--article-border);
+      font-size: 42px;
+      font-weight: 500;
+      line-height: 1.3;
+      letter-spacing: 0.045em;
+    }
+
+    h2 {
+      margin: 38px 0 18px;
+      font-size: 26px;
+    }
+
+    h3 {
+      margin: 30px 0 14px;
+      font-size: 21px;
+    }
+
+    h4,
+    h5,
+    h6 {
+      margin: 24px 0 12px;
+      font-size: 18px;
+    }
+
+    p {
+      margin: 0 0 1.2em;
+    }
+
+    strong,
+    b {
+      color: var(--article-accent);
+      font-weight: 700;
+    }
+
+    a {
+      text-decoration-color: #b46a9599;
+      text-underline-offset: 0.2em;
+    }
+
+    blockquote {
+      margin: 28px 0;
+      padding: 18px 24px;
+      border-left: 3px solid #bc79a2;
+      border-radius: 2px 14px 14px 2px;
+      background: var(--article-surface);
+      color: var(--article-muted);
+
+      > :last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    hr {
+      height: 1px;
+      margin: 32px 0;
+      border: 0;
+      background: linear-gradient(90deg, #ddc7dc00, #b98daf, #ddc7dc00);
+    }
+
+    pre {
+      padding: 20px 22px;
+      border: 1px solid var(--article-border);
+      border-radius: 12px;
+      background: var(--article-code-background);
+      color: var(--article-code-text);
+      font:
+        13px/1.7 ui-monospace,
+        SFMono-Regular,
+        Consolas,
+        "Liberation Mono",
+        monospace;
+
+      > code {
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+      }
+    }
+
+    :not(pre) > code,
+    kbd {
+      border: 1px solid #e4cfe0;
+      border-radius: 5px;
+    }
+
+    table {
+      margin: 24px 0;
+      font-size: 0.92em;
+    }
+
+    th,
+    td {
+      padding: 11px 14px;
+      border-color: var(--article-border);
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    th {
+      background: var(--article-surface);
+      color: #67416a;
+    }
+
+    > img,
+    p > img {
+      border-radius: 10px;
+    }
+
+    > :last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  @media (width <= 520px) {
+    padding: 22px 14px;
+
+    > .markdown-body {
+      padding: 30px 23px;
+      border-radius: 15px;
+      font-size: 15px;
+
+      h1 {
+        padding-bottom: 18px;
+        font-size: 33px;
+        letter-spacing: 0.025em;
+      }
+
+      h2 {
+        font-size: 19px;
+      }
+
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-size: 17px;
+      }
+
+      blockquote {
+        padding: 16px 18px;
+      }
+
+      pre {
+        padding: 16px;
+      }
+
+      th,
+      td {
+        padding: 9px 10px;
+      }
+    }
+  }
+}

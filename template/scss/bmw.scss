@@ -2,7 +2,7 @@
 
 // BMW corporate: white canvas, heavy display type, Light body and square geometry.
 #mdimg-body {
-  --article-background: #ffffff;
+  --article-background: #fff;
   --article-text: #3c3c3c;
   --article-accent: #1c69d4;
   --article-surface: #f7f7f7;
@@ -142,7 +142,7 @@
       margin: 32px 0;
       padding: 24px;
       border: 1px solid var(--article-border);
-      border-left: 4px solid #cccccc;
+      border-left: 4px solid #ccc;
       border-radius: 0;
       color: var(--article-text);
       background: var(--article-surface);
@@ -151,7 +151,7 @@
         margin: 16px 0;
         padding: 8px 16px;
         border: 0;
-        border-left: 2px solid #cccccc;
+        border-left: 2px solid #ccc;
         background: var(--article-background);
       }
     }
@@ -166,7 +166,7 @@
     }
 
     kbd {
-      border: 1px solid #cccccc;
+      border: 1px solid #ccc;
       background: var(--article-background);
     }
 

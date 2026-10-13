@@ -5,7 +5,7 @@
   --article-background: #f5f5f5;
   --article-text: #4e4e4e;
   --article-accent: #0c0a09;
-  --article-surface: #ffffff;
+  --article-surface: #fff;
   --article-border: #e7e5e4;
   --article-muted: #777169;
   --article-code-background: #f0efed;
@@ -22,8 +22,8 @@
   --elevenlabs-orb-width: 460px;
   --elevenlabs-orb-height: 320px;
   --elevenlabs-display-font: "Waldenburg", "EB Garamond", "GT Sectra",
-    "Times New Roman", "Songti SC", SimSun, serif;
-  --elevenlabs-mono-font: SFMono-Regular, "Cascadia Code", Consolas,
+    "Times New Roman", "Songti SC", simsun, serif;
+  --elevenlabs-mono-font: sfmono-regular, "Cascadia Code", consolas,
     "Liberation Mono", monospace;
 
   background-image:
