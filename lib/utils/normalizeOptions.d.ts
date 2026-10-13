@@ -13,7 +13,6 @@ export declare const normalizeOptions: (options: IConvertOptions) => {
     cssText: string | undefined;
     htmlTemplate: string;
     cssTemplate: string;
-    theme: "light" | "dark";
     extensions: boolean | import("../interfaces").IExtensionOptions;
     plugins: import("../interfaces").IPlugin[];
     log: boolean;

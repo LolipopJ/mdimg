@@ -1,2 +1,2 @@
-import type { IExtension } from "../interfaces";
-export declare const createMermaidExtension: (config: boolean | Record<string, unknown>) => IExtension;
+import type { IExtension, IExtensionOptions } from "../interfaces";
+export declare const createMermaidExtension: (config: IExtensionOptions["mermaid"]) => IExtension;
