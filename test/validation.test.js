@@ -44,6 +44,7 @@ test("VALIDATION: a readable PDF with the wrong paper size fails the size assert
   const result = await mdimg({
     inputFilename: workspace.inputFilename,
     extensions: false,
+    cssTemplate: "empty",
     cssText: "body { margin: 0; } h1 { margin: 0; }",
     outputProcessor: createPdfOutputProcessor({ width: "4in", height: "3in" }),
   });

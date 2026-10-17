@@ -131,14 +131,18 @@ const convertRes = await mdimg({
   outputFilename: "path/to/output.png",
   width: 600,
   cssTemplate: "github",
-  // or with dark theme
+  // with dark theme
   // cssTemplate: "githubDark",
+  // with appended styles
+  // cssText: ".markdown-body { font-size: 24px; line-height: 1.6; color: #333; }",
 });
 
 console.log(
   `Convert to image successfully!\nImage has been saved as \`${convertRes.path}\``,
 );
 ```
+
+`cssText` accept strings, value is appended after template and extension styles. Normal CSS specificity and `!important` rules still apply. Empty CSS text keeps the template styles; use `cssTemplate: "empty"` to start without preset styles.
 
 Get image data in-memory without saving to disk:
 
@@ -154,7 +158,7 @@ const convertRes = await mdimg({
 // writeFileSync("path/to/output.png", convertRes.data);
 ```
 
-When using `mdimg()` method, you must specify either `inputFilename` (input file) or `inputText` (directly input text).
+When using `mdimg()` method, you must specify either `inputFilename` (input file, alias `input`) or `inputText` (directly input text).
 
 Library loading, typesetting, diagram rendering, fonts and images share a
 readiness promise. Image/PDF output waits for it; exported HTML runs the same
@@ -167,16 +171,20 @@ Here are all available options:
 | --------------- | -------------------------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | inputText       | `String`                         | `undefined`     | Input Markdown or HTML text directly. This option **has no effect** if `inputFilename` is specified                                                                                                                                           |
 | inputFilename   | `String`                         | `undefined`     | Read Markdown or HTML text from a file                                                                                                                                                                                                        |
+| input           | `String`                         | `undefined`     | Alias for `inputFilename`; `inputFilename` takes priority                                                                                                                                                                                     |
 | outputFilename  | `String`                         | See notes       | Output file path. For the default image processor: auto-generates `./mdimg_output/mdimg_<timestamp>_<UUID>.${type}` when omitted. For a custom `outputProcessor`: written to disk **only** when explicitly provided (no default is generated) |
+| output          | `String`                         | See notes       | Alias for `outputFilename`; `outputFilename` takes priority                                                                                                                                                                                   |
 | type            | `"jpeg" \| "png" \| "webp"`      | `png`           | File type of the image. Type will be inferred from `outputFilename` if specified. Ignored when `outputProcessor` is set                                                                                                                       |
 | width           | `Number`                         | `800`           | Width in pixel of output image                                                                                                                                                                                                                |
 | height          | `Number`                         | `100`           | Min-height in pixel of output image. No less than `100`                                                                                                                                                                                       |
 | encoding        | `"base64" \| "binary" \| "blob"` | `binary`        | Encode type of output image. Ignored when `outputProcessor` is set                                                                                                                                                                            |
 | quality         | `Number`                         | `100`           | Quality of the image, between 0-100. **Not applicable** to `png` image. Ignored when `outputProcessor` is set                                                                                                                                 |
 | htmlText        | `String`                         | `undefined`     | HTML rendering text                                                                                                                                                                                                                           |
-| cssText         | `String`                         | `undefined`     | CSS rendering text                                                                                                                                                                                                                            |
+| html            | `String`                         | `undefined`     | Alias for `htmlText`; `htmlText` takes priority                                                                                                                                                                                               |
+| cssText         | `String`                         | `undefined`     | CSS text appended last, after template and extension styles                                                                                                                                                                                   |
+| css             | `String`                         | `undefined`     | Alias for `cssText`; `cssText` takes priority                                                                                                                                                                                                 |
 | htmlTemplate    | `String`                         | `default`       | HTML rendering template. Available presets can be found in [`template/html`](./template/html/). If ends with `.html`, the mdimg will try to read local file. This option **has no effect** if `htmlText` is specified                         |
-| cssTemplate     | `String`                         | `default`       | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). If ends with `.css`, the mdimg will try to read local file. This option **has no effect** if `cssText` is specified                              |
+| cssTemplate     | `String`                         | `default`       | CSS rendering template. Available presets can be found in [`template/css`](./template/css/). If ends with `.css`, mdimg will try to read a local file. `cssText` are appended to these styles                                                 |
 | extensions      | `boolean \| IExtensionOptions`   | `true`          | Configurations for [extensions](#extensions)                                                                                                                                                                                                  |
 | plugins         | `IPlugin[]`                      | `[]`            | List of [plugins](#plugins) to apply during the conversion pipeline                                                                                                                                                                           |
 | outputProcessor | `IOutputProcessor`               | image processor | Custom output processor. Overrides the built-in screenshot logic. See [Output Processors](#output-processors)                                                                                                                                 |
@@ -249,7 +257,7 @@ CSS templates with the corresponding name will be generated in `template/css` di
 Template presets may not often meet your needs. If you already know the specifications of [HTML template](#html-template) and [CSS template](#css-template), you can pass the template directly. There are two methods:
 
 1. Using local template file. Pass a local filepath with the **file extension `.html` and `.css`** through options `--html` and `--css` with CLI (`htmlTemplate` and `cssTemplate` with Node.js).
-2. Using template text. Pass template text through `--htmlText` and `--cssText` with CLI (`htmlText` and `cssText` with Node.js).
+2. Using template text. Pass HTML template text through `--htmlText` with CLI (`htmlText` with Node.js). Append CSS overrides through `--cssText` (`cssText` with Node.js); the selected CSS template is still included.
 
 CLI:
 

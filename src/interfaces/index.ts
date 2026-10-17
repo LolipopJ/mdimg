@@ -5,11 +5,15 @@ export interface IConvertOptions {
   inputText?: string;
   /** Filename of source Markdown or HTML */
   inputFilename?: string;
+  /** Alias for `inputFilename`. `inputFilename` takes priority when both are set. */
+  input?: IConvertOptions["inputFilename"];
   /**
    * Output binary image filename. File type can be `jpeg`, `png` or `webp`. Available when `encoding: "binary"`.
    * Existing files are overwritten only after the new output is fully written.
    */
   outputFilename?: import("puppeteer").ScreenshotOptions["path"];
+  /** Alias for `outputFilename`. `outputFilename` takes priority when both are set. */
+  output?: IConvertOptions["outputFilename"];
   /**
    * File type of output image. Type will be inferred from `outputFilename` if set
    * @defaultValue `png`
@@ -37,15 +41,19 @@ export interface IConvertOptions {
   quality?: import("puppeteer").ScreenshotOptions["quality"];
   /** HTML rendering text */
   htmlText?: string;
-  /** CSS rendering text. An empty string overrides the preset with no styles. */
+  /** Alias for `htmlText`. `htmlText` takes priority when both are set. */
+  html?: IConvertOptions["htmlText"];
+  /** CSS text appended last, after template and extension styles. */
   cssText?: string;
+  /** Alias for `cssText`. `cssText` takes priority when both are set. */
+  css?: IConvertOptions["cssText"];
   /**
    * HTML rendering template. This option has no effect if `htmlText` is specified
    * @defaultValue `default`
    */
   htmlTemplate?: string;
   /**
-   * CSS rendering template. This option has no effect if `cssText` is specified
+   * CSS rendering template. Custom `css` and `cssText` styles are appended.
    * @defaultValue `default`
    */
   cssTemplate?: string;
@@ -86,8 +94,9 @@ export interface IConvertOptions {
    */
   log?: boolean;
   /**
-   * If true, temporary HTML file will be kept after rendering.
-   * You can find the hidden temporary files in the folder where the input file is located or the script is executed.
+   * Keep the temporary HTML file and print its absolute path to stderr, even if `log` is false.
+   * The file is created beside the explicit output filename, or beside the input
+   * file when no output filename is set. Text-only input uses the current directory.
    * @defaultValue `false`
    */
   debug?: boolean;

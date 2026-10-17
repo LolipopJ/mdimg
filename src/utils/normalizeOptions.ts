@@ -34,9 +34,9 @@ export const normalizeOptions = (options: IConvertOptions) => {
     encoding = "binary",
     quality = 100,
     inputText,
-    inputFilename,
-    htmlText,
-    cssText,
+    inputFilename = options.input,
+    htmlText = options.html,
+    cssText = options.css,
     htmlTemplate = "default",
     cssTemplate = "default",
     extensions = true,
@@ -44,19 +44,22 @@ export const normalizeOptions = (options: IConvertOptions) => {
     log = false,
     debug = false,
     puppeteerProps = {},
-    outputFilename,
+    outputFilename = options.output,
     outputProcessor,
   } = options;
 
-  for (const name of ["inputText", "cssText"] as const) {
+  for (const name of ["inputText", "cssText", "css"] as const) {
     if (options[name] !== undefined && typeof options[name] !== "string") {
       throw new Error(`${name} must be a string.`);
     }
   }
   for (const name of [
     "inputFilename",
+    "input",
     "outputFilename",
+    "output",
     "htmlText",
+    "html",
     "htmlTemplate",
     "cssTemplate",
   ] as const) {

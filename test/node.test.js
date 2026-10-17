@@ -178,6 +178,7 @@ test("NODE: concurrent conversions keep input, output and temporary HTML isolate
         outputFilename: resolve(workspace.dir, `${name}.png`),
         extensions: false,
         width,
+        cssTemplate: "empty",
         cssText: `body { margin: 0; } #mdimg-body { height: 100px; background: ${color}; } h1 { margin: 0; }`,
       });
     }),

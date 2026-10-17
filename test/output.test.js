@@ -68,6 +68,7 @@ test.each([
       type: "webp",
       encoding: "base64",
       quality: 0,
+      cssTemplate: "empty",
       cssText: "body { margin: 0; } h1 { margin: 0; }",
       outputFilename,
       outputProcessor: createPdfOutputProcessor({

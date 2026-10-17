@@ -13,6 +13,7 @@ const spliceHtml = async ({
   cssTemplate = "default",
   resolvedExtensions = [],
   log = false,
+  baseUrl,
 }: Pick<
   IConvertOptions,
   "htmlText" | "cssText" | "htmlTemplate" | "cssTemplate" | "log"
@@ -21,9 +22,10 @@ const spliceHtml = async ({
   renderedHtml: string;
   /** Fully resolved extension list (built-ins + plugin overrides) from PluginManager */
   resolvedExtensions?: IExtension[];
+  /** Preserve the source directory for relative resources when HTML is relocated. */
+  baseUrl?: string;
 }): Promise<string> => {
   let _htmlSource = htmlText;
-  let _cssSource = cssText;
 
   if (_htmlSource === undefined) {
     let _htmlPath = path.resolve(
@@ -46,28 +48,29 @@ const spliceHtml = async ({
     _htmlSource = fs.readFileSync(_htmlPath).toString();
   }
 
-  if (_cssSource === undefined) {
-    let _cssPath = path.resolve(
-      cssTemplate.endsWith(".css")
-        ? cssTemplate
-        : `${__dirname}/../template/css/${cssTemplate}.css`,
-    );
+  let _cssPath = path.resolve(
+    cssTemplate.endsWith(".css")
+      ? cssTemplate
+      : `${__dirname}/../template/css/${cssTemplate}.css`,
+  );
 
-    try {
-      fs.accessSync(_cssPath, fs.constants.R_OK);
-    } catch (err) {
-      if (log) {
-        process.stderr.write(
-          `Warning: CSS template ${_cssPath} is not found or unreadable. Use default CSS template.\n${err}\n`,
-        );
-      }
-      _cssPath = path.resolve(`${__dirname}/../template/css/default.css`);
+  try {
+    fs.accessSync(_cssPath, fs.constants.R_OK);
+  } catch (err) {
+    if (log) {
+      process.stderr.write(
+        `Warning: CSS template ${_cssPath} is not found or unreadable. Use default CSS template.\n${err}\n`,
+      );
     }
-
-    _cssSource = fs.readFileSync(_cssPath).toString();
+    _cssPath = path.resolve(`${__dirname}/../template/css/default.css`);
   }
 
+  const _cssSource = fs.readFileSync(_cssPath).toString();
+
   const $ = load(`<!DOCTYPE html>\n${_htmlSource}`);
+  if (baseUrl && !$("base[href]").length) {
+    $("head").prepend($("<base>").attr("href", baseUrl));
+  }
   $("head").prepend(inlineScript(readAsset("page-ready.js")));
   $("head").append(`
 <meta charset="UTF-8">
@@ -86,6 +89,8 @@ ${_cssSource}
     if (result.head) $("head").append(result.head);
     if (result.body) $("body").append(result.body);
   }
+
+  if (cssText) $("head").append(`<style>\n${cssText}\n</style>`);
 
   return $.html();
 };

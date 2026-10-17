@@ -205,7 +205,7 @@ test("CLI: github CSS preset respects the requested width", async () => {
   await expectImage(readFileSync(outputFilename), "png", { width: 1000 });
 });
 
-test("CLI: template text overrides local files and preserves quoted paths", async () => {
+test("CLI: CSS text extends local styles and preserves quoted paths", async () => {
   const htmlTemplate = resolve(workspace.dir, "ignored & 'quoted'.html");
   const cssTemplate = resolve(workspace.dir, "ignored & 'quoted'.css");
   writeFileSync(
@@ -247,7 +247,7 @@ test("CLI: template text overrides local files and preserves quoted paths", asyn
   expect($("#mdimg-body > article.markdown-body h1").text()).toBe("Hello");
   expect($(".markdown-body").text()).not.toContain("Obsolete-CLI-text-marker");
   expect($("body").text()).not.toContain("Ignored-CLI-HTML-marker");
-  expect($("style").text()).not.toContain("Ignored-CLI-CSS-marker");
+  expect($("style").text()).toContain("Ignored-CLI-CSS-marker");
   expect($("style").text()).toContain("it's quoted & < >");
   await expectImage(readFileSync(outputFilename), "png", {
     width: 320,

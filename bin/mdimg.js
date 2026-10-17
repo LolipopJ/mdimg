@@ -82,7 +82,7 @@ program
   .addOption(
     new Option(
       "--cssText <css text>",
-      "Use the input text as a custom CSS template. Option --css will be ignored",
+      "Append CSS text after the selected CSS template",
     ),
   )
   .addOption(

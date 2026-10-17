@@ -150,7 +150,7 @@ test("TEMPLATE: local files replace old content and crop to mdimg-body", async (
   });
 });
 
-test("TEMPLATE: HTML and CSS text override conflicting local files", async () => {
+test("TEMPLATE: HTML text replaces its template and CSS text extends its template", async () => {
   const htmlTemplate = resolve(workspace.dir, "ignored.html");
   const cssTemplate = resolve(workspace.dir, "ignored.css");
   const outputFilename = resolve(workspace.dir, "text.png");
@@ -178,7 +178,7 @@ test("TEMPLATE: HTML and CSS text override conflicting local files", async () =>
   expect($("#mdimg-body > article.markdown-body")).toHaveLength(1);
   expectMarkdown(result.html);
   expect(result.html).not.toContain("Ignored-HTML-marker");
-  expect($("style").text()).not.toContain("Ignored-CSS-marker");
+  expect($("style").text()).toContain("Ignored-CSS-marker");
   expect($("style").text()).toContain("Used-CSS-text-marker");
   expect($(".markdown-body").text()).not.toContain("Obsolete-text-marker");
   expect(result.path).toBe(outputFilename);
@@ -189,3 +189,56 @@ test("TEMPLATE: HTML and CSS text override conflicting local files", async () =>
     pixel: [10, 20, 30, 255],
   });
 });
+
+test.each(["css", "cssText"])(
+  "TEMPLATE: %s extends templates and follows extension styles",
+  async (cssOption) => {
+    const cssTemplate = resolve(workspace.dir, "custom.css");
+    writeFileSync(
+      cssTemplate,
+      ".markdown-body { color: red; padding: 7px; font-size: 10px; }",
+    );
+    const result = await mdimg({
+      inputText: "# CSS alias",
+      extensions: false,
+      cssTemplate,
+      [cssOption]:
+        ".markdown-body { color: rgb(10, 20, 30); font-size: 18px; }",
+      plugins: [
+        {
+          name: "extension-styles",
+          extensions: [
+            {
+              name: "styles",
+              inject: () => ({
+                head: "<style>.markdown-body { color: green; }</style>",
+              }),
+            },
+          ],
+        },
+      ],
+      outputProcessor: {
+        format: "test",
+        async process({ page }) {
+          const styles = await page.$eval(".markdown-body", (element) => {
+            const style = getComputedStyle(element);
+            return {
+              color: style.color,
+              padding: style.paddingTop,
+              fontSize: style.fontSize,
+            };
+          });
+          expect(styles).toEqual({
+            color: "rgb(10, 20, 30)",
+            padding: "7px",
+            fontSize: "18px",
+          });
+          return { data: "" };
+        },
+      },
+    });
+    const $ = load(result.html);
+    const customStyles = $("head style").last().text();
+    expect(customStyles).toContain("color: rgb(10, 20, 30)");
+  },
+);

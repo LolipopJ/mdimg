@@ -162,6 +162,12 @@ const mdimg = async (options: IConvertOptions): Promise<IConvertResponse> => {
     _pluginManager.getMarkedExtensions(),
   );
   const _renderedHtml = await _pluginManager.afterParse(_parsedHtml);
+  const _sourceDirname = _inputFilename
+    ? path.dirname(path.resolve(_inputFilename))
+    : process.cwd();
+  const _baseDirname = outputFilename
+    ? path.dirname(path.resolve(outputFilename))
+    : _sourceDirname;
 
   const _splicedHtml = await spliceHtml({
     renderedHtml: _renderedHtml,
@@ -171,6 +177,10 @@ const mdimg = async (options: IConvertOptions): Promise<IConvertResponse> => {
     cssTemplate,
     resolvedExtensions: _pluginManager.getExtensions(),
     log,
+    baseUrl:
+      _baseDirname === _sourceDirname
+        ? undefined
+        : pathToFileURL(_sourceDirname + path.sep).href,
   });
 
   const _html = await _pluginManager.afterSplice(_splicedHtml);
@@ -191,9 +201,6 @@ const mdimg = async (options: IConvertOptions): Promise<IConvertResponse> => {
       ],
     });
 
-    const _baseDirname = _inputFilename
-      ? path.dirname(path.resolve(_inputFilename))
-      : process.cwd();
     const _tempLocalHtmlFile = path.resolve(
       _baseDirname,
       `.mdimg_temp_${new Date().getTime()}_${padStartWithZero(
@@ -202,6 +209,7 @@ const mdimg = async (options: IConvertOptions): Promise<IConvertResponse> => {
       )}.html`,
     );
     try {
+      fs.mkdirSync(_baseDirname, { recursive: true });
       fs.writeFileSync(_tempLocalHtmlFile, _html); // used to load local files
     } catch (error) {
       if (log) {
@@ -211,6 +219,11 @@ const mdimg = async (options: IConvertOptions): Promise<IConvertResponse> => {
       }
     }
     const _useLocalHtmlFileFlag = fs.existsSync(_tempLocalHtmlFile);
+    if (_useLocalHtmlFileFlag && debug) {
+      process.stderr.write(
+        `Debug: temporary HTML file saved at ${_tempLocalHtmlFile}\n`,
+      );
+    }
 
     const cleanup = async () => {
       try {
